@@ -6,3 +6,5 @@ local.properties
 
 build/
 FtcRobotController/build/
+
+.DS_Store
