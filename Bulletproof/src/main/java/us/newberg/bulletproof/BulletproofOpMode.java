@@ -5,8 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public abstract class BulletproofOpMode extends LinearOpMode
 {
-    DcMotor _testMotor;
-
+    
     public BulletproofOpMode()
     {
         super();
@@ -16,6 +15,6 @@ public abstract class BulletproofOpMode extends LinearOpMode
 
     protected void Init()
     {
-        _testMotor = hardwareMap.dcMotor.get("testMotor");
+
     }
 }
