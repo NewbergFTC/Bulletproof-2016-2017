@@ -14,7 +14,7 @@ The purpose of this style guide is to provide a standard of code that is consist
 - File name: The source file name will match the case-sensitive name of the top-level class it contains.
 - File encoding: UTF-8
 - Whitespace characters: Spaces, not tabs, will be used for indentation and general whitespace.
-- Column Width: The max column width is 120 characters. All lines must be line-wrapped if they exceed this number. 
+- Column Width: The max column width is 120 characters. All lines must be line-wrapped if they exceed this number.
 
 ---
 
