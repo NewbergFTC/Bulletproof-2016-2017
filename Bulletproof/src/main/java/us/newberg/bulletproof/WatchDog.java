@@ -44,6 +44,7 @@ public class WatchDog
         Reset();
     }
 
+    // TODO(Garrison): Guarantee this works, and {@link WatchDog} won't still run whatever it was told to
     public static void Stop()
     {
         _shouldStop.set(true);

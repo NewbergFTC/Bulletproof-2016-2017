@@ -14,7 +14,7 @@ public class DriveTrain
     /**
      * All the motors involved in the drive train
      */
-    public enum MOTORS
+    public enum Motors
     {
         FRONT_LEFT(0),
         FRONT_RIGHT(1),
@@ -23,7 +23,7 @@ public class DriveTrain
 
         private final int _value;
 
-        MOTORS(int value)
+        Motors(int value)
         {
             _value = value;
         }
@@ -35,12 +35,14 @@ public class DriveTrain
     }
 
     /** The number of motors the drive train contains */
-    public static final int MOTOR_COUNT = MOTORS.values().length;
+    public static final int MOTOR_COUNT = Motors.values().length;
 
     private DcMotor _frontLeft;
     private DcMotor _frontRight;
     private DcMotor _backLeft;
     private DcMotor _backRight;
+
+    private DriveTrainHelper _driveTrainHelper;
 
     public DriveTrain(HardwareMap hardwareMap)
     {
@@ -54,6 +56,19 @@ public class DriveTrain
         _backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         _backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        _frontLeft.setPower(0);
+        _frontRight.setPower(0);
+        _backLeft.setPower(0);
+        _backRight.setPower(0);
+
+        _driveTrainHelper = new DriveTrainHelper(this);
+    }
+
+    /**
+     * Stop all drive train motors
+     */
+    public void StopAll()
+    {
         _frontLeft.setPower(0);
         _frontRight.setPower(0);
         _backLeft.setPower(0);
@@ -76,7 +91,7 @@ public class DriveTrain
 
     /**
      * Get all the encoder values of all the motors within the drive train
-     * See {@link MOTORS} for a list of all the motors. Use the enum {@link MOTORS#GetValue()} for access indices
+     * See {@link Motors} for a list of all the motors. Use the enum {@link Motors#GetValue()} for access indices
      *
      * @return The current readings of all the encoders
      */
@@ -84,10 +99,10 @@ public class DriveTrain
     {
         int[] values = new int[MOTOR_COUNT];
 
-        values[MOTORS.FRONT_LEFT.GetValue()] = _frontLeft.getCurrentPosition();
-        values[MOTORS.FRONT_RIGHT.GetValue()] = _frontRight.getCurrentPosition();
-        values[MOTORS.BACK_LEFT.GetValue()] = _backLeft.getCurrentPosition();
-        values[MOTORS.BACK_RIGHT.GetValue()] = _backRight.getCurrentPosition();
+        values[Motors.FRONT_LEFT.GetValue()] = _frontLeft.getCurrentPosition();
+        values[Motors.FRONT_RIGHT.GetValue()] = _frontRight.getCurrentPosition();
+        values[Motors.BACK_LEFT.GetValue()] = _backLeft.getCurrentPosition();
+        values[Motors.BACK_RIGHT.GetValue()] = _backRight.getCurrentPosition();
 
         return values;
     }
@@ -115,10 +130,11 @@ public class DriveTrain
      *
      * Currently doesn't convert between deg and encoder ticks, but will in the future
      *
+     * @throws InterruptedException For ftc_app to catch, if something should go <em>very</em> wrong
      * @param deg The angle to rotate in degrees
      * @param power The target power to turn at 1.0 is full power forward, -1.0 is full power back(inverts {@param deg})
      */
-    public void Rotate(float deg, float power)
+    public void Rotate(float deg, float power) throws InterruptedException
     {
         // TODO(Garrison): Measure how many encoder ticks are in a single degree
         // Update javadoc
@@ -127,6 +143,11 @@ public class DriveTrain
         float ticksToMove = deg * DEG_TO_TICKS;
         float currentTicks = GetEncoderValue();
         float targetTicks = currentTicks + ticksToMove;
+
+        _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
+
+        // TODO(Garrison): Calculate how long it should take to rotate some ticks(or degrees) at some power
+        WatchDog.Watch(_driveTrainHelper, 10000);
 
         // TODO(Garrison): See how precise we can make this
         while (MathUtil.FuzzyEquals(currentTicks, targetTicks, 10)) // Give or take 10 ticks
@@ -153,9 +174,57 @@ public class DriveTrain
             currentTicks = GetEncoderValue();
         }
 
+        WatchDog.Stop();
+
         _frontLeft.setPower(0);
         _backRight.setPower(0);
         _frontRight.setPower(0);
         _backRight.setPower(0);
+    }
+
+    private enum HelperTask
+    {
+        NONE,
+        STOP_ALL,
+    }
+
+    private static final int HELPER_TASK_COUNT = HelperTask.values().length;
+
+    private class DriveTrainHelper implements Runnable
+    {
+        private DriveTrain _driveTrain;
+        private HelperTask _task;
+
+        public DriveTrainHelper(DriveTrain target)
+        {
+            _driveTrain = target;
+            _task = HelperTask.NONE;
+        }
+
+        public void SetTask(HelperTask task)
+        {
+            _task = task;
+        }
+
+        private void StopAll()
+        {
+            _driveTrain.StopAll();
+        }
+
+        @Override
+        public void run()
+        {
+            switch (_task)
+            {
+                default:
+                case NONE:
+                    break;
+
+                case STOP_ALL:
+                    StopAll();
+                    break;
+
+            }
+        }
     }
 }
