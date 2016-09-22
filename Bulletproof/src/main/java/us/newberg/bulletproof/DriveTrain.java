@@ -129,7 +129,7 @@ public class DriveTrain
         float targetTicks = currentTicks + ticksToMove;
 
         // TODO(Garrison): See how precise we can make this
-        while (MathUtil.FuzzyEquals(currentTicks, targetTicks, 10)) // Give of take 10 ticks
+        while (MathUtil.FuzzyEquals(currentTicks, targetTicks, 10)) // Give or take 10 ticks
         {
             if (targetTicks > currentTicks)
             {
