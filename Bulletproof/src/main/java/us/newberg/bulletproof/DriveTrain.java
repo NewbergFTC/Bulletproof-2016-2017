@@ -195,13 +195,13 @@ public class DriveTrain
         private DriveTrain _driveTrain;
         private HelperTask _task;
 
-        public DriveTrainHelper(DriveTrain target)
+        private DriveTrainHelper(DriveTrain target)
         {
             _driveTrain = target;
             _task = HelperTask.NONE;
         }
 
-        public void SetTask(HelperTask task)
+        private void SetTask(HelperTask task)
         {
             _task = task;
         }
