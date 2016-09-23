@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import us.newberg.bulletproof.math.MathUtil;
+import us.newberg.bulletproof.math.Vector2f;
 
 /**
  * FTC team 6712 Bulletproof
@@ -108,6 +109,30 @@ public class DriveTrain
     }
 
     /**
+     *  The the power of the left side wheels
+     *
+     * @return The x is the front power and the y is the back power
+     */
+    public Vector2f GetLeftSidePower()
+    {
+        Vector2f result = new Vector2f((float) _frontLeft.getPower(), (float) _backLeft.getPower());
+
+        return result;
+    }
+
+    /**
+     *  The the power of the right side wheels
+     *
+     * @return The x is the front power and the y is the back power
+     */
+    public Vector2f GetRightSidePower()
+    {
+        Vector2f result = new Vector2f((float) _frontRight.getPower(), (float) _backRight.getPower());
+
+        return result;
+    }
+
+    /**
      * Drive straight, either forward or back depending on the sign of {@param speed}
      *
      * Currently doesn't do any compensation or checking to see the the motors are running at the same speed
@@ -122,6 +147,38 @@ public class DriveTrain
         _frontRight.setPower(power);
         _backLeft.setPower(power);
         _backRight.setPower(power);
+    }
+
+    /**
+     * Drive with the whole left side at the same power, and the whole right at another constant power
+     *
+     * The power must be between -1.0 and 1.0
+     *
+     * @param leftPower The power for the left wheels
+     * @param rightPower The power for the right wheels
+     */
+    public void Drive(float leftPower, float rightPower)
+    {
+        Drive(new Vector2f(leftPower), new Vector2f(rightPower));
+    }
+
+    /**
+     * Drive with a left side power and a right side power
+     *
+     * The x is the front wheel power
+     * The y is the back wheel power
+     *
+     * @param leftSidePower  The x component is the front wheel power, and the y component the back wheel power
+     * @param rightSidePower The x component is the front wheel power, and the y component the back wheel power
+     */
+    public void Drive(Vector2f leftSidePower, Vector2f rightSidePower)
+    {
+        // TODO(Garrison): Should we just pass a left float and a right float?
+
+        _frontLeft.setPower(leftSidePower.x);
+        _backLeft.setPower(leftSidePower.y);
+        _frontRight.setPower(rightSidePower.x);
+        _backRight.setPower(rightSidePower.y);
     }
 
     /**
@@ -181,6 +238,8 @@ public class DriveTrain
         _frontRight.setPower(0);
         _backRight.setPower(0);
     }
+
+    // TODO(Peacock): A {@link Telemetry}
 
     private enum HelperTask
     {

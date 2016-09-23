@@ -22,6 +22,16 @@ public class Vector2f
     }
 
     /**
+     * Initializes a Vector2f with (a, a)
+     *
+     * @param a The x and y component
+     */
+    public Vector2f(float a)
+    {
+        this(a, a);
+    }
+
+    /**
      * Initializes a Vector2f with the value (x, y)
      *
      * @param x X component

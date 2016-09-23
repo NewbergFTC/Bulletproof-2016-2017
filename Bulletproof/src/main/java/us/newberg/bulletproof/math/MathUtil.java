@@ -6,7 +6,7 @@ package us.newberg.bulletproof.math;
 
 public class MathUtil
 {
-    protected final static double EPSILON = 0.000001; // A very tiny number (10e-6)
+    private static final double EPSILON = 0.000001; // A very tiny number (10e-6)
 
     public static boolean FuzzyEquals(double value1, double value2)
     {
