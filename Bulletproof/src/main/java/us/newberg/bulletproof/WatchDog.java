@@ -15,9 +15,9 @@ public class WatchDog
     }
 
     // TODO(Garrison): Test this...
-    public static void Watch(final Runnable task, final long millis) throws InterruptedException
+    public static void Watch(final Runnable task, final long millis)
     {
-        Thread worker = new Thread(new Runnable()
+        final Thread slave = new Thread(new Runnable()
         {
             @Override
             public void run()
@@ -38,10 +38,26 @@ public class WatchDog
             }
         });
 
-        worker.start();
-        worker.join();
+        final Thread master = new Thread(new Runnable()
+         {
+             @Override
+             public void run()
+             {
+                slave.start();
 
-        Reset();
+                try
+                {
+                    slave.join();
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+
+                Reset();
+             }
+         });
+
+        master.start();
     }
 
     // TODO(Garrison): Guarantee this works, and {@link WatchDog} won't still run whatever it was told to
