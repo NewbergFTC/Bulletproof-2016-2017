@@ -239,7 +239,7 @@ public class DriveTrain
         _backRight.setPower(0);
     }
 
-    // TODO(Peacock): A {@link Telemetry}
+    // TODO(Peacock): A {@link Telemetry} updater/display
 
     private enum HelperTask
     {

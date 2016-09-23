@@ -27,8 +27,8 @@ public class DriveOpMode extends BulletproofOpMode
             boolean gamepadOneLeftBumper   = gamepad1.left_bumper;      // Move Left - without rotation
             boolean gamepadeOneRightBumper = gamepad1.right_bumper;     // Move Right - without rotation
 
-            Vector2f leftDrivePower = new Vector2f();
-            Vector2f rightDrivePower = new Vector2f();
+            Vector2f leftDrivePower;
+            Vector2f rightDrivePower;
 
             final float LEFT_RIGHT_POWER = 0.75f;
 
