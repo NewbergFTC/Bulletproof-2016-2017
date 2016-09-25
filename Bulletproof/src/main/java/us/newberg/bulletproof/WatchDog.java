@@ -50,6 +50,7 @@ public class WatchDog
                     slave.join();
                 } catch (InterruptedException e)
                 {
+                    // TODO(Garrison): Error handling
                     e.printStackTrace();
                 }
 
