@@ -282,7 +282,6 @@ public class DriveTrain
                 case STOP_ALL:
                     StopAll();
                     break;
-
             }
         }
     }
