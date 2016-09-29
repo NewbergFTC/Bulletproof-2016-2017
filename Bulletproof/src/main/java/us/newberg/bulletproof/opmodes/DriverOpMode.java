@@ -47,13 +47,9 @@ public class DriverOpMode extends BulletproofOpMode
                 rightDrivePower = new Vector2f(gamepadOneRightY);
             }
 
-//            telemetry.addData("LeftPower X: %f, Y: %f", String.valueOf(leftDrivePower.x),
-//                               String.valueOf(leftDrivePower.y));
-//            telemetry.addData("RightPower X: %f, Y: %f", String.valueOf(rightDrivePower.x),
-//                              String.valueOf(rightDrivePower.y));
-
             _driveTrain.Drive(leftDrivePower, rightDrivePower);
 
+            _driveTrain.UpdateTelemetry();
             telemetry.update();
             idle();
         }

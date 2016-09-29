@@ -18,6 +18,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
 
     protected void Init()
     {
-        _driveTrain = new DriveTrain(hardwareMap);
+        telemetry.setAutoClear(false);
+        _driveTrain = new DriveTrain(hardwareMap, telemetry);
     }
 }
