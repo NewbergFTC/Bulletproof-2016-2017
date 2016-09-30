@@ -30,27 +30,21 @@ public class DriveOpMode extends BulletproofOpMode
 
             final float LEFT_RIGHT_POWER = 0.75f;
 
-            // TODO(Garrison): Test the omniwheel left/right driving... I'm not sure if I did this right
             if (gamepadOneLeftBumper)
             {
-                leftDrivePower = new Vector2f(-LEFT_RIGHT_POWER, LEFT_RIGHT_POWER);
+                leftDrivePower = new Vector2f(LEFT_RIGHT_POWER, -LEFT_RIGHT_POWER);
                 rightDrivePower = new Vector2f(LEFT_RIGHT_POWER, -LEFT_RIGHT_POWER);
             }
             else if (gamepadeOneRightBumper)
             {
-                leftDrivePower = new Vector2f(LEFT_RIGHT_POWER, -LEFT_RIGHT_POWER);
+                leftDrivePower = new Vector2f(-LEFT_RIGHT_POWER, LEFT_RIGHT_POWER);
                 rightDrivePower = new Vector2f(-LEFT_RIGHT_POWER, LEFT_RIGHT_POWER);
             }
             else
             {
-                leftDrivePower = new Vector2f(-gamepadOneLeftY);
-                rightDrivePower = new Vector2f(gamepadOneRightY);
+                leftDrivePower = new Vector2f(gamepadOneLeftY);
+                rightDrivePower = new Vector2f(-gamepadOneRightY);
             }
-
-//            telemetry.addData("LeftPower X: %f, Y: %f", String.valueOf(leftDrivePower.x),
-//                               String.valueOf(leftDrivePower.y));
-//            telemetry.addData("RightPower X: %f, Y: %f", String.valueOf(rightDrivePower.x),
-//                              String.valueOf(rightDrivePower.y));
 
             _driveTrain.Drive(leftDrivePower, rightDrivePower);
 
