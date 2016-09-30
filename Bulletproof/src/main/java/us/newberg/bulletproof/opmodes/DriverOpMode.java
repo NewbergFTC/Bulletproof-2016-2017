@@ -9,7 +9,7 @@ import us.newberg.bulletproof.math.Vector2f;
  */
 
 @TeleOp(name = "DriverOpMode", group = "Driver")
-public class DriveOpMode extends BulletproofOpMode
+public class DriverOpMode extends BulletproofOpMode
 {
     @Override
     public void runOpMode() throws InterruptedException
