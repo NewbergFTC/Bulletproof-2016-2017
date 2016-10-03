@@ -1,8 +1,9 @@
 package us.newberg.bulletproof;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import static us.newberg.bulletproof.lib.Motors.*;
 import us.newberg.bulletproof.math.MathUtil;
 import us.newberg.bulletproof.math.Vector2f;
 
@@ -12,55 +13,14 @@ import us.newberg.bulletproof.math.Vector2f;
 
 public class DriveTrain
 {
-    /**
-     * All the motors involved in the drive train
-     */
-    public enum Motors
-    {
-        FRONT_LEFT(0),
-        FRONT_RIGHT(1),
-        BACK_LEFT(2),
-        BACK_RIGHT(3);
-
-        private final int _value;
-
-        Motors(int value)
-        {
-            _value = value;
-        }
-
-        public int GetValue()
-        {
-            return _value;
-        }
-    }
-
-    /** The number of motors the drive train contains */
-    public static final int MOTOR_COUNT = Motors.values().length;
-
-    private DcMotor _frontLeft;
-    private DcMotor _frontRight;
-    private DcMotor _backLeft;
-    private DcMotor _backRight;
-
     private DriveTrainHelper _driveTrainHelper;
 
-    public DriveTrain(HardwareMap hardwareMap)
+    public DriveTrain()
     {
-        _frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        _frontRight = hardwareMap.dcMotor.get("frontRight");
-        _backLeft = hardwareMap.dcMotor.get("backLeft");
-        _backRight = hardwareMap.dcMotor.get("backRight");
-
-        _frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        _frontLeft.setPower(0);
-        _frontRight.setPower(0);
-        _backLeft.setPower(0);
-        _backRight.setPower(0);
+        FrontLeft().setPower(0);
+        FrontRight().setPower(0);
+        BackLeft().setPower(0);
+        BackRight().setPower(0);
 
         _driveTrainHelper = new DriveTrainHelper(this);
     }
@@ -70,42 +30,10 @@ public class DriveTrain
      */
     public void StopAll()
     {
-        _frontLeft.setPower(0);
-        _frontRight.setPower(0);
-        _backLeft.setPower(0);
-        _backRight.setPower(0);
-    }
-
-    /**
-     * Get the primary encoder value
-     *
-     * The front left motor encoder in this case
-     *
-     * @return The current reading of the encoder
-     */
-    public int GetEncoderValue()
-    {
-        int result = _frontLeft.getCurrentPosition();
-
-        return result;
-    }
-
-    /**
-     * Get all the encoder values of all the motors within the drive train
-     * See {@link Motors} for a list of all the motors. Use the enum {@link Motors#GetValue()} for access indices
-     *
-     * @return The current readings of all the encoders
-     */
-    public int[] GetEncoderValues()
-    {
-        int[] values = new int[MOTOR_COUNT];
-
-        values[Motors.FRONT_LEFT.GetValue()] = _frontLeft.getCurrentPosition();
-        values[Motors.FRONT_RIGHT.GetValue()] = _frontRight.getCurrentPosition();
-        values[Motors.BACK_LEFT.GetValue()] = _backLeft.getCurrentPosition();
-        values[Motors.BACK_RIGHT.GetValue()] = _backRight.getCurrentPosition();
-
-        return values;
+        FrontLeft().setPower(0);
+        FrontRight().setPower(0);
+        BackLeft().setPower(0);
+        BackRight().setPower(0);
     }
 
     /**
@@ -115,7 +43,7 @@ public class DriveTrain
      */
     public Vector2f GetLeftSidePower()
     {
-        Vector2f result = new Vector2f((float) _frontLeft.getPower(), (float) _backLeft.getPower());
+        Vector2f result = new Vector2f((float) FrontLeft().getPower(), (float) BackLeft().getPower());
 
         return result;
     }
@@ -127,26 +55,48 @@ public class DriveTrain
      */
     public Vector2f GetRightSidePower()
     {
-        Vector2f result = new Vector2f((float) _frontRight.getPower(), (float) _backRight.getPower());
+        Vector2f result = new Vector2f((float) FrontRight().getPower(), (float) BackRight().getPower());
 
         return result;
     }
 
-    /**
-     * Drive straight, either forward or back depending on the sign of {@param speed}
-     *
-     * Currently doesn't do any compensation or checking to see the the motors are running at the same speed
-     *
-     * @param power The target power, from -1.0 to 1.0. Where 1.0 is full speed ahead, and -1.0 is full speed back
-     */
-    public void DriveStraight(float power)
+    public void DriveStraight(float power, float inches)
     {
-        // TODO(Garrison): If the motors are not consistent on both sides, compare encoder values and compensate
+        final float TICKS_TO_MOVE = inches * INCHES_TO_TICKS;
+        float currentTicks = FrontLeft().getCurrentPosition();
+        final float TARGET_TICKS = currentTicks + TICKS_TO_MOVE;
 
-        _frontLeft.setPower(power);
-        _frontRight.setPower(power);
-        _backLeft.setPower(power);
-        _backRight.setPower(power);
+        _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
+
+        // TODO(Garrison): Calculate how long it should take to rotate some distance at some power
+        WatchDog.Watch(_driveTrainHelper, 10000);
+
+        // TODO(Garrison): See how precise we can make this
+        while (MathUtil.FuzzyEquals(currentTicks, TARGET_TICKS, 10)) // Give or take 10 ticks
+        {
+            if (TARGET_TICKS > currentTicks)
+            {
+                // TODO(Garrison): Make this able to compensate for wheel spin
+                Drive(power, power);
+            }
+            else if (TARGET_TICKS < currentTicks)
+            {
+                Drive(-power, -power);
+            }
+            else
+            {
+                break;
+            }
+
+            currentTicks = FrontLeft().getCurrentPosition();
+        }
+
+        WatchDog.Stop();
+
+        FrontLeft().setPower(0);
+        BackRight().setPower(0);
+        FrontRight().setPower(0);
+        BackRight().setPower(0);
     }
 
     /**
@@ -175,15 +125,14 @@ public class DriveTrain
     {
         // TODO(Garrison): Should we just pass a left float and a right float?
 
-        _frontLeft.setPower(leftSidePower.x);
-        _backLeft.setPower(leftSidePower.y);
-        _frontRight.setPower(rightSidePower.x);
-        _backRight.setPower(rightSidePower.y);
+        FrontLeft().setPower(leftSidePower.x);
+        BackLeft().setPower(leftSidePower.y);
+        FrontRight().setPower(rightSidePower.x);
+        BackRight().setPower(rightSidePower.y);
     }
 
     /**
      * Rotate the front of the robot by {@param deg}
-     * Uses {@link #GetEncoderValue()} for all encoder checking
      *
      * Currently doesn't convert between deg and encoder ticks, but will in the future
      *
@@ -191,15 +140,11 @@ public class DriveTrain
      * @param deg The angle to rotate in degrees
      * @param power The target power to turn at 1.0 is full power forward, -1.0 is full power back(inverts {@param deg})
      */
-    public void Rotate(float deg, float power) throws InterruptedException
+    public void Rotate(float power, float deg) throws InterruptedException
     {
-        // TODO(Garrison): Measure how many encoder ticks are in a single degree
-        // Update javadoc
-        float DEG_TO_TICKS = 1;
-
-        float ticksToMove = deg * DEG_TO_TICKS;
-        float currentTicks = GetEncoderValue();
-        float targetTicks = currentTicks + ticksToMove;
+        final float TICKS_TO_MOVE = deg * DEG_TO_TICKS;
+        float currentTicks = FrontLeft().getCurrentPosition();
+        final float TARGET_TICKS = currentTicks + TICKS_TO_MOVE;
 
         _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
 
@@ -207,36 +152,30 @@ public class DriveTrain
         WatchDog.Watch(_driveTrainHelper, 10000);
 
         // TODO(Garrison): See how precise we can make this
-        while (MathUtil.FuzzyEquals(currentTicks, targetTicks, 10)) // Give or take 10 ticks
+        while (MathUtil.FuzzyEquals(currentTicks, TARGET_TICKS, 10)) // Give or take 10 ticks
         {
-            if (targetTicks > currentTicks)
+            if (TARGET_TICKS > currentTicks)
             {
-                _frontLeft.setPower(power);
-                _backRight.setPower(power);
-                _frontRight.setPower(-power);
-                _backRight.setPower(-power);
+                Drive(power, -power);
             }
-            else if (targetTicks < currentTicks)
+            else if (TARGET_TICKS < currentTicks)
             {
-                _frontLeft.setPower(-power);
-                _backRight.setPower(-power);
-                _frontRight.setPower(power);
-                _backRight.setPower(power);
+               Drive(-power, power);
             }
             else
             {
                 break;
             }
 
-            currentTicks = GetEncoderValue();
+            currentTicks = FrontLeft().getCurrentPosition();
         }
 
         WatchDog.Stop();
 
-        _frontLeft.setPower(0);
-        _backRight.setPower(0);
-        _frontRight.setPower(0);
-        _backRight.setPower(0);
+        FrontLeft().setPower(0);
+        BackRight().setPower(0);
+        FrontRight().setPower(0);
+        BackRight().setPower(0);
     }
 
     // TODO(Peacock): A {@link Telemetry} updater/display

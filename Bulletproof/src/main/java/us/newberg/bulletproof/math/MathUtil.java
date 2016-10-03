@@ -26,4 +26,11 @@ public class MathUtil
 
         return result;
     }
+
+    public static float FeetToInches(float feet)
+    {
+        float result = feet / 12.0f;
+
+        return result;
+    }
 }
