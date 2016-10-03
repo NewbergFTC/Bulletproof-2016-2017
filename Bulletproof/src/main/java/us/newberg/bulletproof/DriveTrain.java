@@ -1,7 +1,6 @@
 package us.newberg.bulletproof;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import static us.newberg.bulletproof.lib.Motors.*;
 import us.newberg.bulletproof.math.MathUtil;
@@ -17,10 +16,10 @@ public class DriveTrain
 
     public DriveTrain()
     {
-        FrontLeft().setPower(0);
-        FrontRight().setPower(0);
-        BackLeft().setPower(0);
-        BackRight().setPower(0);
+        FrontLeft().SetPower(0);
+        FrontRight().SetPower(0);
+        BackLeft().SetPower(0);
+        BackRight().SetPower(0);
 
         _driveTrainHelper = new DriveTrainHelper(this);
     }
@@ -30,10 +29,10 @@ public class DriveTrain
      */
     public void StopAll()
     {
-        FrontLeft().setPower(0);
-        FrontRight().setPower(0);
-        BackLeft().setPower(0);
-        BackRight().setPower(0);
+        FrontLeft().SetPower(0);
+        FrontRight().SetPower(0);
+        BackLeft().SetPower(0);
+        BackRight().SetPower(0);
     }
 
     /**
@@ -43,7 +42,7 @@ public class DriveTrain
      */
     public Vector2f GetLeftSidePower()
     {
-        Vector2f result = new Vector2f((float) FrontLeft().getPower(), (float) BackLeft().getPower());
+        Vector2f result = new Vector2f((float) FrontLeft().GetPower(), (float) BackLeft().GetPower());
 
         return result;
     }
@@ -55,16 +54,18 @@ public class DriveTrain
      */
     public Vector2f GetRightSidePower()
     {
-        Vector2f result = new Vector2f((float) FrontRight().getPower(), (float) BackRight().getPower());
+        Vector2f result = new Vector2f((float) FrontRight().GetPower(), (float) BackRight().GetPower());
 
         return result;
     }
 
-    public void DriveStraight(float power, float inches)
+    public void DriveStraight(float power, float inches, Telemetry telemetry)
     {
-        final float TICKS_TO_MOVE = inches * INCHES_TO_TICKS;
-        float currentTicks = FrontLeft().getCurrentPosition();
-        final float TARGET_TICKS = currentTicks + TICKS_TO_MOVE;
+        final double TICKS_TO_MOVE = inches * TICKS_TO_INCHES;
+        telemetry.addData("Ticks to move", TICKS_TO_MOVE);
+        telemetry.update();
+        float currentTicks = FrontLeft().GetCurrentTicks();
+        final double TARGET_TICKS = currentTicks + TICKS_TO_MOVE;
 
         _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
 
@@ -72,31 +73,31 @@ public class DriveTrain
         WatchDog.Watch(_driveTrainHelper, 10000);
 
         // TODO(Garrison): See how precise we can make this
-        while (MathUtil.FuzzyEquals(currentTicks, TARGET_TICKS, 10)) // Give or take 10 ticks
+        while (!MathUtil.FuzzyEquals(currentTicks, TARGET_TICKS, 40)) // Give or take 10 ticks
         {
-            if (TARGET_TICKS > currentTicks)
+            if (TARGET_TICKS < currentTicks)
             {
                 // TODO(Garrison): Make this able to compensate for wheel spin
-                Drive(power, power);
+                Drive(-power, power);
             }
-            else if (TARGET_TICKS < currentTicks)
+            else if (TARGET_TICKS > currentTicks)
             {
-                Drive(-power, -power);
+                Drive(power, -power);
             }
             else
             {
                 break;
             }
 
-            currentTicks = FrontLeft().getCurrentPosition();
+            currentTicks = FrontLeft().GetCurrentTicks();
         }
 
         WatchDog.Stop();
 
-        FrontLeft().setPower(0);
-        BackRight().setPower(0);
-        FrontRight().setPower(0);
-        BackRight().setPower(0);
+        FrontLeft().SetPower(0);
+        BackRight().SetPower(0);
+        FrontRight().SetPower(0);
+        BackRight().SetPower(0);
     }
 
     /**
@@ -125,10 +126,10 @@ public class DriveTrain
     {
         // TODO(Garrison): Should we just pass a left float and a right float?
 
-        FrontLeft().setPower(leftSidePower.x);
-        BackLeft().setPower(leftSidePower.y);
-        FrontRight().setPower(rightSidePower.x);
-        BackRight().setPower(rightSidePower.y);
+        FrontLeft().SetPower(leftSidePower.x);
+        BackLeft().SetPower(leftSidePower.y);
+        FrontRight().SetPower(rightSidePower.x);
+        BackRight().SetPower(rightSidePower.y);
     }
 
     /**
@@ -142,9 +143,9 @@ public class DriveTrain
      */
     public void Rotate(float power, float deg) throws InterruptedException
     {
-        final float TICKS_TO_MOVE = deg * DEG_TO_TICKS;
-        float currentTicks = FrontLeft().getCurrentPosition();
-        final float TARGET_TICKS = currentTicks + TICKS_TO_MOVE;
+        final double TICKS_TO_MOVE = deg * DEG_TO_TICKS;
+        float currentTicks = FrontLeft().GetCurrentTicks();
+        final double TARGET_TICKS = currentTicks + TICKS_TO_MOVE;
 
         _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
 
@@ -167,15 +168,15 @@ public class DriveTrain
                 break;
             }
 
-            currentTicks = FrontLeft().getCurrentPosition();
+            currentTicks = FrontLeft().GetCurrentTicks();
         }
 
         WatchDog.Stop();
 
-        FrontLeft().setPower(0);
-        BackRight().setPower(0);
-        FrontRight().setPower(0);
-        BackRight().setPower(0);
+        FrontLeft().SetPower(0);
+        BackRight().SetPower(0);
+        FrontRight().SetPower(0);
+        BackRight().SetPower(0);
     }
 
     // TODO(Peacock): A {@link Telemetry} updater/display

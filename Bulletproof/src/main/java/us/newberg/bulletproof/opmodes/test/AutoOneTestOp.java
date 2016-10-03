@@ -1,6 +1,7 @@
 package us.newberg.bulletproof.opmodes.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ThreadPool;
 
 import us.newberg.bulletproof.opmodes.BulletproofOpMode;
 import static us.newberg.bulletproof.math.MathUtil.FeetToInches;
@@ -19,18 +20,17 @@ public class AutoOneTestOp extends BulletproofOpMode
         waitForStart();
 
         telemetry.addLine("Full steam ahead!");
-        telemetry.update();
 
-        _driveTrain.DriveStraight(0.5f, FeetToInches(6));   // 1/2 power for 6 feet
+        _driveTrain.DriveStraight(0.5f, 48.0f, telemetry);   // 1/2 power for 6 feet
         idle();
-        _driveTrain.Rotate(0.2f, 45);
-        idle();
-        _driveTrain.DriveStraight(0.25f, 10);
-        idle();
-        _driveTrain.Rotate(0.1f, 20);
-        idle();
-        _driveTrain.Rotate(0.1f, -40);
-        idle();
-        _driveTrain.Rotate(0.1f, 20);
+//        _driveTrain.Rotate(0.2f, 45);
+//        idle();
+//        _driveTrain.DriveStraight(0.25f, 10, telemetry);
+//        idle();
+//        _driveTrain.Rotate(0.1f, 20);
+//        idle();
+//        _driveTrain.Rotate(0.1f, -40);
+//        idle();
+//        _driveTrain.Rotate(0.1f, 20);
     }
 }

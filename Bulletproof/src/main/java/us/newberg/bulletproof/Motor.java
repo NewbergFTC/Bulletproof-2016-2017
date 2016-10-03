@@ -6,17 +6,38 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * FTC team 6712 Bulletproof
  */
 
-public abstract class Motor implements DcMotor
+public class Motor
 {
-    private boolean _hasEncoder = false;
+    private final DcMotor _dcMotor;
+    private final boolean _hasEncoder;
 
-    public void SetHasEncoder(boolean hasEncoder)
+    public Motor(DcMotor motor)
     {
+        this(motor, false);
+    }
+
+    public Motor(DcMotor motor, boolean hasEncoder)
+    {
+        _dcMotor = motor;
         _hasEncoder = hasEncoder;
     }
 
-    public boolean HasEncoder()
+    public void SetPower(double power)
     {
-        return _hasEncoder;
+        _dcMotor.setPower(power);
+    }
+
+    public double GetPower()
+    {
+        double result = _dcMotor.getPower();
+
+        return result;
+    }
+
+    public int GetCurrentTicks()
+    {
+        int result = _dcMotor.getCurrentPosition();
+
+        return result;
     }
 }

@@ -13,12 +13,12 @@ public class Motors
     // TODO(Garrison): Find some better way to do this
     public static final int MOTOR_COUNT = 4;
 
-    // TODO(Garrison): Find/Calculate these
-    public static final float TICKS_PER_ROTATION = 1;
-    public static final float TICKS_TO_DEG       = 1;
-    public static final float DEG_TO_TICKS       = 1;
-    public static final float TICKS_TO_INCHES    = 1;
-    public static final float INCHES_TO_TICKS    = 1;
+    public static final double WHEEL_CIRCUMFRENCE = Math.PI * 4;               // inches
+    public static final double TICKS_PER_ROTATION = 140;                       // ticks
+    public static final double TICKS_TO_DEG       = 360 / TICKS_PER_ROTATION;  // deg / ticks
+    public static final double DEG_TO_TICKS       = TICKS_PER_ROTATION / 360;  // ticks / deg
+    public static final double TICKS_TO_INCHES    = 140 / WHEEL_CIRCUMFRENCE;  // in / ticks
+    public static final double INCHES_TO_TICKS    = WHEEL_CIRCUMFRENCE / 140;  // ticks / in
 
     private static Motor _frontLeft;
     private static Motor _frontRight;
@@ -27,15 +27,10 @@ public class Motors
 
     public static void Init(HardwareMap hardwareMap)
     {
-        _frontLeft = (Motor) hardwareMap.dcMotor.get("frontLeft");
-        _frontRight = (Motor) hardwareMap.dcMotor.get("frontRight");
-        _backLeft = (Motor) hardwareMap.dcMotor.get("backLeft");
-        _backRight = (Motor) hardwareMap.dcMotor.get("backRight");
-
-        _frontLeft.SetHasEncoder(true);
-        _frontRight.SetHasEncoder(false);
-        _backLeft.SetHasEncoder(false);
-        _backRight.SetHasEncoder(true);
+        _frontLeft = new Motor(hardwareMap.dcMotor.get("frontLeft"), true);
+        _frontRight = new Motor(hardwareMap.dcMotor.get("frontRight"), false);
+        _backLeft = new Motor(hardwareMap.dcMotor.get("backLeft"), false);
+        _backRight = new Motor(hardwareMap.dcMotor.get("backRight"), false);
     }
 
     public static Motor FrontLeft()

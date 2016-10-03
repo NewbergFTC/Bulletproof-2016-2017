@@ -29,7 +29,7 @@ public class MathUtil
 
     public static float FeetToInches(float feet)
     {
-        float result = feet / 12.0f;
+        float result = feet * 12.0f;
 
         return result;
     }
