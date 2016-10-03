@@ -3,10 +3,11 @@ package us.newberg.bulletproof.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import us.newberg.bulletproof.DriveTrain;
+import us.newberg.bulletproof.lib.Motors;
 
 public abstract class BulletproofOpMode extends LinearOpMode
 {
-    DriveTrain _driveTrain;
+    protected  DriveTrain _driveTrain;
 
     public BulletproofOpMode()
     {
@@ -16,9 +17,10 @@ public abstract class BulletproofOpMode extends LinearOpMode
         _driveTrain = null;
     }
 
-    protected void Init()
+    public void Init()
     {
-        telemetry.setAutoClear(false);
-        _driveTrain = new DriveTrain(hardwareMap, telemetry);
+        Motors.Init(hardwareMap);
+
+        _driveTrain = new DriveTrain(telemetry);
     }
 }

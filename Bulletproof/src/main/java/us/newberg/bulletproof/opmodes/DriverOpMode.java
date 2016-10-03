@@ -2,6 +2,7 @@ package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.math.Vector2f;
 
 /**
@@ -30,21 +31,20 @@ public class DriverOpMode extends BulletproofOpMode
 
             final float LEFT_RIGHT_POWER = 0.75f;
 
-            // TODO(Garrison): Test the omniwheel left/right driving... I'm not sure if I did this right
             if (gamepadOneLeftBumper)
             {
-                leftDrivePower = new Vector2f(-LEFT_RIGHT_POWER, LEFT_RIGHT_POWER);
+                leftDrivePower = new Vector2f(LEFT_RIGHT_POWER, -LEFT_RIGHT_POWER);
                 rightDrivePower = new Vector2f(LEFT_RIGHT_POWER, -LEFT_RIGHT_POWER);
             }
             else if (gamepadeOneRightBumper)
             {
-                leftDrivePower = new Vector2f(LEFT_RIGHT_POWER, -LEFT_RIGHT_POWER);
+                leftDrivePower = new Vector2f(-LEFT_RIGHT_POWER, LEFT_RIGHT_POWER);
                 rightDrivePower = new Vector2f(-LEFT_RIGHT_POWER, LEFT_RIGHT_POWER);
             }
             else
             {
-                leftDrivePower = new Vector2f(-gamepadOneLeftY);
-                rightDrivePower = new Vector2f(gamepadOneRightY);
+                leftDrivePower = new Vector2f(gamepadOneLeftY);
+                rightDrivePower = new Vector2f(-gamepadOneRightY);
             }
 
             _driveTrain.Drive(leftDrivePower, rightDrivePower);
