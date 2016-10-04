@@ -48,6 +48,7 @@ public class DriverOpMode extends BulletproofOpMode
 
             _driveTrain.Drive(leftDrivePower, rightDrivePower);
 
+            _driveTrain.UpdateTelemetry();
             telemetry.update();
             idle();
         }

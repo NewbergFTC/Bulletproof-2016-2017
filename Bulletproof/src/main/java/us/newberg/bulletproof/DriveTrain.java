@@ -3,6 +3,8 @@ package us.newberg.bulletproof;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import us.newberg.bulletproof.math.MathUtil;
 import us.newberg.bulletproof.math.Vector2f;
 
@@ -38,29 +40,39 @@ public class DriveTrain
     /** The number of motors the drive train contains */
     public static final int MOTOR_COUNT = Motors.values().length;
 
-    private DcMotor _frontLeft;
-    private DcMotor _frontRight;
-    private DcMotor _backLeft;
-    private DcMotor _backRight;
+    private DcMotor _motorFrontLeft;
+    private DcMotor _motorFrontRight;
+    private DcMotor _motorBackLeft;
+    private DcMotor _motorBackRight;
 
     private DriveTrainHelper _driveTrainHelper;
 
-    public DriveTrain(HardwareMap hardwareMap)
+    private Telemetry.Item _teleFrontLeft;
+    private Telemetry.Item _teleFrontRight;
+    private Telemetry.Item _teleBackRight;
+    private Telemetry.Item _teleBackLeft;
+
+    public DriveTrain(HardwareMap hardwareMap, Telemetry telemetry)
     {
-        _frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        _frontRight = hardwareMap.dcMotor.get("frontRight");
-        _backLeft = hardwareMap.dcMotor.get("backLeft");
-        _backRight = hardwareMap.dcMotor.get("backRight");
+        _motorFrontLeft  = hardwareMap.dcMotor.get("frontLeft");
+        _motorFrontRight = hardwareMap.dcMotor.get("frontRight");
+        _motorBackLeft   = hardwareMap.dcMotor.get("backLeft");
+        _motorBackRight  = hardwareMap.dcMotor.get("backRight");
 
-        _frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        _motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        _motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        _motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        _motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        _frontLeft.setPower(0);
-        _frontRight.setPower(0);
-        _backLeft.setPower(0);
-        _backRight.setPower(0);
+        _motorFrontLeft.setPower(0);
+        _motorFrontRight.setPower(0);
+        _motorBackLeft.setPower(0);
+        _motorBackRight.setPower(0);
+
+        _teleFrontLeft  = telemetry.addData("FL Wheel", "%.2f", _motorFrontLeft.getPower());
+        _teleFrontRight = telemetry.addData("FR Wheel", "%.2f", _motorFrontRight.getPower());
+        _teleBackLeft   = telemetry.addData("BL Wheel", "%.2f", _motorBackLeft.getPower());
+        _teleBackRight  = telemetry.addData("BR Wheel", "%.2f", _motorBackRight.getPower());
 
         _driveTrainHelper = new DriveTrainHelper(this);
     }
@@ -70,10 +82,10 @@ public class DriveTrain
      */
     public void StopAll()
     {
-        _frontLeft.setPower(0);
-        _frontRight.setPower(0);
-        _backLeft.setPower(0);
-        _backRight.setPower(0);
+        _motorFrontLeft.setPower(0);
+        _motorFrontRight.setPower(0);
+        _motorBackLeft.setPower(0);
+        _motorBackRight.setPower(0);
     }
 
     /**
@@ -85,7 +97,7 @@ public class DriveTrain
      */
     public int GetEncoderValue()
     {
-        int result = _frontLeft.getCurrentPosition();
+        int result = _motorFrontLeft.getCurrentPosition();
 
         return result;
     }
@@ -100,10 +112,10 @@ public class DriveTrain
     {
         int[] values = new int[MOTOR_COUNT];
 
-        values[Motors.FRONT_LEFT.GetValue()] = _frontLeft.getCurrentPosition();
-        values[Motors.FRONT_RIGHT.GetValue()] = _frontRight.getCurrentPosition();
-        values[Motors.BACK_LEFT.GetValue()] = _backLeft.getCurrentPosition();
-        values[Motors.BACK_RIGHT.GetValue()] = _backRight.getCurrentPosition();
+        values[Motors.FRONT_LEFT.GetValue()] = _motorFrontLeft.getCurrentPosition();
+        values[Motors.FRONT_RIGHT.GetValue()] = _motorFrontRight.getCurrentPosition();
+        values[Motors.BACK_LEFT.GetValue()] = _motorBackLeft.getCurrentPosition();
+        values[Motors.BACK_RIGHT.GetValue()] = _motorBackRight.getCurrentPosition();
 
         return values;
     }
@@ -115,7 +127,7 @@ public class DriveTrain
      */
     public Vector2f GetLeftSidePower()
     {
-        Vector2f result = new Vector2f((float) _frontLeft.getPower(), (float) _backLeft.getPower());
+        Vector2f result = new Vector2f((float) _motorFrontLeft.getPower(), (float) _motorBackLeft.getPower());
 
         return result;
     }
@@ -127,7 +139,7 @@ public class DriveTrain
      */
     public Vector2f GetRightSidePower()
     {
-        Vector2f result = new Vector2f((float) _frontRight.getPower(), (float) _backRight.getPower());
+        Vector2f result = new Vector2f((float) _motorFrontRight.getPower(), (float) _motorBackRight.getPower());
 
         return result;
     }
@@ -143,10 +155,10 @@ public class DriveTrain
     {
         // TODO(Garrison): If the motors are not consistent on both sides, compare encoder values and compensate
 
-        _frontLeft.setPower(power);
-        _frontRight.setPower(power);
-        _backLeft.setPower(power);
-        _backRight.setPower(power);
+        _motorFrontLeft.setPower(power);
+        _motorFrontRight.setPower(power);
+        _motorBackLeft.setPower(power);
+        _motorBackRight.setPower(power);
     }
 
     /**
@@ -175,10 +187,10 @@ public class DriveTrain
     {
         // TODO(Garrison): Should we just pass a left float and a right float?
 
-        _frontLeft.setPower(leftSidePower.x);
-        _backLeft.setPower(leftSidePower.y);
-        _frontRight.setPower(rightSidePower.x);
-        _backRight.setPower(rightSidePower.y);
+        _motorFrontLeft.setPower(leftSidePower.x);
+        _motorBackLeft.setPower(leftSidePower.y);
+        _motorFrontRight.setPower(rightSidePower.x);
+        _motorBackRight.setPower(rightSidePower.y);
     }
 
     /**
@@ -211,17 +223,17 @@ public class DriveTrain
         {
             if (targetTicks > currentTicks)
             {
-                _frontLeft.setPower(power);
-                _backRight.setPower(power);
-                _frontRight.setPower(-power);
-                _backRight.setPower(-power);
+                _motorFrontLeft.setPower(power);
+                _motorBackRight.setPower(power);
+                _motorFrontRight.setPower(-power);
+                _motorBackRight.setPower(-power);
             }
             else if (targetTicks < currentTicks)
             {
-                _frontLeft.setPower(-power);
-                _backRight.setPower(-power);
-                _frontRight.setPower(power);
-                _backRight.setPower(power);
+                _motorFrontLeft.setPower(-power);
+                _motorBackRight.setPower(-power);
+                _motorFrontRight.setPower(power);
+                _motorBackRight.setPower(power);
             }
             else
             {
@@ -233,13 +245,24 @@ public class DriveTrain
 
         WatchDog.Stop();
 
-        _frontLeft.setPower(0);
-        _backRight.setPower(0);
-        _frontRight.setPower(0);
-        _backRight.setPower(0);
+        _motorFrontLeft.setPower(0);
+        _motorBackRight.setPower(0);
+        _motorFrontRight.setPower(0);
+        _motorBackRight.setPower(0);
     }
 
-    // TODO(Peacock): A {@link Telemetry} updater/display
+    /**
+     * Display telemetry data
+     *
+     * Displays the power to each wheel
+     */
+    public void UpdateTelemetry()
+    {
+        _teleFrontLeft.setValue("%.2f",  _motorFrontLeft.getPower());
+        _teleFrontRight.setValue("%.2f", _motorFrontRight.getPower());
+        _teleBackLeft.setValue("%.2f", _motorBackLeft.getPower());
+        _teleBackRight.setValue("%.2f", _motorBackRight.getPower());
+    }
 
     private enum HelperTask
     {
