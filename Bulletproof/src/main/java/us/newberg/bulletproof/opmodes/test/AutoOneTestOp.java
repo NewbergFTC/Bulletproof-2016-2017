@@ -1,6 +1,7 @@
 package us.newberg.bulletproof.opmodes.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ThreadPool;
 
 import us.newberg.bulletproof.opmodes.BulletproofOpMode;
@@ -10,6 +11,7 @@ import static us.newberg.bulletproof.math.MathUtil.FeetToInches;
  * FTC team 6712 Bulletproof
  */
 @Autonomous(name = "AutoOneTest", group = "Test")
+@Disabled
 public class AutoOneTestOp extends BulletproofOpMode
 {
     @Override
