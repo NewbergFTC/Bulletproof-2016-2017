@@ -1,10 +1,8 @@
 package us.newberg.bulletproof;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import static us.newberg.bulletproof.lib.Motors.*;
 import us.newberg.bulletproof.math.MathUtil;
 import us.newberg.bulletproof.math.Vector2f;
 
@@ -14,65 +12,24 @@ import us.newberg.bulletproof.math.Vector2f;
 
 public class DriveTrain
 {
-    /**
-     * All the motors involved in the drive train
-     */
-    public enum Motors
-    {
-        FRONT_LEFT(0),
-        FRONT_RIGHT(1),
-        BACK_LEFT(2),
-        BACK_RIGHT(3);
-
-        private final int _value;
-
-        Motors(int value)
-        {
-            _value = value;
-        }
-
-        public int GetValue()
-        {
-            return _value;
-        }
-    }
-
-    /** The number of motors the drive train contains */
-    public static final int MOTOR_COUNT = Motors.values().length;
-
-    private DcMotor _motorFrontLeft;
-    private DcMotor _motorFrontRight;
-    private DcMotor _motorBackLeft;
-    private DcMotor _motorBackRight;
-
-    private DriveTrainHelper _driveTrainHelper;
-
     private Telemetry.Item _teleFrontLeft;
     private Telemetry.Item _teleFrontRight;
     private Telemetry.Item _teleBackRight;
     private Telemetry.Item _teleBackLeft;
 
-    public DriveTrain(HardwareMap hardwareMap, Telemetry telemetry)
+    private DriveTrainHelper _driveTrainHelper;
+
+    public DriveTrain(Telemetry telemetry)
     {
-        _motorFrontLeft  = hardwareMap.dcMotor.get("frontLeft");
-        _motorFrontRight = hardwareMap.dcMotor.get("frontRight");
-        _motorBackLeft   = hardwareMap.dcMotor.get("backLeft");
-        _motorBackRight  = hardwareMap.dcMotor.get("backRight");
+        FrontLeft().SetPower(0);
+        FrontRight().SetPower(0);
+        BackLeft().SetPower(0);
+        BackRight().SetPower(0);
 
-        _motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        _motorFrontLeft.setPower(0);
-        _motorFrontRight.setPower(0);
-        _motorBackLeft.setPower(0);
-        _motorBackRight.setPower(0);
-
-        _teleFrontLeft  = telemetry.addData("FL Wheel", "%.2f", _motorFrontLeft.getPower());
-        _teleFrontRight = telemetry.addData("FR Wheel", "%.2f", _motorFrontRight.getPower());
-        _teleBackLeft   = telemetry.addData("BL Wheel", "%.2f", _motorBackLeft.getPower());
-        _teleBackRight  = telemetry.addData("BR Wheel", "%.2f", _motorBackRight.getPower());
+        _teleFrontLeft  = telemetry.addData("FL Wheel", "%.2f", FrontLeft().GetPower());
+        _teleFrontRight = telemetry.addData("FR Wheel", "%.2f", FrontRight().GetPower());
+        _teleBackLeft   = telemetry.addData("BL Wheel", "%.2f", BackLeft().GetPower());
+        _teleBackRight  = telemetry.addData("BR Wheel", "%.2f", BackRight().GetPower());
 
         _driveTrainHelper = new DriveTrainHelper(this);
     }
@@ -82,42 +39,10 @@ public class DriveTrain
      */
     public void StopAll()
     {
-        _motorFrontLeft.setPower(0);
-        _motorFrontRight.setPower(0);
-        _motorBackLeft.setPower(0);
-        _motorBackRight.setPower(0);
-    }
-
-    /**
-     * Get the primary encoder value
-     *
-     * The front left motor encoder in this case
-     *
-     * @return The current reading of the encoder
-     */
-    public int GetEncoderValue()
-    {
-        int result = _motorFrontLeft.getCurrentPosition();
-
-        return result;
-    }
-
-    /**
-     * Get all the encoder values of all the motors within the drive train
-     * See {@link Motors} for a list of all the motors. Use the enum {@link Motors#GetValue()} for access indices
-     *
-     * @return The current readings of all the encoders
-     */
-    public int[] GetEncoderValues()
-    {
-        int[] values = new int[MOTOR_COUNT];
-
-        values[Motors.FRONT_LEFT.GetValue()] = _motorFrontLeft.getCurrentPosition();
-        values[Motors.FRONT_RIGHT.GetValue()] = _motorFrontRight.getCurrentPosition();
-        values[Motors.BACK_LEFT.GetValue()] = _motorBackLeft.getCurrentPosition();
-        values[Motors.BACK_RIGHT.GetValue()] = _motorBackRight.getCurrentPosition();
-
-        return values;
+        FrontLeft().SetPower(0);
+        FrontRight().SetPower(0);
+        BackLeft().SetPower(0);
+        BackRight().SetPower(0);
     }
 
     /**
@@ -127,8 +52,7 @@ public class DriveTrain
      */
     public Vector2f GetLeftSidePower()
     {
-        Vector2f result = new Vector2f((float) _motorFrontLeft.getPower(), (float) _motorBackLeft.getPower());
-
+        Vector2f result = new Vector2f((float) FrontLeft().GetPower(), (float) BackLeft().GetPower());
         return result;
     }
 
@@ -139,26 +63,49 @@ public class DriveTrain
      */
     public Vector2f GetRightSidePower()
     {
-        Vector2f result = new Vector2f((float) _motorFrontRight.getPower(), (float) _motorBackRight.getPower());
-
+        Vector2f result = new Vector2f((float) FrontRight().GetPower(), (float) BackRight().GetPower());
         return result;
     }
 
-    /**
-     * Drive straight, either forward or back depending on the sign of {@param speed}
-     *
-     * Currently doesn't do any compensation or checking to see the the motors are running at the same speed
-     *
-     * @param power The target power, from -1.0 to 1.0. Where 1.0 is full speed ahead, and -1.0 is full speed back
-     */
-    public void DriveStraight(float power)
+    public void DriveStraight(float power, float inches, Telemetry telemetry)
     {
-        // TODO(Garrison): If the motors are not consistent on both sides, compare encoder values and compensate
+        final double TICKS_TO_MOVE = inches * TICKS_TO_INCHES;
+        telemetry.addData("Ticks to move", TICKS_TO_MOVE);
+        telemetry.update();
+        float currentTicks = FrontLeft().GetCurrentTicks();
+        final double TARGET_TICKS = currentTicks + TICKS_TO_MOVE;
 
-        _motorFrontLeft.setPower(power);
-        _motorFrontRight.setPower(power);
-        _motorBackLeft.setPower(power);
-        _motorBackRight.setPower(power);
+        _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
+
+        // TODO(Garrison): Calculate how long it should take to rotate some distance at some power
+        WatchDog.Watch(_driveTrainHelper, 10000);
+
+        // TODO(Garrison): See how precise we can make this
+        while (!MathUtil.FuzzyEquals(currentTicks, TARGET_TICKS, 40)) // Give or take 10 ticks
+        {
+            if (TARGET_TICKS < currentTicks)
+            {
+                // TODO(Garrison): Make this able to compensate for wheel spin
+                Drive(-power, power);
+            }
+            else if (TARGET_TICKS > currentTicks)
+            {
+                Drive(power, -power);
+            }
+            else
+            {
+                break;
+            }
+
+            currentTicks = FrontLeft().GetCurrentTicks();
+        }
+
+        WatchDog.Stop();
+
+        FrontLeft().SetPower(0);
+        BackRight().SetPower(0);
+        FrontRight().SetPower(0);
+        BackRight().SetPower(0);
     }
 
     /**
@@ -185,17 +132,14 @@ public class DriveTrain
      */
     public void Drive(Vector2f leftSidePower, Vector2f rightSidePower)
     {
-        // TODO(Garrison): Should we just pass a left float and a right float?
-
-        _motorFrontLeft.setPower(leftSidePower.x);
-        _motorBackLeft.setPower(leftSidePower.y);
-        _motorFrontRight.setPower(rightSidePower.x);
-        _motorBackRight.setPower(rightSidePower.y);
+        FrontLeft().SetPower(leftSidePower.x);
+        BackLeft().SetPower(leftSidePower.y);
+        FrontRight().SetPower(rightSidePower.x);
+        BackRight().SetPower(rightSidePower.y);
     }
 
     /**
      * Rotate the front of the robot by {@param deg}
-     * Uses {@link #GetEncoderValue()} for all encoder checking
      *
      * Currently doesn't convert between deg and encoder ticks, but will in the future
      *
@@ -203,15 +147,11 @@ public class DriveTrain
      * @param deg The angle to rotate in degrees
      * @param power The target power to turn at 1.0 is full power forward, -1.0 is full power back(inverts {@param deg})
      */
-    public void Rotate(float deg, float power) throws InterruptedException
+    public void Rotate(float power, float deg) throws InterruptedException
     {
-        // TODO(Garrison): Measure how many encoder ticks are in a single degree
-        // Update javadoc
-        float DEG_TO_TICKS = 1;
-
-        float ticksToMove = deg * DEG_TO_TICKS;
-        float currentTicks = GetEncoderValue();
-        float targetTicks = currentTicks + ticksToMove;
+        final double TICKS_TO_MOVE = deg * DEG_TO_TICKS;
+        float currentTicks = FrontLeft().GetCurrentTicks();
+        final double TARGET_TICKS = currentTicks + TICKS_TO_MOVE;
 
         _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
 
@@ -219,36 +159,30 @@ public class DriveTrain
         WatchDog.Watch(_driveTrainHelper, 10000);
 
         // TODO(Garrison): See how precise we can make this
-        while (MathUtil.FuzzyEquals(currentTicks, targetTicks, 10)) // Give or take 10 ticks
+        while (MathUtil.FuzzyEquals(currentTicks, TARGET_TICKS, 10)) // Give or take 10 ticks
         {
-            if (targetTicks > currentTicks)
+            if (TARGET_TICKS > currentTicks)
             {
-                _motorFrontLeft.setPower(power);
-                _motorBackRight.setPower(power);
-                _motorFrontRight.setPower(-power);
-                _motorBackRight.setPower(-power);
+                Drive(power, -power);
             }
-            else if (targetTicks < currentTicks)
+            else if (TARGET_TICKS < currentTicks)
             {
-                _motorFrontLeft.setPower(-power);
-                _motorBackRight.setPower(-power);
-                _motorFrontRight.setPower(power);
-                _motorBackRight.setPower(power);
+               Drive(-power, power);
             }
             else
             {
                 break;
             }
 
-            currentTicks = GetEncoderValue();
+            currentTicks = FrontLeft().GetCurrentTicks();
         }
 
         WatchDog.Stop();
 
-        _motorFrontLeft.setPower(0);
-        _motorBackRight.setPower(0);
-        _motorFrontRight.setPower(0);
-        _motorBackRight.setPower(0);
+        FrontLeft().SetPower(0);
+        BackRight().SetPower(0);
+        FrontRight().SetPower(0);
+        BackRight().SetPower(0);
     }
 
     /**
@@ -258,10 +192,10 @@ public class DriveTrain
      */
     public void UpdateTelemetry()
     {
-        _teleFrontLeft.setValue("%.2f",  _motorFrontLeft.getPower());
-        _teleFrontRight.setValue("%.2f", _motorFrontRight.getPower());
-        _teleBackLeft.setValue("%.2f", _motorBackLeft.getPower());
-        _teleBackRight.setValue("%.2f", _motorBackRight.getPower());
+        _teleFrontLeft.setValue("%.2f",  FrontLeft().GetPower());
+        _teleFrontRight.setValue("%.2f", FrontRight().GetPower());
+        _teleBackLeft.setValue("%.2f", BackLeft().GetPower());
+        _teleBackRight.setValue("%.2f", BackRight().GetPower());
     }
 
     private enum HelperTask
