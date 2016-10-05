@@ -14,7 +14,6 @@ public class WatchDog
         _shouldStop.set(false);
     }
 
-    // TODO(Garrison): Test this...
     public static void Watch(final Runnable task, final long millis)
     {
         final Thread slave = new Thread(new Runnable()
@@ -61,7 +60,6 @@ public class WatchDog
         master.start();
     }
 
-    // TODO(Garrison): Guarantee this works, and {@link WatchDog} won't still run whatever it was told to
     public static void Stop()
     {
         _shouldStop.set(true);

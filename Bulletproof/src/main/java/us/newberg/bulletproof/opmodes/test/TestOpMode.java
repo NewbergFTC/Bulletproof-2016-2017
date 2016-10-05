@@ -6,7 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import us.newberg.bulletproof.opmodes.BulletproofOpMode;
 
 /**
- * Created by bulletproof on 9/28/16.
+ * FTC team 6712 Bulletproof
+ *
  */
 
 @TeleOp(name = "Test", group = "test")

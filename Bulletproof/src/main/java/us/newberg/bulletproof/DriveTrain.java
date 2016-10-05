@@ -80,12 +80,10 @@ public class DriveTrain
         // TODO(Garrison): Calculate how long it should take to rotate some distance at some power
         WatchDog.Watch(_driveTrainHelper, 10000);
 
-        // TODO(Garrison): See how precise we can make this
         while (!MathUtil.FuzzyEquals(currentTicks, TARGET_TICKS, 40)) // Give or take 10 ticks
         {
             if (TARGET_TICKS < currentTicks)
             {
-                // TODO(Garrison): Make this able to compensate for wheel spin
                 Drive(-power, power);
             }
             else if (TARGET_TICKS > currentTicks)
@@ -158,7 +156,6 @@ public class DriveTrain
         // TODO(Garrison): Calculate how long it should take to rotate some ticks(or degrees) at some power
         WatchDog.Watch(_driveTrainHelper, 10000);
 
-        // TODO(Garrison): See how precise we can make this
         while (MathUtil.FuzzyEquals(currentTicks, TARGET_TICKS, 10)) // Give or take 10 ticks
         {
             if (TARGET_TICKS > currentTicks)
