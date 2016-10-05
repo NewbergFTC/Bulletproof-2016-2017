@@ -71,7 +71,7 @@ public class DriveTrain
     public void DriveStraight(float power, float inches, Telemetry telemetry, BulletproofOpMode caller)
             throws InterruptedException
     {
-        final double TICKS_TO_MOVE = inches * TICKS_TO_INCHES;
+        final double TICKS_TO_MOVE = inches * TICKS_TO_INCHES * WHEEL_DISTANCE_CORRECTION;
         telemetry.addData("Ticks to move", TICKS_TO_MOVE);
         telemetry.update();
         float currentTicks = FrontLeft().GetCurrentTicks();

@@ -17,6 +17,9 @@ public class DriverOpMode extends BulletproofOpMode
     {
         Init();
 
+        Vector2f leftDrivePower = new Vector2f();
+        Vector2f rightDrivePower = new Vector2f();
+
         waitForStart();
 
         while(opModeIsActive())
@@ -25,9 +28,6 @@ public class DriverOpMode extends BulletproofOpMode
             float gamepadOneRightY         = gamepad1.right_stick_y;    // Right side wheels
             boolean gamepadOneLeftBumper   = gamepad1.left_bumper;      // Move Left - without rotation
             boolean gamepadeOneRightBumper = gamepad1.right_bumper;     // Move Right - without rotation
-
-            Vector2f leftDrivePower;
-            Vector2f rightDrivePower;
 
             final float LEFT_RIGHT_POWER = 0.75f;
 

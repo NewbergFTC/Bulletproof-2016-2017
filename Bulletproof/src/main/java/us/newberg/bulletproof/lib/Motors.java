@@ -16,6 +16,8 @@ public class Motors
     public static final double DEG_TO_TICKS       = TICKS_PER_ROTATION / 360;  // ticks / deg
     public static final double TICKS_TO_INCHES    = 140 / WHEEL_CIRCUMFRENCE;  // in / ticks
     public static final double INCHES_TO_TICKS    = WHEEL_CIRCUMFRENCE / 140;  // ticks / in
+    public static final double WHEEL_DISTANCE_CORRECTION =
+            WHEEL_CIRCUMFRENCE / (Math.sin(Math.PI / 4) * 4 * Math.PI);
 
     private static Motor _frontLeft;
     private static Motor _frontRight;
