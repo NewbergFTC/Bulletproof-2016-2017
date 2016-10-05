@@ -10,9 +10,6 @@ import us.newberg.bulletproof.Motor;
 
 public class Motors
 {
-    // TODO(Garrison): Find some better way to do this
-    public static final int MOTOR_COUNT = 4;
-
     public static final double WHEEL_CIRCUMFRENCE = Math.PI * 4;               // inches
     public static final double TICKS_PER_ROTATION = 140;                       // ticks
     public static final double TICKS_TO_DEG       = 360 / TICKS_PER_ROTATION;  // deg / ticks

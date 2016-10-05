@@ -7,7 +7,6 @@ import us.newberg.bulletproof.opmodes.BulletproofOpMode;
 
 /**
  * FTC team 6712 Bulletproof
- *
  */
 
 @TeleOp(name = "Test", group = "test")

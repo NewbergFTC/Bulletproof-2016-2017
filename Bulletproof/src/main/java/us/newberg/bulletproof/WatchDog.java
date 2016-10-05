@@ -26,7 +26,6 @@ public class WatchDog
                     Thread.sleep(millis);
                 } catch (InterruptedException e)
                 {
-                    // TODO(Garrison): Error handling
                     e.printStackTrace();
                 }
 
@@ -49,7 +48,6 @@ public class WatchDog
                     slave.join();
                 } catch (InterruptedException e)
                 {
-                    // TODO(Garrison): Error handling
                     e.printStackTrace();
                 }
 

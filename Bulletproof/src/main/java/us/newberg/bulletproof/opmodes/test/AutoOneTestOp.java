@@ -23,7 +23,7 @@ public class AutoOneTestOp extends BulletproofOpMode
 
         telemetry.addLine("Full steam ahead!");
 
-        _driveTrain.DriveStraight(0.5f, 48.0f, telemetry);   // 1/2 power for 6 feet
+        _driveTrain.DriveStraight(0.5f, 48.0f, telemetry, this);   // 1/2 power for 6 feet
         idle();
 //        _driveTrain.Rotate(0.2f, 45);
 //        idle();

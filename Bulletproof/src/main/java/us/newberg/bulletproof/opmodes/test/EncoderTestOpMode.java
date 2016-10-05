@@ -23,30 +23,30 @@ public class EncoderTestOpMode extends BulletproofOpMode
         telemetry.addLine("Full steam ahead!");
         telemetry.update();
 
-        _driveTrain.DriveStraight(0.5f, FeetToInches(6), telemetry);   // 1/2 power for 6 feet
+        _driveTrain.DriveStraight(0.5f, FeetToInches(6), telemetry, this);   // 1/2 power for 6 feet
         idle();
-        _driveTrain.DriveStraight(0.25f, FeetToInches(-3), telemetry); // 1/2 power for 3 feet backwards
+        _driveTrain.DriveStraight(0.25f, FeetToInches(-3), telemetry, this); // 1/2 power for 3 feet backwards
         idle();
-        _driveTrain.DriveStraight(0.1f, FeetToInches(-3), telemetry);  // 1/10 power for 3 feet
+        _driveTrain.DriveStraight(0.1f, FeetToInches(-3), telemetry, this);  // 1/10 power for 3 feet
         idle();
-        _driveTrain.DriveStraight(0.1f, FeetToInches(5), telemetry);   // 1/10 power for 5 feet
+        _driveTrain.DriveStraight(0.1f, FeetToInches(5), telemetry, this);   // 1/10 power for 5 feet
         idle();
-        _driveTrain.DriveStraight(1.0f, FeetToInches(-5), telemetry);  // 1/1 power for 5 feet back wards
+        _driveTrain.DriveStraight(1.0f, FeetToInches(-5), telemetry, this);  // 1/1 power for 5 feet back wards
         idle();
 
-        _driveTrain.Rotate(0.5f, 180);    // 1/2 power, 180 degrees
+        _driveTrain.Rotate(0.5f, 180, this);    // 1/2 power, 180 degrees
         idle();
-        _driveTrain.Rotate(0.5f, -180);   // 1/2 power, -180 degrees
+        _driveTrain.Rotate(0.5f, -180, this);   // 1/2 power, -180 degrees
         idle();
-        _driveTrain.Rotate(0.1f, 360);    // 1/10 power, -360 degrees
+        _driveTrain.Rotate(0.1f, 360, this);    // 1/10 power, -360 degrees
         idle();
-        _driveTrain.Rotate(0.1f, -90);    // 1/10 power, -90 degrees
+        _driveTrain.Rotate(0.1f, -90, this);    // 1/10 power, -90 degrees
         idle();
-        _driveTrain.Rotate(0.1f, 45);     // 1/10 power, 45 degrees
+        _driveTrain.Rotate(0.1f, 45, this);     // 1/10 power, 45 degrees
         idle();
-        _driveTrain.Rotate(0.25f, -45);   // 1/4 power, -45 degrees
+        _driveTrain.Rotate(0.25f, -45, this);   // 1/4 power, -45 degrees
         idle();
-        _driveTrain.Rotate(0.25f, -270);  // 1/4 power, -180 degrees
+        _driveTrain.Rotate(0.25f, -270, this);  // 1/4 power, -180 degrees
         idle();
     }
 }

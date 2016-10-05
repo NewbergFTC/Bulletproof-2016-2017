@@ -5,6 +5,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import static us.newberg.bulletproof.lib.Motors.*;
 import us.newberg.bulletproof.math.MathUtil;
 import us.newberg.bulletproof.math.Vector2f;
+import us.newberg.bulletproof.opmodes.BulletproofOpMode;
 
 /**
  * FTC team 6712 Bulletproof
@@ -67,7 +68,8 @@ public class DriveTrain
         return result;
     }
 
-    public void DriveStraight(float power, float inches, Telemetry telemetry)
+    public void DriveStraight(float power, float inches, Telemetry telemetry, BulletproofOpMode caller)
+            throws InterruptedException
     {
         final double TICKS_TO_MOVE = inches * TICKS_TO_INCHES;
         telemetry.addData("Ticks to move", TICKS_TO_MOVE);
@@ -96,6 +98,7 @@ public class DriveTrain
             }
 
             currentTicks = FrontLeft().GetCurrentTicks();
+            caller.idle();
         }
 
         WatchDog.Stop();
@@ -145,7 +148,7 @@ public class DriveTrain
      * @param deg The angle to rotate in degrees
      * @param power The target power to turn at 1.0 is full power forward, -1.0 is full power back(inverts {@param deg})
      */
-    public void Rotate(float power, float deg) throws InterruptedException
+    public void Rotate(float power, float deg, BulletproofOpMode caller) throws InterruptedException
     {
         final double TICKS_TO_MOVE = deg * DEG_TO_TICKS;
         float currentTicks = FrontLeft().GetCurrentTicks();
@@ -172,6 +175,7 @@ public class DriveTrain
             }
 
             currentTicks = FrontLeft().GetCurrentTicks();
+            caller.idle();
         }
 
         WatchDog.Stop();
