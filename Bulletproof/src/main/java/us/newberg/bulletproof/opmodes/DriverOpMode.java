@@ -33,18 +33,27 @@ public class DriverOpMode extends BulletproofOpMode
 
             if (gamepadOneLeftBumper)
             {
-                leftDrivePower = new Vector2f(LEFT_RIGHT_POWER, -LEFT_RIGHT_POWER);
-                rightDrivePower = new Vector2f(LEFT_RIGHT_POWER, -LEFT_RIGHT_POWER);
+                leftDrivePower.x = LEFT_RIGHT_POWER;
+                leftDrivePower.y = -LEFT_RIGHT_POWER;
+
+                rightDrivePower.x = LEFT_RIGHT_POWER;
+                rightDrivePower.y = -LEFT_RIGHT_POWER;
             }
             else if (gamepadeOneRightBumper)
             {
-                leftDrivePower = new Vector2f(-LEFT_RIGHT_POWER, LEFT_RIGHT_POWER);
-                rightDrivePower = new Vector2f(-LEFT_RIGHT_POWER, LEFT_RIGHT_POWER);
+                leftDrivePower.x = -LEFT_RIGHT_POWER;
+                leftDrivePower.y = LEFT_RIGHT_POWER;
+
+                rightDrivePower.x = -LEFT_RIGHT_POWER;
+                rightDrivePower.y = LEFT_RIGHT_POWER;
             }
             else
             {
-                leftDrivePower = new Vector2f(gamepadOneLeftY);
-                rightDrivePower = new Vector2f(-gamepadOneRightY);
+                leftDrivePower.x = gamepadOneLeftY;
+                leftDrivePower.y = gamepadOneLeftY;
+
+                rightDrivePower.x = -gamepadOneRightY;
+                rightDrivePower.y = -gamepadOneRightY;
             }
 
             _driveTrain.Drive(leftDrivePower, rightDrivePower);
