@@ -80,23 +80,36 @@ public class DriveTrain
             throws InterruptedException
     {
         final double TICKS_TO_MOVE = inches * TICKS_TO_INCHES * WHEEL_DISTANCE_CORRECTION;
-        telemetry.addData("Ticks to move", TICKS_TO_MOVE);
-        telemetry.update();
-        float currentTicks = FrontLeft().GetCurrentTicks();
-        final double TARGET_TICKS = currentTicks + TICKS_TO_MOVE;
+        final float derivedPower = MathUtil.Mapf(power, 0, 1, 0, 0.9f);
+
+        FrontLeft().ResetTicks();
+        FrontRight().ResetTicks();
+        BackLeft().ResetTicks();
+        BackRight().ResetTicks();
+
+        float frontLeftTicks = FrontLeft().GetCurrentTicks();
+        float frontRightTicks = FrontRight().GetCurrentTicks();
+        float backLeftTicks = BackLeft().GetCurrentTicks();
+        float backRightTicks = BackRight().GetCurrentTicks();
+
+        float avgTicks = (frontLeftTicks + frontRightTicks + backLeftTicks + backRightTicks) / 4;
+
+        final double TARGET_TICKS = TICKS_TO_MOVE;
 
         _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
 
         // TODO(Garrison): Calculate how long it should take to rotate some distance at some power
         WatchDog.Watch(_driveTrainHelper, 10000);
 
-        while (!MathUtil.FuzzyEquals(currentTicks, TARGET_TICKS, 40)) // Give or take 10 ticks
+        while (!MathUtil.FuzzyEquals(frontLeftTicks, TARGET_TICKS, 40)) // Give or take 10 ticks
         {
-            if (TARGET_TICKS < currentTicks)
+            float epsilon = Math.abs(avgTicks + 14); // Give or take 10%
+
+            if (TARGET_TICKS < frontLeftTicks)
             {
                 Drive(-power, power);
             }
-            else if (TARGET_TICKS > currentTicks)
+            else if (TARGET_TICKS > frontLeftTicks)
             {
                 Drive(power, -power);
             }
@@ -105,7 +118,11 @@ public class DriveTrain
                 break;
             }
 
-            currentTicks = FrontLeft().GetCurrentTicks();
+            frontLeftTicks = FrontLeft().GetCurrentTicks();
+            frontRightTicks = FrontRight().GetCurrentTicks();
+            backLeftTicks = BackLeft().GetCurrentTicks();
+            backRightTicks = BackRight().GetCurrentTicks();
+
             caller.idle();
         }
 

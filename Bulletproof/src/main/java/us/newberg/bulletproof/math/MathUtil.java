@@ -27,6 +27,13 @@ public class MathUtil
         return result;
     }
 
+    public static float Mapf(float value, float inMin, float inMax, float outMin, float outMax)
+    {
+        float result = (value - inMin) / (inMax - inMin) * (outMax - outMin) + outMin;
+
+        return result;
+    }
+
     public static float FeetToInches(float feet)
     {
         float result = feet * 12.0f;

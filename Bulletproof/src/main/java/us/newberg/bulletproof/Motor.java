@@ -20,6 +20,8 @@ public class Motor
     {
         _dcMotor = motor;
         _hasEncoder = hasEncoder;
+
+        _dcMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void SetPower(double power)
@@ -39,5 +41,19 @@ public class Motor
         int result = _dcMotor.getCurrentPosition();
 
         return result;
+    }
+
+    /**
+     * This shit does magic
+     * and will brake everything
+     */
+    public void ResetTicks()
+    {
+        double power = _dcMotor.getPower();
+
+        _dcMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        _dcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        _dcMotor.setPower(power);
     }
 }
