@@ -20,7 +20,14 @@ public class DriveTrain
 
     private DriveTrainHelper _driveTrainHelper;
 
+    private boolean _awdEnabled;
+
     public DriveTrain(Telemetry telemetry)
+    {
+        this(telemetry, false);
+    }
+
+    public DriveTrain(Telemetry telemetry, boolean awd)
     {
         FrontLeft().SetPower(0);
         FrontRight().SetPower(0);
@@ -33,6 +40,7 @@ public class DriveTrain
         _teleBackRight  = telemetry.addData("BR Wheel", "%.2f", BackRight().GetPower());
 
         _driveTrainHelper = new DriveTrainHelper(this);
+        _awdEnabled = awd;
     }
 
     /**
@@ -197,6 +205,16 @@ public class DriveTrain
         _teleFrontRight.setValue("%.2f", FrontRight().GetPower());
         _teleBackLeft.setValue("%.2f", BackLeft().GetPower());
         _teleBackRight.setValue("%.2f", BackRight().GetPower());
+    }
+
+    public void SetAWD(boolean awd)
+    {
+        _awdEnabled = awd;
+    }
+
+    public boolean GetAWDEnabled()
+    {
+        return _awdEnabled;
     }
 
     private enum HelperTask

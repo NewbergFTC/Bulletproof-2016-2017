@@ -27,9 +27,9 @@ public class Motors
     public static void Init(HardwareMap hardwareMap)
     {
         _frontLeft = new Motor(hardwareMap.dcMotor.get("frontLeft"), true);
-        _frontRight = new Motor(hardwareMap.dcMotor.get("frontRight"), false);
-        _backLeft = new Motor(hardwareMap.dcMotor.get("backLeft"), false);
-        _backRight = new Motor(hardwareMap.dcMotor.get("backRight"), false);
+        _frontRight = new Motor(hardwareMap.dcMotor.get("frontRight"), true);
+        _backLeft = new Motor(hardwareMap.dcMotor.get("backLeft"), true);
+        _backRight = new Motor(hardwareMap.dcMotor.get("backRight"), true);
     }
 
     public static Motor FrontLeft()
