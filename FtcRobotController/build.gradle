@@ -1,4 +1,4 @@
- import java.util.regex.Pattern
+import java.util.regex.Pattern
 
 //
 // build.gradle in FtcRobotController

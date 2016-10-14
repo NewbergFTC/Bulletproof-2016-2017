@@ -119,11 +119,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       android:text="" />
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textOpMode"
-        android:layout_above="@+id/textGamepad1"
-        android:id="@+id/frameLayout">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/textOpMode"
+      android:layout_above="@+id/textGamepad1">
 
       <LinearLayout
           android:id="@+id/cameraMonitorViewId"
@@ -165,17 +164,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       android:text="" />
 
     <TextView
-        android:id="@+id/textRemoteProgrammingMode"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#ff0066B3"
-        android:gravity="center"
-        android:textColor="#ffffffff"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        android:text=""
-        android:layout_alignBottom="@+id/frameLayout"/>
+      android:id="@+id/textRemoteProgrammingMode"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="#ff0066B3"
+      android:gravity="center"
+      android:textColor="#ffffffff"
+      android:textSize="40sp"
+      android:textStyle="bold"
+      android:visibility="invisible"
+      android:text="" />
 
   </RelativeLayout>
 
