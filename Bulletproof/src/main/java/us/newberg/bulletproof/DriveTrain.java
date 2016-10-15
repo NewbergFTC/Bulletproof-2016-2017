@@ -82,6 +82,9 @@ public class DriveTrain
         final double TICKS_TO_MOVE = inches * TICKS_TO_INCHES * WHEEL_DISTANCE_CORRECTION;
         final float derivedPower = MathUtil.Mapf(power, 0, 1, 0, 0.9f);
 
+        Vector2f leftPower = new Vector2f(derivedPower);
+        Vector2f rightPower = new Vector2f(derivedPower);
+
         FrontLeft().ResetTicks();
         FrontRight().ResetTicks();
         BackLeft().ResetTicks();
@@ -101,28 +104,104 @@ public class DriveTrain
         // TODO(Garrison): Calculate how long it should take to rotate some distance at some power
         WatchDog.Watch(_driveTrainHelper, 10000);
 
-        while (!MathUtil.FuzzyEquals(frontLeftTicks, TARGET_TICKS, 40)) // Give or take 10 ticks
+        while (!MathUtil.FuzzyEquals(avgTicks, TARGET_TICKS, 40))
         {
-            float epsilon = Math.abs(avgTicks + 14); // Give or take 10%
+            frontLeftTicks = FrontLeft().GetCurrentTicks();
+            frontRightTicks = FrontRight().GetCurrentTicks();
+            backLeftTicks = BackLeft().GetCurrentTicks();
+            backRightTicks = BackRight().GetCurrentTicks();
+
+            avgTicks = (frontLeftTicks + frontRightTicks + backLeftTicks + backRightTicks) / 4;
+
+            float epsilon = Math.abs(avgTicks) + 35;
+
+            MathUtil.Range frontLeftRange = MathUtil.ValueInRange(frontLeftTicks,
+                                                                  avgTicks - epsilon, avgTicks + epsilon);
+            MathUtil.Range frontRightRange = MathUtil.ValueInRange(frontRightTicks,
+                                                                   avgTicks - epsilon, avgTicks + epsilon);
+            MathUtil.Range backLeftRange = MathUtil.ValueInRange(backLeftTicks,
+                                                                 avgTicks - epsilon, avgTicks + epsilon);
+            MathUtil.Range backRightRange = MathUtil.ValueInRange(backRightTicks,
+                                                                  avgTicks - epsilon, avgTicks + epsilon);
+
+            switch (frontLeftRange)
+            {
+                case OVER:
+                        leftPower.x -= 0.1f;
+                    break;
+
+                case UNDER:
+                        leftPower.x += 0.1f;
+                    break;
+
+                default:
+                case WITHIN:
+                    break;
+            }
+
+            switch (backLeftRange)
+            {
+                case OVER:
+                    leftPower.y -= 0.1f;
+                    break;
+
+                case UNDER:
+                    leftPower.y += 0.1f;
+                    break;
+
+                default:
+                case WITHIN:
+                    break;
+            }
+
+            switch (frontRightRange)
+            {
+                case OVER:
+                    rightPower.x -= 0.1f;
+                    break;
+
+                case UNDER:
+                    rightPower.x += 0.1f;
+                    break;
+
+                default:
+                case WITHIN:
+                    break;
+            }
+
+            switch (backRightRange)
+            {
+                case OVER:
+                    rightPower.y -= 0.1f;
+                    break;
+
+                case UNDER:
+                    rightPower.x += 0.1f;
+                    break;
+
+                default:
+                case WITHIN:
+                    break;
+            }
 
             if (TARGET_TICKS < frontLeftTicks)
             {
-                Drive(-power, power);
+                Drive(leftPower.Mul(-1), rightPower);
             }
             else if (TARGET_TICKS > frontLeftTicks)
             {
-                Drive(power, -power);
+                Drive(leftPower, rightPower.Mul(-1));
             }
             else
             {
                 break;
             }
 
-            frontLeftTicks = FrontLeft().GetCurrentTicks();
-            frontRightTicks = FrontRight().GetCurrentTicks();
-            backLeftTicks = BackLeft().GetCurrentTicks();
-            backRightTicks = BackRight().GetCurrentTicks();
-
+            caller.telemetry.addData("FL Ticks: ", FrontLeft().GetCurrentTicks());
+            caller.telemetry.addData("FR Ticks: " , FrontRight().GetCurrentTicks());
+            caller.telemetry.addData("BL Ticks: ", BackLeft().GetCurrentTicks());
+            caller.telemetry.addData("BR Ticks: ", BackRight().GetCurrentTicks());
+            caller.telemetry.update();
             caller.idle();
         }
 

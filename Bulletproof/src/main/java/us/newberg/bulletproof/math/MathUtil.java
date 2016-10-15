@@ -34,6 +34,32 @@ public class MathUtil
         return result;
     }
 
+    public enum Range
+    {
+        WITHIN,
+        UNDER,
+        OVER
+    }
+    public static Range ValueInRange(float value, float min, float max)
+    {
+        Range result;
+
+        if (value > max)
+        {
+            result = Range.OVER;
+        }
+        else if(value < min)
+        {
+            result = Range.UNDER;
+        }
+        else
+        {
+            result = Range.WITHIN;
+        }
+
+        return result;
+    }
+
     public static float FeetToInches(float feet)
     {
         float result = feet * 12.0f;
