@@ -76,7 +76,64 @@ public class DriveTrain
         return result;
     }
 
+    // TODO(Garrison): Compress this and DriveStraightAWD into one function
     public void DriveStraight(float power, float inches, Telemetry telemetry, BulletproofOpMode caller)
+            throws InterruptedException
+    {
+        if (_awdEnabled)
+        {
+            DriveStraightAWD(power, inches, telemetry, caller);
+        }
+        else
+        {
+            final double TICKS_TO_MOVE = inches * TICKS_TO_INCHES * WHEEL_DISTANCE_CORRECTION;
+
+            FrontLeft().ResetTicks();
+            FrontRight().ResetTicks();
+            BackLeft().ResetTicks();
+            BackRight().ResetTicks();
+
+            float frontLeftTicks = FrontLeft().GetCurrentTicks();
+
+            final double TARGET_TICKS = TICKS_TO_MOVE + frontLeftTicks;
+
+            _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
+
+            // TODO(Garrison): Calculate how long it should take to rotate some distance at some power
+            WatchDog.Watch(_driveTrainHelper, 10000);
+
+            while (!MathUtil.FuzzyEquals(frontLeftTicks, TARGET_TICKS, 40))
+            {
+                frontLeftTicks = FrontLeft().GetCurrentTicks();
+
+                if (TARGET_TICKS < frontLeftTicks)
+                {
+                    Drive(-power, power);
+                }
+                else if (TARGET_TICKS > frontLeftTicks)
+                {
+                    Drive(power, -power);
+                }
+                else
+                {
+                    break;
+                }
+
+                caller.telemetry.addData("FL Ticks: ", FrontLeft().GetCurrentTicks());
+                caller.telemetry.update();
+                caller.idle();
+            }
+
+            WatchDog.Stop();
+
+            FrontLeft().SetPower(0);
+            BackRight().SetPower(0);
+            FrontRight().SetPower(0);
+            BackRight().SetPower(0);
+        }
+    }
+
+    private void DriveStraightAWD(float power, float inches, Telemetry telemetry, BulletproofOpMode caller)
             throws InterruptedException
     {
         final double TICKS_TO_MOVE = inches * TICKS_TO_INCHES * WHEEL_DISTANCE_CORRECTION;
@@ -116,22 +173,22 @@ public class DriveTrain
             float epsilon = Math.abs(avgTicks) + 35;
 
             MathUtil.Range frontLeftRange = MathUtil.ValueInRange(frontLeftTicks,
-                                                                  avgTicks - epsilon, avgTicks + epsilon);
+                    avgTicks - epsilon, avgTicks + epsilon);
             MathUtil.Range frontRightRange = MathUtil.ValueInRange(frontRightTicks,
-                                                                   avgTicks - epsilon, avgTicks + epsilon);
+                    avgTicks - epsilon, avgTicks + epsilon);
             MathUtil.Range backLeftRange = MathUtil.ValueInRange(backLeftTicks,
-                                                                 avgTicks - epsilon, avgTicks + epsilon);
+                    avgTicks - epsilon, avgTicks + epsilon);
             MathUtil.Range backRightRange = MathUtil.ValueInRange(backRightTicks,
-                                                                  avgTicks - epsilon, avgTicks + epsilon);
+                    avgTicks - epsilon, avgTicks + epsilon);
 
             switch (frontLeftRange)
             {
                 case OVER:
-                        leftPower.x -= 0.1f;
+                    leftPower.x -= 0.1f;
                     break;
 
                 case UNDER:
-                        leftPower.x += 0.1f;
+                    leftPower.x += 0.1f;
                     break;
 
                 default:
