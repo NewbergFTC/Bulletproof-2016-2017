@@ -92,6 +92,16 @@ public class Vector2f
     }
 
     /**
+     * Normalize first
+     */
+    public double AngleWithXAxis()
+    {
+        double result = Math.toDegrees(Math.atan(y / x));
+
+        return result;
+    }
+
+    /**
      * Lerps the vector
      *
      * @param dest The Vector2f to be lerped into

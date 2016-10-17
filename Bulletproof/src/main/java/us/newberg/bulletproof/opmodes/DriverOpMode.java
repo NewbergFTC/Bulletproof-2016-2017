@@ -24,39 +24,114 @@ public class DriverOpMode extends BulletproofOpMode
 
         while(opModeIsActive())
         {
-            float gamepadOneLeftY          = gamepad1.left_stick_y;     // Left side wheels
-            float gamepadOneRightY         = gamepad1.right_stick_y;    // Right side wheels
-            boolean gamepadOneLeftBumper   = gamepad1.left_bumper;      // Move Left - without rotation
-            boolean gamepadeOneRightBumper = gamepad1.right_bumper;     // Move Right - without rotation
-
             final float LEFT_RIGHT_POWER = 0.75f;
 
-            if (gamepadOneLeftBumper)
-            {
-                leftDrivePower.x = LEFT_RIGHT_POWER;
-                leftDrivePower.y = -LEFT_RIGHT_POWER;
+            Vector2f gamepadOneLeft = new Vector2f(gamepad1.left_stick_x, -gamepad1.left_stick_y);
+            Vector2f gamepadOneRight = new Vector2f(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
-                rightDrivePower.x = LEFT_RIGHT_POWER;
-                rightDrivePower.y = -LEFT_RIGHT_POWER;
-            }
-            else if (gamepadeOneRightBumper)
-            {
-                leftDrivePower.x = -LEFT_RIGHT_POWER;
-                leftDrivePower.y = LEFT_RIGHT_POWER;
+            float gamepadOneLeftAngle = (float) gamepadOneLeft.Normalized().AngleWithXAxis();
+            int gamepadOneLeftAngleQuad;
 
-                rightDrivePower.x = -LEFT_RIGHT_POWER;
-                rightDrivePower.y = LEFT_RIGHT_POWER;
+            float gamepadOneRightAngle = (float) gamepadOneRight.Normalized().AngleWithXAxis();
+            int gamepadOneRightAngleQuad;
+
+            if (gamepadOneLeft.x > 0)
+            {
+                if (gamepadOneLeftAngle > 0)
+                {
+                    gamepadOneLeftAngleQuad = 1;
+                }
+                else
+                {
+                    gamepadOneLeftAngleQuad = 4;
+                }
             }
             else
             {
-                leftDrivePower.x = gamepadOneLeftY;
-                leftDrivePower.y = gamepadOneLeftY;
+                if (gamepadOneLeftAngle > 0)
+                {
+                    gamepadOneLeftAngleQuad = 3;
+                }
+                else
+                {
+                    gamepadOneLeftAngleQuad = 2;
+                }
+            }
 
-                rightDrivePower.x = -gamepadOneRightY;
-                rightDrivePower.y = -gamepadOneRightY;
+            if (gamepadOneRight.x > 0)
+            {
+                if (gamepadOneRightAngle > 0)
+                {
+                    gamepadOneRightAngleQuad = 1;
+                }
+                else
+                {
+                    gamepadOneRightAngleQuad = 4;
+                }
+            }
+            else
+            {
+                if (gamepadOneRightAngle > 0)
+                {
+                    gamepadOneRightAngleQuad = 3;
+                }
+                else
+                {
+                    gamepadOneRightAngleQuad = 2;
+                }
+            }
+
+            switch (gamepadOneLeftAngleQuad)
+            {
+                case 3:
+                case 1:
+                    if (gamepadOneLeftAngle >= 45)
+                    {
+                        leftDrivePower.x = -gamepadOneLeft.y;
+                        leftDrivePower.y = -gamepadOneLeft.y;
+
+                        rightDrivePower.x = gamepadOneLeft.y;
+                        rightDrivePower.y = gamepadOneLeft.y;
+                    }
+                    else
+                    {
+                        leftDrivePower.x = gamepadOneLeft.y;
+                        leftDrivePower.y = gamepadOneLeft.y;
+
+                        rightDrivePower.x = -gamepadOneLeft.y;
+                        rightDrivePower.y = -gamepadOneLeft.y;
+                    }
+                    break;
+
+                case 2:
+                case 4:
+                    if (gamepadOneLeftAngle >= -45)
+                    {
+                        leftDrivePower.x = -gamepadOneLeft.y;
+                        leftDrivePower.y = gamepadOneLeft.y;
+
+                        rightDrivePower.x = -gamepadOneLeft.y;
+                        rightDrivePower.y = gamepadOneLeft.y;
+                    }
+                    else
+                    {
+                        leftDrivePower.x = gamepadOneLeft.y;
+                        leftDrivePower.y = -gamepadOneLeft.y;
+
+                        rightDrivePower.x = gamepadOneLeft.y;
+                        rightDrivePower.y = -gamepadOneLeft.y;
+                    }
+                    break;
+
+                default:
+                    // TODO(Garrison): Error handling
+                    break;
             }
 
             _driveTrain.Drive(leftDrivePower, rightDrivePower);
+
+            telemetry.addData("Left angle and quad", "%f, %d", gamepadOneLeftAngle, gamepadOneLeftAngleQuad);
+            telemetry.addData("Right angle and quad", "%f, %d", gamepadOneRightAngle, gamepadOneRightAngleQuad);
 
             _driveTrain.UpdateTelemetry();
             telemetry.update();
