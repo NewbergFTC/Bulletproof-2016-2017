@@ -22,6 +22,8 @@ public class Motor
         _hasEncoder = hasEncoder;
 
         _dcMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        _dcMotor.setMode(hasEncoder ? DcMotor.RunMode.RUN_USING_ENCODER : DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void SetPower(double power)

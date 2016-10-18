@@ -10,7 +10,6 @@ import static us.newberg.bulletproof.math.MathUtil.FeetToInches;
  * FTC team 6712 Bulletproof
  */
 @Autonomous(name = "Encoder Test", group = "Test")
-@Disabled
 public class EncoderTestOpMode extends BulletproofOpMode
 {
     @Override
