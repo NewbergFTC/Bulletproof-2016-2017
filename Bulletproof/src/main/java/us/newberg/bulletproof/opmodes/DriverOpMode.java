@@ -83,30 +83,70 @@ public class DriverOpMode extends BulletproofOpMode
 
             switch (gamepadOneLeftAngleQuad)
             {
-                case 3:
                 case 1:
-                    if (gamepadOneLeftAngle >= 45)
+                    if (gamepadOneLeftAngle < 45)
                     {
+                        // Right
                         leftDrivePower.x = -gamepadOneLeft.y;
-                        leftDrivePower.y = -gamepadOneLeft.y;
+                        leftDrivePower.y = gamepadOneLeft.y;
+
+                        rightDrivePower.x = -gamepadOneLeft.y;
+                        rightDrivePower.y = gamepadOneLeft.y;
+                    }
+                    else
+                    {
+                        // Forward
+                        leftDrivePower.x = gamepadOneLeft.y;
+                        leftDrivePower.y = gamepadOneLeft.y;
+
+                        rightDrivePower.x = gamepadOneLeft.y;
+                        rightDrivePower.y = gamepadOneLeft.y;
+                    }
+                    break;
+                case 2:
+                    if (gamepadOneLeftAngle < -45 )
+                    {
+                        // Forward
+                        leftDrivePower.x = gamepadOneLeft.y;
+                        leftDrivePower.y = gamepadOneLeft.y;
 
                         rightDrivePower.x = gamepadOneLeft.y;
                         rightDrivePower.y = gamepadOneLeft.y;
                     }
                     else
                     {
+                        // Left
                         leftDrivePower.x = gamepadOneLeft.y;
-                        leftDrivePower.y = gamepadOneLeft.y;
+                        leftDrivePower.y = -gamepadOneLeft.y;
+
+                        rightDrivePower.x = gamepadOneLeft.y;
+                        rightDrivePower.y = -gamepadOneLeft.y;
+                    }
+                    break;
+                case 3:
+                    if (gamepadOneLeftAngle < 45 )
+                    {
+                        // Left
+                        leftDrivePower.x = gamepadOneLeft.y;
+                        leftDrivePower.y = -gamepadOneLeft.y;
+
+                        rightDrivePower.x = gamepadOneLeft.y;
+                        rightDrivePower.y = -gamepadOneLeft.y;
+                    }
+                    else
+                    {
+                        // Back
+                        leftDrivePower.x = -gamepadOneLeft.y;
+                        leftDrivePower.y = -gamepadOneLeft.y;
 
                         rightDrivePower.x = -gamepadOneLeft.y;
                         rightDrivePower.y = -gamepadOneLeft.y;
                     }
                     break;
-
-                case 2:
                 case 4:
-                    if (gamepadOneLeftAngle >= -45)
+                    if (gamepadOneLeftAngle > 45)
                     {
+                        // Right
                         leftDrivePower.x = -gamepadOneLeft.y;
                         leftDrivePower.y = gamepadOneLeft.y;
 
@@ -115,10 +155,11 @@ public class DriverOpMode extends BulletproofOpMode
                     }
                     else
                     {
-                        leftDrivePower.x = gamepadOneLeft.y;
+                        // Back
+                        leftDrivePower.x = -gamepadOneLeft.y;
                         leftDrivePower.y = -gamepadOneLeft.y;
 
-                        rightDrivePower.x = gamepadOneLeft.y;
+                        rightDrivePower.x = -gamepadOneLeft.y;
                         rightDrivePower.y = -gamepadOneLeft.y;
                     }
                     break;
