@@ -29,56 +29,33 @@ public class DriverOpMode extends BulletproofOpMode
             Vector2f gamepadOneLeft = new Vector2f(gamepad1.left_stick_x, -gamepad1.left_stick_y);
             Vector2f gamepadOneRight = new Vector2f(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
-            float gamepadOneLeftAngle = (float) gamepadOneLeft.Normalized().AngleWithXAxis();
+            float gamepadOneLeftAngle = (float) Math.abs(gamepadOneLeft.Normalized().AngleWithXAxis());
             int gamepadOneLeftAngleQuad;
 
-            float gamepadOneRightAngle = (float) gamepadOneRight.Normalized().AngleWithXAxis();
-            int gamepadOneRightAngleQuad;
-
-            if (gamepadOneLeft.x > 0)
+            if (gamepadOneLeft.x >= 0 && gamepadOneLeft.y >=0)
             {
-                if (gamepadOneLeftAngle > 0)
-                {
-                    gamepadOneLeftAngleQuad = 1;
-                }
-                else
-                {
-                    gamepadOneLeftAngleQuad = 4;
-                }
+                // One
+                gamepadOneLeftAngleQuad = 1;
+            }
+            else if (gamepadOneLeft.x < 0 && gamepadOneLeft.y >= 0)
+            {
+                // Two
+                gamepadOneLeftAngleQuad = 2;
+            }
+            else if (gamepadOneLeft.x < 0 && gamepadOneLeft.y < 0)
+            {
+                // Three
+                gamepadOneLeftAngleQuad = 3;
+            }
+            else if (gamepadOneLeft.x >= 0 && gamepadOneLeft.y < 0)
+            {
+                // Four
+                gamepadOneLeftAngleQuad = 4;
             }
             else
             {
-                if (gamepadOneLeftAngle > 0)
-                {
-                    gamepadOneLeftAngleQuad = 3;
-                }
-                else
-                {
-                    gamepadOneLeftAngleQuad = 2;
-                }
-            }
-
-            if (gamepadOneRight.x > 0)
-            {
-                if (gamepadOneRightAngle > 0)
-                {
-                    gamepadOneRightAngleQuad = 1;
-                }
-                else
-                {
-                    gamepadOneRightAngleQuad = 4;
-                }
-            }
-            else
-            {
-                if (gamepadOneRightAngle > 0)
-                {
-                    gamepadOneRightAngleQuad = 3;
-                }
-                else
-                {
-                    gamepadOneRightAngleQuad = 2;
-                }
+                // TODO(Garrison): Error Handling
+                gamepadOneLeftAngleQuad = 1;
             }
 
             float powerY = gamepadOneLeft.y;
@@ -90,8 +67,11 @@ public class DriverOpMode extends BulletproofOpMode
                     if (gamepadOneLeftAngle >= 45)
                     {
                         // Forward
-                        leftDrivePower.y = leftDrivePower.x = powerY;
-                        rightDrivePower.y = rightDrivePower.x = powerY;
+                        leftDrivePower.y = powerY;
+                        leftDrivePower.x = powerY;
+
+                        rightDrivePower.y = -powerY;
+                        rightDrivePower.x = -powerY;
                     }
                     else
                     {
@@ -99,33 +79,36 @@ public class DriverOpMode extends BulletproofOpMode
                         leftDrivePower.x = powerX;
                         leftDrivePower.y = -powerX;
 
-                        rightDrivePower.x = -powerX;
-                        rightDrivePower.y = powerX;
+                        rightDrivePower.x = powerX;
+                        rightDrivePower.y = -powerX;
                     }
                     break;
                 case 2:
                     if (gamepadOneLeftAngle >= 45)
                     {
                         // Forward
-                        leftDrivePower.y = leftDrivePower.x = powerY;
-                        rightDrivePower.y = rightDrivePower.x = powerY;
+                        leftDrivePower.y = powerY;
+                        leftDrivePower.x = powerY;
+
+                        rightDrivePower.y = -powerY;
+                        rightDrivePower.x = -powerY;
                     }
                     else
                     {
                         // Left
-                        leftDrivePower.x = -powerX;
-                        leftDrivePower.y = powerX;
+                        leftDrivePower.x = powerX;
+                        leftDrivePower.y = -powerX;
 
                         rightDrivePower.x = powerX;
                         rightDrivePower.y = -powerX;
                     }
                     break;
                 case 3:
-                    if (gamepadOneLeftAngle > -45)
+                    if (gamepadOneLeftAngle < 45)
                     {
                         // Left
-                        leftDrivePower.x = -powerX;
-                        leftDrivePower.y = powerX;
+                        leftDrivePower.x = powerX;
+                        leftDrivePower.y = -powerX;
 
                         rightDrivePower.x = powerX;
                         rightDrivePower.y = -powerX;
@@ -133,34 +116,38 @@ public class DriverOpMode extends BulletproofOpMode
                     else
                     {
                         // Back
-                        leftDrivePower.y = leftDrivePower.x = -powerY;
-                        rightDrivePower.y = rightDrivePower.x = -powerY;
+                        leftDrivePower.y = powerY;
+                        leftDrivePower.x = powerY;
+
+                        rightDrivePower.y = -powerY;
+                        rightDrivePower.x = -powerY;
                     }
                     break;
                 case 4:
-                    if (gamepadOneLeftAngle > -45)
+                    if (gamepadOneLeftAngle < 45)
                     {
                         // Right
                         leftDrivePower.x = powerX;
                         leftDrivePower.y = -powerX;
 
-                        rightDrivePower.x = -powerX;
-                        rightDrivePower.y = powerX;
+                        rightDrivePower.x = powerX;
+                        rightDrivePower.y = -powerX;
                     }
                     else
                     {
                         // Back
-                        leftDrivePower.y = leftDrivePower.x = -powerY;
-                        rightDrivePower.y = rightDrivePower.x = -powerY;
+                        leftDrivePower.y = powerY;
+                        leftDrivePower.x = powerY;
+
+                        rightDrivePower.y = -powerY;
+                        rightDrivePower.x = -powerY;
                     }
                     break;
             }
 
             _driveTrain.Drive(leftDrivePower, rightDrivePower);
 
-
             telemetry.addData("Left angle and quad", "%f, %d", gamepadOneLeftAngle, gamepadOneLeftAngleQuad);
-            telemetry.addData("Right angle and quad", "%f, %d", gamepadOneRightAngle, gamepadOneRightAngleQuad);
 
             _driveTrain.UpdateTelemetry();
             telemetry.update();
