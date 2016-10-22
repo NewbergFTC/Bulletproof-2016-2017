@@ -27,7 +27,7 @@ public class DriverOpMode extends BulletproofOpMode
             final float LEFT_RIGHT_POWER = 0.75f;
 
             Vector2f gamepadOneLeft = new Vector2f(gamepad1.left_stick_x, -gamepad1.left_stick_y);
-            Vector2f gamepadOneRight = new Vector2f(gamepad1.right_stick_x, -gamepad1.right_stick_y);
+            Vector2f gamepadOneRight = new Vector2f(gamepad1.right_stick_x, gamepad1.right_stick_y);
 
             float gamepadOneLeftAngle = (float) Math.abs(gamepadOneLeft.Normalized().AngleWithXAxis());
             int gamepadOneLeftAngleQuad;
@@ -143,6 +143,18 @@ public class DriverOpMode extends BulletproofOpMode
                         rightDrivePower.x = -powerY;
                     }
                     break;
+            }
+
+            powerX = gamepadOneRight.x;
+
+            if (Math.abs(gamepadOneRight.x) >= 0.1f )
+            {
+                // Right
+                leftDrivePower.x = powerX;
+                leftDrivePower.y = powerX;
+
+                rightDrivePower.x = powerX;
+                rightDrivePower.y = powerX;
             }
 
             _driveTrain.Drive(leftDrivePower, rightDrivePower);
