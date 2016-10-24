@@ -2,6 +2,7 @@ package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import us.newberg.bulletproof.Motor;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.math.Vector2f;
 
@@ -19,6 +20,8 @@ public class DriverOpMode extends BulletproofOpMode
 
         Vector2f leftDrivePower = new Vector2f();
         Vector2f rightDrivePower = new Vector2f();
+
+        boolean collectorToggle = false;
 
         waitForStart();
 
@@ -158,10 +161,26 @@ public class DriverOpMode extends BulletproofOpMode
             }
 
             _driveTrain.Drive(leftDrivePower, rightDrivePower);
-
             telemetry.addData("Left angle and quad", "%f, %d", gamepadOneLeftAngle, gamepadOneLeftAngleQuad);
-
             _driveTrain.UpdateTelemetry();
+
+            final float COLLECTOR_POWER = 0.8f;
+            boolean buttonCollectorToggle = gamepad1.a;
+
+            if (buttonCollectorToggle)
+            {
+                collectorToggle = !collectorToggle;
+            }
+
+            if (collectorToggle)
+            {
+                Motors.Collector().SetPower(COLLECTOR_POWER);
+            }
+            else
+            {
+                Motors.Collector().SetPower(0);
+            }
+
             telemetry.update();
             idle();
         }

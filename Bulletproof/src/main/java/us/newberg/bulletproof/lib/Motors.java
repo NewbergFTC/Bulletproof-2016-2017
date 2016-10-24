@@ -23,6 +23,7 @@ public class Motors
     private static Motor _frontRight;
     private static Motor _backLeft;
     private static Motor _backRight;
+    private static Motor _collector;
 
     public static void Init(HardwareMap hardwareMap)
     {
@@ -30,6 +31,17 @@ public class Motors
         _frontRight = new Motor(hardwareMap.dcMotor.get("frontRight"), false);
         _backLeft = new Motor(hardwareMap.dcMotor.get("backLeft"), false);
         _backRight = new Motor(hardwareMap.dcMotor.get("backRight"), false);
+        _collector = new Motor(hardwareMap.dcMotor.get("collector"), false);
+    }
+
+    public static Motor Collector()
+    {
+        if (_collector == null)
+        {
+            throw new AssertionError("Collector motor null");
+        }
+
+        return _collector;
     }
 
     public static Motor FrontLeft()
