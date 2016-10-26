@@ -25,8 +25,13 @@ public class DriverOpMode extends BulletproofOpMode
 
         waitForStart();
 
+        double startTime = getRuntime();
+        double collectorCooldown = 0;
+
         while(opModeIsActive())
         {
+            final double currentTime = getRuntime();
+
             final float LEFT_RIGHT_POWER = 0.75f;
 
             Vector2f gamepadOneLeft = new Vector2f(gamepad1.left_stick_x, -gamepad1.left_stick_y);
@@ -167,9 +172,13 @@ public class DriverOpMode extends BulletproofOpMode
             final float COLLECTOR_POWER = 0.8f;
             boolean buttonCollectorToggle = gamepad1.a;
 
-            if (buttonCollectorToggle)
+            boolean collectorCooldownComplete = getRuntime() > collectorCooldown;
+
+            if (buttonCollectorToggle && collectorCooldownComplete)
             {
                 collectorToggle = !collectorToggle;
+
+                collectorCooldown = getRuntime() + 0.15;
             }
 
             if (collectorToggle)
@@ -181,6 +190,7 @@ public class DriverOpMode extends BulletproofOpMode
                 Motors.Collector().SetPower(0);
             }
 
+            telemetry.addData("Collector", collectorToggle);
             telemetry.update();
             idle();
         }
