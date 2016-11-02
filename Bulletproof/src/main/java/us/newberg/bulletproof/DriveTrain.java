@@ -68,6 +68,48 @@ public class DriveTrain
         return result;
     }
 
+    private double CalculateTicksToMove(float inches)
+    {
+
+    }
+
+    /**
+     *
+     * @return true on error
+     */
+    public boolean Drive(Direction direction, float power, float inches, float maxDuration, BulletproofOpMode caller)
+            throws InterruptedException
+    {
+        boolean result = false;
+        boolean complete = false;
+
+        StopAll();
+
+        int currentTicks = FrontLeft().GetCurrentTicks();
+        double TargetTicks = currentTicks + CalculateTicksToMove(inches);
+
+        float epsilon = 10;
+
+        _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
+        WatchDog.Watch(_driveTrainHelper, maxDuration);
+
+        while (!complete)
+        {
+            if (MathUtil.FuzzyEquals(TargetTicks, currentTicks, epsilon))
+            {
+                complete = true;
+                result = false;
+            }
+
+            
+
+            caller.idle();
+        }
+
+
+        return result;
+    }
+
     public void DriveStraight(float power, float inches, Telemetry telemetry, BulletproofOpMode caller)
             throws InterruptedException
     {

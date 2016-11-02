@@ -17,10 +17,15 @@ public abstract class BulletproofOpMode extends LinearOpMode
         _driveTrain = null;
     }
 
-    public void Init()
+    public final void Init()
     {
         Motors.Init(hardwareMap);
 
         _driveTrain = new DriveTrain(telemetry);
+    }
+
+    public final void CleanUp()
+    {
+
     }
 }

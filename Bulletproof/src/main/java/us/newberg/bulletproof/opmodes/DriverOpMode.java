@@ -135,7 +135,7 @@ public class DriverOpMode extends BulletproofOpMode
                     }
                     break;
                 case 3:
-                    if (gamepadOneLeftAngle <= 30)  
+                    if (gamepadOneLeftAngle <= 30)
                     {
                         // Left
                         leftDrivePower.x = -powerX;
