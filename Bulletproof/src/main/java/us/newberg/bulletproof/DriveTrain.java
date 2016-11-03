@@ -70,50 +70,140 @@ public class DriveTrain
 
     private double CalculateTicksToMove(float inches)
     {
+        double result = inches * TICKS_TO_INCHES * WHEEL_DISTANCE_CORRECTION;
 
+        return result;
     }
 
-    /**
-     *
-     * @return true on error
-     */
-    public boolean Drive(Direction direction, float power, float inches, float maxDuration, BulletproofOpMode caller)
+    private int GetCurrentTicks(Direction direction)
+    {
+        int result;
+
+        if (direction == Direction.NORTH_WEST || direction == Direction.SOUTH_EAST)
+        {
+            result = FrontRight().GetCurrentTicks();
+        }
+        else
+        {
+            result = FrontLeft().GetCurrentTicks();
+        }
+
+        return result;
+    }
+
+    // TODO(Garrison): Testing
+    public void Drive(Direction direction, float power, float inches, long maxDuration, BulletproofOpMode caller)
             throws InterruptedException
     {
-        boolean result = false;
         boolean complete = false;
 
         StopAll();
 
-        int currentTicks = FrontLeft().GetCurrentTicks();
-        double TargetTicks = currentTicks + CalculateTicksToMove(inches);
+        int currentTicks = GetCurrentTicks(direction);
+
+        if (direction == Direction.NORTH_WEST || direction == Direction.SOUTH_EAST)
+        {
+            // TODO(Garrison): Setup encoder on the front right motor
+            currentTicks = FrontRight().GetCurrentTicks();
+        }
+        else
+        {
+            currentTicks = FrontLeft().GetCurrentTicks();
+        }
+
+        double targetTicks = currentTicks + CalculateTicksToMove(inches);
 
         float epsilon = 10;
 
         _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
+
+        Vector2f leftPower = new Vector2f();
+        Vector2f rightPower = new Vector2f();
+
         WatchDog.Watch(_driveTrainHelper, maxDuration);
+        double currentTime = caller.getRuntime();
 
         while (!complete)
         {
-            if (MathUtil.FuzzyEquals(TargetTicks, currentTicks, epsilon))
+            currentTime = caller.getRuntime();
+            currentTicks = GetCurrentTicks(direction);
+
+            // TODO(Garrison): Find some better way to tell when we have arrived
+            if (MathUtil.FuzzyEquals(targetTicks, currentTicks, epsilon))
             {
                 complete = true;
-                result = false;
             }
 
-            
+            // TODO(Garrison): Move this to its own function
+            switch (direction)
+            {
+                case NORTH:
+                    leftPower.y = power;
+                    leftPower.x = power;
 
+                    rightPower.y = -power;
+                    rightPower.x = -power;
+                    break;
+                case NORTH_EAST:
+                    leftPower.x = power;
+                    leftPower.y = 0;
+
+                    rightPower.x = 0;
+                    rightPower.y = -power;
+                    break;
+                case EAST:
+                    leftPower.x = power;
+                    leftPower.y = -power;
+
+                    rightPower.x = power;
+                    rightPower.y = -power;
+                    break;
+                case SOUTH_EAST:
+                    leftPower.x = 0;
+                    leftPower.y = -power;
+
+                    rightPower.x = power;
+                    rightPower.y = 0;
+                    break;
+                case SOUTH:
+                    leftPower.y = -power;
+                    leftPower.x = -power;
+
+                    rightPower.y = power;
+                    rightPower.x = power;
+                    break;
+                case SOUTH_WEST:
+                    leftPower.x = -power;
+                    leftPower.y = 0;
+
+                    rightPower.x = 0;
+                    rightPower.y = power;
+                    break;
+                case WEST:
+                    leftPower.x = -power;
+                    leftPower.y = power;
+
+                    rightPower.x = -power;
+                    rightPower.y = power;
+                    break;
+                case NORTH_WEST:
+                    leftPower.x = 0;
+                    leftPower.y = power;
+
+                    rightPower.x = -power;
+                    rightPower.y = 0;
+                    break;
+            }
+
+            // TODO(Garrison): Maybe handle sleeping ourselves, so we can check the ticks more often
             caller.idle();
         }
-
-
-        return result;
     }
 
     public void DriveStraight(float power, float inches, Telemetry telemetry, BulletproofOpMode caller)
             throws InterruptedException
     {
-        final double TICKS_TO_MOVE = inches * TICKS_TO_INCHES * WHEEL_DISTANCE_CORRECTION;
+        final double TICKS_TO_MOVE = CalculateTicksToMove(inches);
         telemetry.addData("Ticks to move", TICKS_TO_MOVE);
         telemetry.update();
         float currentTicks = FrontLeft().GetCurrentTicks();
