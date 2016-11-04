@@ -11,11 +11,11 @@ import us.newberg.bulletproof.Motor;
 public class Motors
 {
     public static final double WHEEL_CIRCUMFRENCE = Math.PI * 4;               // inches
-    public static final double TICKS_PER_ROTATION = 140;                       // ticks
+    public static final double TICKS_PER_ROTATION = 1120;                       // ticks
     public static final double TICKS_TO_DEG       = 360 / TICKS_PER_ROTATION;  // deg / ticks
     public static final double DEG_TO_TICKS       = TICKS_PER_ROTATION / 360;  // ticks / deg
-    public static final double TICKS_TO_INCHES    = 140 / WHEEL_CIRCUMFRENCE;  // in / ticks
-    public static final double INCHES_TO_TICKS    = WHEEL_CIRCUMFRENCE / 140;  // ticks / in
+    public static final double TICKS_TO_INCHES    = TICKS_PER_ROTATION / WHEEL_CIRCUMFRENCE;  // ticks / in
+    public static final double INCHES_TO_TICKS    = WHEEL_CIRCUMFRENCE / TICKS_PER_ROTATION;  // in / ticks
     public static final double WHEEL_DISTANCE_CORRECTION =
             WHEEL_CIRCUMFRENCE / (Math.sin(Math.PI / 4) * 4 * Math.PI);
 
