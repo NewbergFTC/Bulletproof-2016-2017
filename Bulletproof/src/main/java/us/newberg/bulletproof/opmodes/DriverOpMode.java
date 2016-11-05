@@ -210,7 +210,7 @@ public class DriverOpMode extends BulletproofOpMode
             telemetry.addData("Left angle and quad", "%f, %d", gamepadOneLeftAngle, gamepadOneLeftAngleQuad);
             _driveTrain.UpdateTelemetry();
 
-            final float COLLECTOR_POWER = 0.8f;
+            final float COLLECTOR_POWER = 1.0f;
             boolean buttonCollectorToggle = gamepad1.a;
 
             boolean collectorCooldownComplete = getRuntime() > collectorCooldown;

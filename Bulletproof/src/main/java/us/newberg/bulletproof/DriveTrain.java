@@ -68,11 +68,16 @@ public class DriveTrain
         return result;
     }
 
-    private double CalculateTicksToMove(float inches)
+    private double CalculateTicksToMove(float inches, boolean comp)
     {
-        double result = inches * TICKS_TO_INCHES * WHEEL_DISTANCE_CORRECTION;
+        double result = inches * TICKS_TO_INCHES;
 
-        return result;
+        if (comp)
+        {
+            result *= WHEEL_DISTANCE_CORRECTION;
+        }
+
+        return Math.abs(result);
     }
 
     private int GetCurrentTicks(Direction direction)
@@ -99,111 +104,145 @@ public class DriveTrain
 
         StopAll();
 
-        int currentTicks = GetCurrentTicks(direction);
-
-        if (direction == Direction.NORTH_WEST || direction == Direction.SOUTH_EAST)
-        {
-            // TODO(Garrison): Setup encoder on the front right motor
-            currentTicks = FrontRight().GetCurrentTicks();
-        }
-        else
-        {
-            currentTicks = FrontLeft().GetCurrentTicks();
-        }
-
-        double targetTicks = currentTicks + CalculateTicksToMove(inches);
-
-        float epsilon = 10;
+        float reverse = 1;
+        boolean comp = true;
 
         _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
 
         Vector2f leftPower = new Vector2f();
         Vector2f rightPower = new Vector2f();
 
-        WatchDog.Watch(_driveTrainHelper, maxDuration);
-        double currentTime = caller.getRuntime();
+        // TODO(Garrison): Move this to its own function
+        switch (direction)
+        {
+            case NORTH:
+                leftPower.y = power;
+                leftPower.x = power;
 
+                rightPower.y = -power;
+                rightPower.x = -power;
+
+                reverse = 1;
+                comp = true;
+                break;
+            case NORTH_EAST:
+                leftPower.x = power;
+                leftPower.y = 0;
+
+                rightPower.x = 0;
+                rightPower.y = -power;
+
+                reverse = 1;
+                comp = false;
+                break;
+            case EAST:
+                leftPower.x = power;
+                leftPower.y = -power;
+
+                rightPower.x = power;
+                rightPower.y = -power;
+
+                reverse = 1;
+                comp = true;
+                break;
+            case SOUTH_EAST:
+                leftPower.x = 0;
+                leftPower.y = -power;
+
+                rightPower.x = power;
+                rightPower.y = 0;
+
+                reverse = 1;
+                comp = false;
+                break;
+            case SOUTH:
+                leftPower.y = -power;
+                leftPower.x = -power;
+
+                rightPower.y = power;
+                rightPower.x = power;
+
+                comp = true;
+                reverse = -1;
+                break;
+            case SOUTH_WEST:
+                leftPower.x = -power;
+                leftPower.y = 0;
+
+                rightPower.x = 0;
+                rightPower.y = power;
+
+                reverse = -1;
+                comp = false;
+                break;
+            case WEST:
+                leftPower.x = -power;
+                leftPower.y = power;
+
+                rightPower.x = -power;
+                rightPower.y = power;
+
+                reverse = -1;
+                comp = true;
+                break;
+            case NORTH_WEST:
+                leftPower.x = 0;
+                leftPower.y = power;
+
+                rightPower.x = -power;
+                rightPower.y = 0;
+
+                reverse = -1;
+                comp = false;
+                break;
+        }
+
+        int currentTicks = GetCurrentTicks(direction);
+        double targetTicks = (double) currentTicks + (CalculateTicksToMove(inches, comp) * reverse);
+
+        WatchDog.Watch(_driveTrainHelper, maxDuration);
         while (!complete)
         {
-            currentTime = caller.getRuntime();
             currentTicks = GetCurrentTicks(direction);
 
             // TODO(Garrison): Find some better way to tell when we have arrived
-            if (MathUtil.FuzzyEquals(targetTicks, currentTicks, epsilon))
+            if ((reverse == -1) && (currentTicks <= targetTicks))
             {
                 complete = true;
-            }
+                break;
 
-            // TODO(Garrison): Move this to its own function
-            switch (direction)
+            }
+            else if ((reverse != -1) && (currentTicks >= targetTicks))
             {
-                case NORTH:
-                    leftPower.y = power;
-                    leftPower.x = power;
-
-                    rightPower.y = -power;
-                    rightPower.x = -power;
-                    break;
-                case NORTH_EAST:
-                    leftPower.x = power;
-                    leftPower.y = 0;
-
-                    rightPower.x = 0;
-                    rightPower.y = -power;
-                    break;
-                case EAST:
-                    leftPower.x = power;
-                    leftPower.y = -power;
-
-                    rightPower.x = power;
-                    rightPower.y = -power;
-                    break;
-                case SOUTH_EAST:
-                    leftPower.x = 0;
-                    leftPower.y = -power;
-
-                    rightPower.x = power;
-                    rightPower.y = 0;
-                    break;
-                case SOUTH:
-                    leftPower.y = -power;
-                    leftPower.x = -power;
-
-                    rightPower.y = power;
-                    rightPower.x = power;
-                    break;
-                case SOUTH_WEST:
-                    leftPower.x = -power;
-                    leftPower.y = 0;
-
-                    rightPower.x = 0;
-                    rightPower.y = power;
-                    break;
-                case WEST:
-                    leftPower.x = -power;
-                    leftPower.y = power;
-
-                    rightPower.x = -power;
-                    rightPower.y = power;
-                    break;
-                case NORTH_WEST:
-                    leftPower.x = 0;
-                    leftPower.y = power;
-
-                    rightPower.x = -power;
-                    rightPower.y = 0;
-                    break;
+                complete = true;
+                break;
             }
+
+            if (_driveTrainHelper.GetTask() == HelperTask.COMPLETE)
+            {
+                complete = true;
+                break;
+            }
+
+            Drive(leftPower, rightPower);
+
+            caller.telemetry.addData("Power", power);
+            caller.telemetry.addData("Current Ticks", currentTicks);
+            caller.telemetry.addData("Target Ticks", targetTicks);
+            caller.telemetry.update();
 
             // TODO(Garrison): Maybe handle sleeping ourselves, so we can check the ticks more often
             caller.idle();
         }
+
+        WatchDog.Stop();
+        StopAll();
     }
 
     public void DriveStraight(float power, float inches, Telemetry telemetry, BulletproofOpMode caller)
             throws InterruptedException
     {
-        final double TICKS_TO_MOVE = CalculateTicksToMove(inches);
+        final double TICKS_TO_MOVE = CalculateTicksToMove(inches, true);
         telemetry.addData("Ticks to move", TICKS_TO_MOVE);
         telemetry.update();
         float currentTicks = FrontLeft().GetCurrentTicks();
@@ -334,6 +373,7 @@ public class DriveTrain
     private enum HelperTask
     {
         NONE,
+        COMPLETE,
         STOP_ALL,
     }
 
@@ -355,6 +395,11 @@ public class DriveTrain
             _task = task;
         }
 
+        public HelperTask GetTask()
+        {
+            return _task;
+        }
+
         private void StopAll()
         {
             _driveTrain.StopAll();
@@ -371,6 +416,7 @@ public class DriveTrain
 
                 case STOP_ALL:
                     StopAll();
+                    SetTask(HelperTask.COMPLETE);
                     break;
             }
         }

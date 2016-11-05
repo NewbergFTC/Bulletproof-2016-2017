@@ -2,7 +2,9 @@ package us.newberg.bulletproof.opmodes.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import us.newberg.bulletproof.lib.Motors;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import us.newberg.bulletproof.Direction;
 import us.newberg.bulletproof.opmodes.BulletproofOpMode;
 
 /**
@@ -18,16 +20,22 @@ public class QuickTestOp extends BulletproofOpMode
 
         waitForStart();
 
-        while (opModeIsActive())
-        {
-            int ticks = Motors.FrontLeft().GetCurrentTicks();
-
-            Motors.FrontLeft().SetPower(0.06);
-
-            telemetry.addData("Ticks", ticks);
-            telemetry.update();
-
-            idle();
-        }
+        int delay = 1000;
+        
+        _driveTrain.Drive(Direction.NORTH, 0.5f, 12.0f, 10000, this);
+        sleep(delay);
+        _driveTrain.Drive(Direction.NORTH_EAST, 0.5f, 12.0f, 10000, this);
+        sleep(delay);
+        _driveTrain.Drive(Direction.EAST, 0.5f, 12.0f, 10000, this);
+        sleep(delay);
+        _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 12.0f, 10000, this);
+        sleep(delay);
+        _driveTrain.Drive(Direction.SOUTH, 0.5f, 12.0f, 10000, this);
+        sleep(delay);
+        _driveTrain.Drive(Direction.SOUTH_WEST, 0.5f, 12.0f, 10000, this);
+        sleep(delay);
+        _driveTrain.Drive(Direction.WEST, 0.5f, 12.0f, 10000, this);
+        sleep(delay);
+        _driveTrain.Drive(Direction.NORTH_WEST, 0.5f, 12.0f, 10000, this);
     }
 }
