@@ -17,15 +17,35 @@ public abstract class BulletproofOpMode extends LinearOpMode
         _driveTrain = null;
     }
 
-    public final void Init()
+    protected void Init()
     {
         Motors.Init(hardwareMap);
 
         _driveTrain = new DriveTrain(telemetry);
     }
 
-    public final void CleanUp()
+    protected void CleanUp()
     {
 
     }
+
+    @Override
+    public void runOpMode() throws InterruptedException
+    {
+        Init();
+
+        waitForStart();
+
+        Run();
+
+        CleanUp();
+    }
+
+    protected void Update() throws InterruptedException
+    {
+        telemetry.update();
+        idle();
+    }
+
+    abstract protected void Run() throws InterruptedException;
 }
