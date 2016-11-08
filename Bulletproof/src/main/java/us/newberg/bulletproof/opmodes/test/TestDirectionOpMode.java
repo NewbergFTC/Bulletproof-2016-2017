@@ -13,7 +13,7 @@ import us.newberg.bulletproof.opmodes.BulletproofOpMode;
  */
 @Autonomous(name = "QuickTest", group = "Test")
 @Disabled
-public class QuickTestOp extends BulletproofOpMode
+public class TestDirectionOpMode extends BulletproofOpMode
 {
     @Override
     public void runOpMode() throws InterruptedException
