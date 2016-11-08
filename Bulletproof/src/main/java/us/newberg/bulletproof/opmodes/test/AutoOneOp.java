@@ -18,7 +18,7 @@ public class AutoOneOp extends BulletproofOpMode
 
         waitForStart();
 
-        _driveTrain.Drive(Direction.NORTH, 0.5f, 69, 10000, this);
+        _driveTrain.Drive(Direction.NORTH, 0.8f, 39, 10000, this);
 
         CleanUp();
     }

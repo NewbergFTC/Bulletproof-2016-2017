@@ -228,8 +228,16 @@ public class DriverOpMode extends BulletproofOpMode
             }
             else
             {
-                Motors.Collector().SetPower(0);
+                if (gamepad1.b)
+                {
+                    Motors.Collector().SetPower(-COLLECTOR_POWER);
+                }
+                else
+                {
+                    Motors.Collector().SetPower(0);
+                }
             }
+
 
             telemetry.addData("Collector", collectorToggle);
             telemetry.update();
