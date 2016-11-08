@@ -1,6 +1,7 @@
 package us.newberg.bulletproof.opmodes.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import us.newberg.bulletproof.Direction;
 import us.newberg.bulletproof.opmodes.BulletproofOpMode;
@@ -9,6 +10,7 @@ import us.newberg.bulletproof.opmodes.BulletproofOpMode;
  * FTC team 6712 Bulletproof
  */
 @Autonomous(name = "Straight", group = "Shitty")
+@Disabled
 public class AutoOneOp extends BulletproofOpMode
 {
     @Override

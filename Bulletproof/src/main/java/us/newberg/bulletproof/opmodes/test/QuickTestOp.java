@@ -1,6 +1,7 @@
 package us.newberg.bulletproof.opmodes.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -11,6 +12,7 @@ import us.newberg.bulletproof.opmodes.BulletproofOpMode;
  * FTC team 6712 Bulletproof
  */
 @Autonomous(name = "QuickTest", group = "Test")
+@Disabled
 public class QuickTestOp extends BulletproofOpMode
 {
     @Override
