@@ -216,7 +216,6 @@ public class DriverOpMode extends BulletproofOpMode
             _driveTrain.UpdateTelemetry();
 
             final float COLLECTOR_POWER = 1.0f;
-
             boolean buttonCollectorToggle = gamepad1.a;
 
             if (buttonCollectorToggle)
