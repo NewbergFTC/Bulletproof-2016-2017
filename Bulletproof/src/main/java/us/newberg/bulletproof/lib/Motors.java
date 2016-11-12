@@ -24,14 +24,26 @@ public class Motors
     private static Motor _backLeft;
     private static Motor _backRight;
     private static Motor _collector;
+    private static Motor _flipper;
 
     public static void Init(HardwareMap hardwareMap)
     {
         _frontLeft = new Motor(hardwareMap.dcMotor.get("frontLeft"), true);
-        _frontRight = new Motor(hardwareMap.dcMotor.get("frontRight"), false);
+        _frontRight = new Motor(hardwareMap.dcMotor.get("frontRight"), true);
         _backLeft = new Motor(hardwareMap.dcMotor.get("backLeft"), false);
         _backRight = new Motor(hardwareMap.dcMotor.get("backRight"), false);
         _collector = new Motor(hardwareMap.dcMotor.get("collector"), false);
+        _flipper = new Motor(hardwareMap.dcMotor.get("flipper"), true);
+    }
+
+    public static Motor Flipper()
+    {
+        if (_flipper == null)
+        {
+            throw new AssertionError("Flipper motor null");
+        }
+
+        return _flipper;
     }
 
     public static Motor Collector()

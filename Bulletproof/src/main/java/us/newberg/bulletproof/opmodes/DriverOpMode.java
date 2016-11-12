@@ -1,8 +1,13 @@
 package us.newberg.bulletproof.opmodes;
 
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import us.newberg.bulletproof.Camera;
 import us.newberg.bulletproof.Motor;
+import us.newberg.bulletproof.R;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.math.Vector2f;
 
@@ -46,6 +51,8 @@ public class DriverOpMode extends BulletproofOpMode
             // TODO(Garrison): Deadzones
             Vector2f gamepadOneLeft = new Vector2f(gamepad1.left_stick_x, -gamepad1.left_stick_y);
             Vector2f gamepadOneRight = new Vector2f(gamepad1.right_stick_x, gamepad1.right_stick_y);
+
+            Vector2f gamepadTwoLeft = new Vector2f(gamepad2.left_stick_x, gamepad2.left_stick_y);
 
             float gamepadOneLeftAngle = (float) Math.abs(gamepadOneLeft.Normalized().AngleWithXAxis());
             int gamepadOneLeftAngleQuad;
@@ -237,6 +244,38 @@ public class DriverOpMode extends BulletproofOpMode
                 {
                     Motors.Collector().SetPower(0);
                 }
+            }
+
+
+
+            if (gamepad1.x)
+            {
+                Camera.TakePhoto();
+
+                sleep(250);
+
+                Bitmap bitmap = Camera.GetBitmap();
+
+//                ImageView imageView = (ImageView) Camera.GetAcitivity().findViewById(R.id.imageView);
+//
+//                imageView.setImageBitmap(bitmap);
+            }
+
+            final float FLIPPER_POWER = 1.0f;
+
+            if (gamepad2.a)
+            {
+                Motors.Flipper().SetPower(FLIPPER_POWER);
+            }
+            else
+            {
+                Motors.Flipper().SetPower(0);
+            }
+
+            if (gamepad2.b)
+            {
+                int currentPos = Motors.Flipper().GetCurrentTicks();
+                float targetTicks = (float) currentPos + ((float)Motors.TICKS_PER_ROTATION * 3.6f);
             }
 
 
