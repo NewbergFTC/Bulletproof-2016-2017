@@ -1,7 +1,5 @@
 package us.newberg.bulletproof.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import org.lasarobotics.vision.android.Cameras;
 import org.lasarobotics.vision.ftc.resq.Beacon;
 import org.lasarobotics.vision.opmode.LinearVisionOpMode;
