@@ -50,16 +50,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -111,11 +107,8 @@ import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import us.newberg.bulletproof.CameraPreview;
-
 public class FtcRobotControllerActivity extends Activity
 {
-
     public static final String TAG = "RCActivity";
 
     private static final int REQUEST_CONFIG_WIFI_CHANNEL = 1;
@@ -153,11 +146,6 @@ public class FtcRobotControllerActivity extends Activity
     protected FtcEventLoop eventLoop;
     protected Queue<UsbDevice> receivedUsbAttachmentNotifications;
 
-    private CameraPreview _cameraPrerview;
-    private Camera _camera;
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-
     protected class RobotRestarter implements Restarter
     {
 
@@ -166,36 +154,6 @@ public class FtcRobotControllerActivity extends Activity
             requestRobotRestart();
         }
 
-    }
-
-    private boolean safeCameraOpen(int id)
-    {
-        boolean qOpened = false;
-
-        try
-        {
-            releaseCameraAndPreview();
-            _camera = Camera.open(id);
-
-            qOpened = (_camera != null);
-        } catch (Exception e)
-        {
-            Log.e(getString(R.string.app_name), "failed to open Camera");
-            e.printStackTrace();
-        }
-
-        return qOpened;
-    }
-
-    private void releaseCameraAndPreview()
-    {
-        _cameraPrerview.setCamera(null);
-
-        if (_camera != null)
-        {
-            _camera.release();
-            _camera = null;
-        }
     }
 
     protected ServiceConnection connection = new ServiceConnection()
@@ -214,16 +172,6 @@ public class FtcRobotControllerActivity extends Activity
             controllerService = null;
         }
     };
-
-    public void dispatchTakePictureIntent()
-    {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null)
-        {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
 
     @Override
     protected void onNewIntent(Intent intent)
@@ -341,90 +289,6 @@ public class FtcRobotControllerActivity extends Activity
         wifiLock.acquire();
         callback.networkConnectionUpdate(WifiDirectAssistant.Event.DISCONNECTED);
         bindToService();
-
-        us.newberg.bulletproof.Camera.UpdateActivity(this);
-
-        _cameraPrerview = new CameraPreview(this, (SurfaceView)findViewById(R.id.surfaceView));
-
-        _cameraPrerview.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        ((FrameLayout) findViewById(R.id.frameLayout)).addView(_cameraPrerview);
-        _cameraPrerview.setKeepScreenOn(true);
-
-        _cameraPrerview.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                _camera.takePicture(shutterCallback, rawCallback, jpegCallback);
-            }
-        });
-
-    }
-
-    Camera.ShutterCallback shutterCallback = new Camera.ShutterCallback() {
-        public void onShutter() {
-            //			 Log.d(TAG, "onShutter'd");
-        }
-    };
-
-    Camera.PictureCallback rawCallback = new Camera.PictureCallback() {
-        public void onPictureTaken(byte[] data, Camera camera) {
-            //			 Log.d(TAG, "onPictureTaken - raw");
-        }
-    };
-
-    Camera.PictureCallback jpegCallback = new Camera.PictureCallback() {
-        public void onPictureTaken(byte[] data, Camera camera) {
-            new SaveImageTask().execute(data);
-            resetCam();
-            Log.d(TAG, "onPictureTaken - jpeg");
-        }
-    };
-
-
-    private void resetCam() {
-        _camera.startPreview();
-        _cameraPrerview.setCamera(_camera);
-    }
-
-    private void refreshGallery(File file) {
-        Intent mediaScanIntent = new Intent( Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        mediaScanIntent.setData(Uri.fromFile(file));
-        sendBroadcast(mediaScanIntent);
-    }
-
-    private class SaveImageTask extends AsyncTask<byte[], Void, Void>
-    {
-
-        @Override
-        protected Void doInBackground(byte[]... data) {
-            FileOutputStream outStream = null;
-
-            // Write to SD Card
-            try {
-                File sdCard = Environment.getExternalStorageDirectory();
-                File dir = new File (sdCard.getAbsolutePath() + "/camtest");
-                dir.mkdirs();
-
-                String fileName = String.format("%d.jpg", System.currentTimeMillis());
-                File outFile = new File(dir, fileName);
-
-                outStream = new FileOutputStream(outFile);
-                outStream.write(data[0]);
-                outStream.flush();
-                outStream.close();
-
-                Log.d(TAG, "onPictureTaken - wrote bytes: " + data.length + " to " + outFile.getAbsolutePath());
-
-                refreshGallery(outFile);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-            }
-            return null;
-        }
-
     }
 
     protected UpdateUI createUpdateUI()
@@ -471,17 +335,6 @@ public class FtcRobotControllerActivity extends Activity
         super.onResume();
         RobotLog.vv(TAG, "onResume()");
         readNetworkType(NETWORK_TYPE_FILENAME);
-
-        int numCams = Camera.getNumberOfCameras();
-        if(numCams > 0){
-            try{
-                _camera = Camera.open(1);
-                _camera.startPreview();
-                _cameraPrerview.setCamera(_camera);
-            } catch (RuntimeException ex){
-                Toast.makeText(context, "Camera not found", Toast.LENGTH_LONG).show();
-            }
-        }
     }
 
     @Override
@@ -492,14 +345,6 @@ public class FtcRobotControllerActivity extends Activity
         if (programmingModeController.isActive())
         {
             programmingModeController.stopProgrammingMode();
-        }
-
-        if (_camera != null)
-        {
-            _camera.stopPreview();
-            _cameraPrerview.setCamera(null);
-            _camera.release();
-            _camera = null;
         }
     }
 
@@ -687,15 +532,6 @@ public class FtcRobotControllerActivity extends Activity
             // We always do a refresh, whether it was a cancel or an OK, for robustness
             cfgFileMgr.getActiveConfigAndUpdateUI();
         }
-
-        if (request == REQUEST_IMAGE_CAPTURE && result == RESULT_OK)
-        {
-            Bundle extras = intent.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-
-            us.newberg.bulletproof.Camera.SetBitmap(imageBitmap);
-        }
-
     }
 
     public void onServiceBind(FtcRobotControllerService service)

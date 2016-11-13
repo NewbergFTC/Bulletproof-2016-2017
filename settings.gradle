@@ -1,2 +1,5 @@
 include ':FtcRobotController'
 include ':Bulletproof'
+include ':opencv-java'
+include ':ftc-visionlib'
+include ':ftc-cameratest'

@@ -232,7 +232,7 @@ public class DriveTrain
             caller.telemetry.update();
 
             // TODO(Garrison): Maybe handle sleeping ourselves, so we can check the ticks more often
-            caller.idle();
+            caller.waitOneFullHardwareCycle();
         }
 
         WatchDog.Stop();
@@ -269,7 +269,7 @@ public class DriveTrain
             }
 
             currentTicks = FrontLeft().GetCurrentTicks();
-            caller.idle();
+            caller.Idle();
         }
 
         WatchDog.Stop();
@@ -346,7 +346,7 @@ public class DriveTrain
             }
 
             currentTicks = FrontLeft().GetCurrentTicks();
-            caller.idle();
+            caller.Idle();
         }
 
         WatchDog.Stop();

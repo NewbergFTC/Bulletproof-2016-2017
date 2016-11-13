@@ -1,12 +1,7 @@
 package us.newberg.bulletproof.opmodes;
 
-import android.graphics.Bitmap;
-import android.widget.ImageView;
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import us.newberg.bulletproof.Camera;
-import us.newberg.bulletproof.Motor;
 import us.newberg.bulletproof.R;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.math.Vector2f;
@@ -246,21 +241,6 @@ public class DriverOpMode extends BulletproofOpMode
                 }
             }
 
-
-
-            if (gamepad1.x)
-            {
-                Camera.TakePhoto();
-
-                sleep(250);
-
-                Bitmap bitmap = Camera.GetBitmap();
-
-//                ImageView imageView = (ImageView) Camera.GetAcitivity().findViewById(R.id.imageView);
-//
-//                imageView.setImageBitmap(bitmap);
-            }
-
             final float FLIPPER_POWER = 1.0f;
 
             if (gamepad2.a)
@@ -280,8 +260,8 @@ public class DriverOpMode extends BulletproofOpMode
 
 
             telemetry.addData("Collector", _collectorToggle);
-            telemetry.update();
-            idle();
+
+            Update();
         }
     }
 }
