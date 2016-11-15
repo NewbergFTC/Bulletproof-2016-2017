@@ -85,13 +85,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <include layout="@layout/header"
            android:id="@+id/included_header"/>
 
-  <TextView
-      android:text="6712 Bulletproof"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/textView2"
-      android:fontFamily="monospace"/>
-
   <RelativeLayout
     android:id="@+id/RelativeLayout"
     android:layout_width="match_parent"

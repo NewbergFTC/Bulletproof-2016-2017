@@ -2,6 +2,7 @@ package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import us.newberg.bulletproof.Flipper;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.math.Vector2f;
 
@@ -236,7 +237,7 @@ public class DriverOpMode extends BulletproofOpMode
             {
                 Motors.Flipper().SetPower(FLIPPER_POWER);
             }
-            else
+            else if (Motors.Flipper().GetState() != Flipper.State.AUTO)
             {
                 Motors.Flipper().SetPower(0);
             }
@@ -246,6 +247,8 @@ public class DriverOpMode extends BulletproofOpMode
                 int currentPos = Motors.Flipper().GetCurrentTicks();
                 float targetTicks = (float) currentPos + ((float)Motors.TICKS_PER_ROTATION * 7.2f);
 
+                telemetry.addData("Flipper target", targetTicks);
+
                 Motors.Flipper().StartAutoMove(targetTicks);
             }
 
@@ -253,6 +256,9 @@ public class DriverOpMode extends BulletproofOpMode
             {
                 // TODO(Garrison): Color stuff
             }
+
+            telemetry.addData("Flipper current", Motors.Flipper().GetCurrentTicks());
+            telemetry.addData("Flipper State", Motors.Flipper().GetState());
 
             Motors.Flipper().Update();
             Update();

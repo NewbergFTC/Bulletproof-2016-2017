@@ -30,6 +30,7 @@ public class Flipper extends Motor
     public void StartAutoMove(float target)
     {
         _targetTicks = target;
+        _state = State.AUTO;
     }
 
     @Override
