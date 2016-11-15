@@ -6,6 +6,7 @@ package us.newberg.bulletproof.lib;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import us.newberg.bulletproof.Flipper;
 import us.newberg.bulletproof.Motor;
 
 public class Motors
@@ -24,7 +25,7 @@ public class Motors
     private static Motor _backLeft;
     private static Motor _backRight;
     private static Motor _collector;
-    private static Motor _flipper;
+    private static Flipper _flipper;
 
     public static void Init(HardwareMap hardwareMap)
     {
@@ -33,10 +34,10 @@ public class Motors
         _backLeft = new Motor(hardwareMap.dcMotor.get("backLeft"), false);
         _backRight = new Motor(hardwareMap.dcMotor.get("backRight"), false);
         _collector = new Motor(hardwareMap.dcMotor.get("collector"), false);
-        _flipper = new Motor(hardwareMap.dcMotor.get("flipper"), true);
+        _flipper = new Flipper(hardwareMap.dcMotor.get("flipper"), true);
     }
 
-    public static Motor Flipper()
+    public static Flipper Flipper()
     {
         if (_flipper == null)
         {

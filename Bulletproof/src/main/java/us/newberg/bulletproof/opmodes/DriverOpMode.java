@@ -2,7 +2,6 @@ package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import us.newberg.bulletproof.R;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.math.Vector2f;
 
@@ -16,16 +15,6 @@ public class DriverOpMode extends BulletproofOpMode
     private Vector2f _leftDrivePower;
     private Vector2f _rightDrivePower;
 
-    private boolean _collectorToggle;
-
-    private enum CollectorDirection
-    {
-        FORWARD,
-        REVERSE
-    }
-
-    private CollectorDirection _collectorDirection;
-
     @Override
     protected void Init()
     {
@@ -33,9 +22,6 @@ public class DriverOpMode extends BulletproofOpMode
 
         _leftDrivePower = new Vector2f();
         _rightDrivePower = new Vector2f();
-
-        _collectorToggle = false;
-        _collectorDirection = CollectorDirection.FORWARD;
     }
 
     @Override
@@ -77,6 +63,11 @@ public class DriverOpMode extends BulletproofOpMode
                 // TODO(Garrison): Error Handling
                 gamepadOneLeftAngleQuad = 1;
             }
+
+            _leftDrivePower.x = 0;
+            _leftDrivePower.y = 0;
+            _rightDrivePower.x = 0;
+            _rightDrivePower.y = 0;
 
             float powerY = Math.abs(gamepadOneLeft.y);
             float powerX = Math.abs(gamepadOneLeft.x);
@@ -217,33 +208,31 @@ public class DriverOpMode extends BulletproofOpMode
             telemetry.addData("Left angle and quad", "%f, %d", gamepadOneLeftAngle, gamepadOneLeftAngleQuad);
             _driveTrain.UpdateTelemetry();
 
+            // Gamepad 2
+
+            final float FLIPPER_POWER = 1.0f;
             final float COLLECTOR_POWER = 1.0f;
-            boolean buttonCollectorToggle = gamepad1.a;
 
-            if (buttonCollectorToggle)
-            {
-                _collectorToggle = !_collectorToggle;
-            }
+            boolean buttonCollectorForward = (gamepad2.right_trigger > 0);
+            boolean buttonCollectorBack = (gamepad2.left_trigger > 0);
 
-            if (_collectorToggle)
+            if  (buttonCollectorForward)
             {
                 Motors.Collector().SetPower(COLLECTOR_POWER);
             }
+            else if (buttonCollectorBack)
+            {
+                Motors.Collector().SetPower(-COLLECTOR_POWER);
+            }
             else
             {
-                if (gamepad1.b)
-                {
-                    Motors.Collector().SetPower(-COLLECTOR_POWER);
-                }
-                else
-                {
-                    Motors.Collector().SetPower(0);
-                }
+                Motors.Collector().SetPower(0);
             }
 
-            final float FLIPPER_POWER = 1.0f;
+            boolean buttonFlipper = gamepad2.a;
+            boolean buttonFlipperAuto = gamepad2.b;
 
-            if (gamepad2.a)
+            if (buttonFlipper)
             {
                 Motors.Flipper().SetPower(FLIPPER_POWER);
             }
@@ -252,15 +241,20 @@ public class DriverOpMode extends BulletproofOpMode
                 Motors.Flipper().SetPower(0);
             }
 
-            if (gamepad2.b)
+            if (buttonFlipperAuto)
             {
                 int currentPos = Motors.Flipper().GetCurrentTicks();
-                float targetTicks = (float) currentPos + ((float)Motors.TICKS_PER_ROTATION * 3.6f);
+                float targetTicks = (float) currentPos + ((float)Motors.TICKS_PER_ROTATION * 7.2f);
+
+                Motors.Flipper().StartAutoMove(targetTicks);
             }
 
+            if (hasNewFrame())
+            {
+                // TODO(Garrison): Color stuff
+            }
 
-            telemetry.addData("Collector", _collectorToggle);
-
+            Motors.Flipper().Update();
             Update();
         }
     }
