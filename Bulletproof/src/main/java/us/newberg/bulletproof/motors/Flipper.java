@@ -1,12 +1,17 @@
-package us.newberg.bulletproof;
+package us.newberg.bulletproof.motors;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import us.newberg.bulletproof.Motor;
+import us.newberg.bulletproof.lib.Motors;
 
 /**
  * FTC team 6712 Bulletproof
  */
 public class Flipper extends Motor
 {
+    public static float GEAR_RATIO = 7.2f;
+
     public enum State
     {
         NOTHING,
@@ -27,9 +32,11 @@ public class Flipper extends Motor
         super(motor, hasEncoder);
     }
 
-    public void StartAutoMove(float target)
+    public void StartAutoMove()
     {
-        _targetTicks = target;
+        float targetTicks = (float) GetCurrentTicks() + ((float)Motors.TICKS_PER_ROTATION * GEAR_RATIO);
+
+        _targetTicks = targetTicks;
         _state = State.AUTO;
     }
 

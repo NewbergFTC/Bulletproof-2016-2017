@@ -6,7 +6,7 @@ package us.newberg.bulletproof.lib;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import us.newberg.bulletproof.Flipper;
+import us.newberg.bulletproof.motors.Flipper;
 import us.newberg.bulletproof.Motor;
 
 public class Motors

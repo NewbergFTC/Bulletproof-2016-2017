@@ -9,10 +9,13 @@ import org.opencv.core.Size;
 
 import us.newberg.bulletproof.DriveTrain;
 import us.newberg.bulletproof.lib.Motors;
+import us.newberg.bulletproof.lib.Servos;
+import us.newberg.bulletproof.servos.HopperDoor;
 
 public abstract class BulletproofOpMode extends LinearVisionOpMode
 {
     protected  DriveTrain _driveTrain;
+    protected HopperDoor _hopperDoor;
 
     public BulletproofOpMode()
     {
@@ -20,6 +23,7 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
         // NOTE(Garrison): Don't init any ftc objects here.
 
         _driveTrain = null;
+        _hopperDoor = null;
     }
 
     protected void Init()
@@ -27,6 +31,7 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
         Motors.Init(hardwareMap);
 
         _driveTrain = new DriveTrain(telemetry);
+        _hopperDoor = new HopperDoor(Servos.HopperDoor, telemetry);
     }
 
     protected void CleanUp()

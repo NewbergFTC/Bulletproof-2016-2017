@@ -2,7 +2,7 @@ package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import us.newberg.bulletproof.Flipper;
+import us.newberg.bulletproof.motors.Flipper;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.math.Vector2f;
 
@@ -244,12 +244,7 @@ public class DriverOpMode extends BulletproofOpMode
 
             if (buttonFlipperAuto)
             {
-                int currentPos = Motors.Flipper().GetCurrentTicks();
-                float targetTicks = (float) currentPos + ((float)Motors.TICKS_PER_ROTATION * 7.2f);
-
-                telemetry.addData("Flipper target", targetTicks);
-
-                Motors.Flipper().StartAutoMove(targetTicks);
+                Motors.Flipper().StartAutoMove();
             }
 
             if (hasNewFrame())
