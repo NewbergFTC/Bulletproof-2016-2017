@@ -9,8 +9,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class HopperDoor
 {
-    public static float DEPLOY_POS = 1;
-    public static float CLOSE_POS = 0;
+    public static float DEPLOY_POS = 0.8f;
+    public static float CLOSE_POS = 0.4f;
 
     private Servo _hopperDoor;
 
@@ -40,5 +40,17 @@ public class HopperDoor
     public void Close()
     {
         _hopperDoor.setPosition(CLOSE_POS);
+    }
+
+    public void Toggle()
+    {
+        if (_hopperDoor.getPosition() == CLOSE_POS)
+        {
+            Deploy();
+        }
+        else
+        {
+            Close();
+        }
     }
 }

@@ -216,6 +216,11 @@ public class DriverOpMode extends BulletproofOpMode
 
             boolean buttonCollectorForward = (gamepad2.right_trigger > 0);
             boolean buttonCollectorBack = (gamepad2.left_trigger > 0);
+            boolean buttonPusherLeftToggle = gamepad2.left_bumper;
+            boolean buttonPusherRightToggle = gamepad2.right_bumper;
+            boolean buttonFlipper = gamepad2.a;
+            boolean buttonFlipperAuto = gamepad2.b;
+            boolean buttonHopperToggle = gamepad2.x;
 
             if  (buttonCollectorForward)
             {
@@ -230,8 +235,20 @@ public class DriverOpMode extends BulletproofOpMode
                 Motors.Collector.SetPower(0);
             }
 
-            boolean buttonFlipper = gamepad2.a;
-            boolean buttonFlipperAuto = gamepad2.b;
+            if (buttonHopperToggle)
+            {
+                _hopperDoor.Toggle();
+            }
+
+            if (buttonPusherLeftToggle)
+            {
+                _buttonPusher.ToggleLeft();
+            }
+
+            if (buttonPusherRightToggle)
+            {
+                _buttonPusher.ToggleRight();
+            }
 
             if (buttonFlipper)
             {
@@ -247,12 +264,9 @@ public class DriverOpMode extends BulletproofOpMode
                 _flipper.StartAutoMove();
             }
 
-            if (hasNewFrame())
-            {
-                // TODO(Garrison): Color stuff
-            }
-
             _flipper.Update();
+            _buttonPusher.UpdateTelemetry();
+            _hopperDoor.UpdateTelemetry();
             Update();
         }
     }
