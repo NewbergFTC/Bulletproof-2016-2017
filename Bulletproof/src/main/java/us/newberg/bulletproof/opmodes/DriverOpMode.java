@@ -2,7 +2,7 @@ package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import us.newberg.bulletproof.motors.Flipper;
+import us.newberg.bulletproof.modules.Flipper;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.math.Vector2f;
 
@@ -33,8 +33,6 @@ public class DriverOpMode extends BulletproofOpMode
             // TODO(Garrison): Deadzones
             Vector2f gamepadOneLeft = new Vector2f(gamepad1.left_stick_x, -gamepad1.left_stick_y);
             Vector2f gamepadOneRight = new Vector2f(gamepad1.right_stick_x, gamepad1.right_stick_y);
-
-            Vector2f gamepadTwoLeft = new Vector2f(gamepad2.left_stick_x, gamepad2.left_stick_y);
 
             float gamepadOneLeftAngle = (float) Math.abs(gamepadOneLeft.Normalized().AngleWithXAxis());
             int gamepadOneLeftAngleQuad;
@@ -209,7 +207,9 @@ public class DriverOpMode extends BulletproofOpMode
             telemetry.addData("Left angle and quad", "%f, %d", gamepadOneLeftAngle, gamepadOneLeftAngleQuad);
             _driveTrain.UpdateTelemetry();
 
+            //
             // Gamepad 2
+            //
 
             final float FLIPPER_POWER = 1.0f;
             final float COLLECTOR_POWER = 1.0f;
@@ -219,15 +219,15 @@ public class DriverOpMode extends BulletproofOpMode
 
             if  (buttonCollectorForward)
             {
-                Motors.Collector().SetPower(COLLECTOR_POWER);
+                Motors.Collector.SetPower(COLLECTOR_POWER);
             }
             else if (buttonCollectorBack)
             {
-                Motors.Collector().SetPower(-COLLECTOR_POWER);
+                Motors.Collector.SetPower(-COLLECTOR_POWER);
             }
             else
             {
-                Motors.Collector().SetPower(0);
+                Motors.Collector.SetPower(0);
             }
 
             boolean buttonFlipper = gamepad2.a;
@@ -235,16 +235,16 @@ public class DriverOpMode extends BulletproofOpMode
 
             if (buttonFlipper)
             {
-                Motors.Flipper().SetPower(FLIPPER_POWER);
+                _flipper.SetPower(FLIPPER_POWER);
             }
-            else if (Motors.Flipper().GetState() != Flipper.State.AUTO)
+            else if (_flipper.GetState() != Flipper.State.AUTO)
             {
-                Motors.Flipper().SetPower(0);
+                _flipper.SetPower(0);
             }
 
             if (buttonFlipperAuto)
             {
-                Motors.Flipper().StartAutoMove();
+                _flipper.StartAutoMove();
             }
 
             if (hasNewFrame())
@@ -252,10 +252,7 @@ public class DriverOpMode extends BulletproofOpMode
                 // TODO(Garrison): Color stuff
             }
 
-            telemetry.addData("Flipper current", Motors.Flipper().GetCurrentTicks());
-            telemetry.addData("Flipper State", Motors.Flipper().GetState());
-
-            Motors.Flipper().Update();
+            _flipper.Update();
             Update();
         }
     }

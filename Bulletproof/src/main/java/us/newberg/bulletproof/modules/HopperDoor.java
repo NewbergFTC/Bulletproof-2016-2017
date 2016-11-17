@@ -1,6 +1,8 @@
-package us.newberg.bulletproof.servos;
+package us.newberg.bulletproof.modules;
 
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
  * FTC team 6712 Bulletproof
@@ -12,14 +14,22 @@ public class HopperDoor
 
     private Servo _hopperDoor;
 
-    public HopperDoor(Servo hopperDoor)
+    private Telemetry.Item _teleCurrentPos;
+
+    public HopperDoor(Servo hopperDoor, Telemetry telemetry)
     {
         _hopperDoor = hopperDoor;
+        _teleCurrentPos = telemetry.addData("Door pos:", _hopperDoor.getPosition());
     }
 
     public void UpdateServo(Servo hopperDoor)
     {
         _hopperDoor = hopperDoor;
+    }
+
+    public void UpdateTelemetry()
+    {
+        _teleCurrentPos.setValue(_hopperDoor.getPosition());
     }
 
     public void Deploy()

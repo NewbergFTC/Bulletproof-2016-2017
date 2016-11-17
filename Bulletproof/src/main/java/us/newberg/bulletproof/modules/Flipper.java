@@ -1,6 +1,6 @@
-package us.newberg.bulletproof.motors;
+package us.newberg.bulletproof.modules;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import us.newberg.bulletproof.Motor;
 import us.newberg.bulletproof.lib.Motors;
@@ -8,7 +8,7 @@ import us.newberg.bulletproof.lib.Motors;
 /**
  * FTC team 6712 Bulletproof
  */
-public class Flipper extends Motor
+public class Flipper
 {
     public static float GEAR_RATIO = 7.2f;
 
@@ -22,37 +22,40 @@ public class Flipper extends Motor
     private float _targetTicks;
     private Flipper.State _state;
 
-    public Flipper(DcMotor motor)
+    private Motor _flipperMotor;
+
+    private Telemetry.Item _telState;
+
+    public Flipper(Motor motor, Telemetry telemetry)
     {
-        super(motor);
+        _flipperMotor = motor;
+        _telState = telemetry.addData("Flipper State: ", _state);
     }
 
-    public Flipper(DcMotor motor, boolean hasEncoder)
+    public void UpdateMotor(Motor motor)
     {
-        super(motor, hasEncoder);
+        _flipperMotor = motor;
     }
 
     public void StartAutoMove()
     {
-        float targetTicks = (float) GetCurrentTicks() + ((float)Motors.TICKS_PER_ROTATION * GEAR_RATIO);
+        float targetTicks = (float) _flipperMotor.GetCurrentTicks() + ((float)Motors.TICKS_PER_ROTATION * GEAR_RATIO);
 
         _targetTicks = targetTicks;
         _state = State.AUTO;
     }
 
-    @Override
     public void SetPower(double power)
     {
         _state = State.NOTHING;
-
-        super.SetPower(power);
+        _flipperMotor.SetPower(power);
     }
 
     public void Update()
     {
         if (_state == State.AUTO)
         {
-            int currentTicks = GetCurrentTicks();
+            int currentTicks = _flipperMotor.GetCurrentTicks();
 
             if (currentTicks < _targetTicks)
             {
@@ -64,6 +67,11 @@ public class Flipper extends Motor
                 _state = State.NOTHING;
             }
         }
+    }
+
+    public void UpdateTelemetry()
+    {
+        _telState.setValue(_state);
     }
 
     public Flipper.State GetState()

@@ -2,7 +2,7 @@ package us.newberg.bulletproof;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import static us.newberg.bulletproof.lib.Motors.*;
+import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.math.MathUtil;
 import us.newberg.bulletproof.math.Vector2f;
 import us.newberg.bulletproof.opmodes.BulletproofOpMode;
@@ -22,15 +22,15 @@ public class DriveTrain
 
     public DriveTrain(Telemetry telemetry)
     {
-        FrontLeft().SetPower(0);
-        FrontRight().SetPower(0);
-        BackLeft().SetPower(0);
-        BackRight().SetPower(0);
+        Motors.FrontLeft.SetPower(0);
+        Motors.FrontRight.SetPower(0);
+        Motors.BackLeft.SetPower(0);
+        Motors.BackRight.SetPower(0);
 
-        _teleFrontLeft  = telemetry.addData("FL Wheel", "%.2f", FrontLeft().GetPower());
-        _teleFrontRight = telemetry.addData("FR Wheel", "%.2f", FrontRight().GetPower());
-        _teleBackLeft   = telemetry.addData("BL Wheel", "%.2f", BackLeft().GetPower());
-        _teleBackRight  = telemetry.addData("BR Wheel", "%.2f", BackRight().GetPower());
+        _teleFrontLeft  = telemetry.addData("FL Wheel", "%.2f", Motors.FrontLeft.GetPower());
+        _teleFrontRight = telemetry.addData("FR Wheel", "%.2f", Motors.FrontRight.GetPower());
+        _teleBackLeft   = telemetry.addData("BL Wheel", "%.2f", Motors.BackLeft.GetPower());
+        _teleBackRight  = telemetry.addData("BR Wheel", "%.2f", Motors.BackRight.GetPower());
 
         _driveTrainHelper = new DriveTrainHelper(this);
     }
@@ -40,10 +40,10 @@ public class DriveTrain
      */
     public void StopAll()
     {
-        FrontLeft().SetPower(0);
-        FrontRight().SetPower(0);
-        BackLeft().SetPower(0);
-        BackRight().SetPower(0);
+        Motors.FrontLeft.SetPower(0);
+        Motors.FrontRight.SetPower(0);
+        Motors.BackLeft.SetPower(0);
+        Motors.BackRight.SetPower(0);
     }
 
     /**
@@ -53,7 +53,7 @@ public class DriveTrain
      */
     public Vector2f GetLeftSidePower()
     {
-        Vector2f result = new Vector2f((float) FrontLeft().GetPower(), (float) BackLeft().GetPower());
+        Vector2f result = new Vector2f((float) Motors.FrontLeft.GetPower(), (float) Motors.BackLeft.GetPower());
         return result;
     }
 
@@ -64,17 +64,17 @@ public class DriveTrain
      */
     public Vector2f GetRightSidePower()
     {
-        Vector2f result = new Vector2f((float) FrontRight().GetPower(), (float) BackRight().GetPower());
+        Vector2f result = new Vector2f((float) Motors.FrontRight.GetPower(), (float) Motors.BackRight.GetPower());
         return result;
     }
 
     private double CalculateTicksToMove(float inches, boolean comp)
     {
-        double result = inches * TICKS_TO_INCHES;
+        double result = inches * Motors.TICKS_TO_INCHES;
 
         if (comp)
         {
-            result *= WHEEL_DISTANCE_CORRECTION;
+            result *= Motors.WHEEL_DISTANCE_CORRECTION;
         }
 
         return Math.abs(result);
@@ -86,11 +86,11 @@ public class DriveTrain
 
         if (direction == Direction.NORTH_WEST || direction == Direction.SOUTH_EAST)
         {
-            result = FrontRight().GetCurrentTicks();
+            result = Motors.FrontRight.GetCurrentTicks();
         }
         else
         {
-            result = FrontLeft().GetCurrentTicks();
+            result = Motors.FrontLeft.GetCurrentTicks();
         }
 
         return result;
@@ -238,48 +238,6 @@ public class DriveTrain
         WatchDog.Stop();
         StopAll();
     }
-
-    public void DriveStraight(float power, float inches, Telemetry telemetry, BulletproofOpMode caller)
-            throws InterruptedException
-    {
-        final double TICKS_TO_MOVE = CalculateTicksToMove(inches, true);
-        telemetry.addData("Ticks to move", TICKS_TO_MOVE);
-        telemetry.update();
-        float currentTicks = FrontLeft().GetCurrentTicks();
-        final double TARGET_TICKS = currentTicks + TICKS_TO_MOVE;
-
-        _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
-
-        // TODO(Garrison): Calculate how long it should take to rotate some distance at some power
-        WatchDog.Watch(_driveTrainHelper, 10000);
-
-        while (!MathUtil.FuzzyEquals(currentTicks, TARGET_TICKS, 40)) // Give or take 10 ticks
-        {
-            if (TARGET_TICKS < currentTicks)
-            {
-                Drive(-power, power);
-            }
-            else if (TARGET_TICKS > currentTicks)
-            {
-                Drive(power, -power);
-            }
-            else
-            {
-                break;
-            }
-
-            currentTicks = FrontLeft().GetCurrentTicks();
-            caller.Idle();
-        }
-
-        WatchDog.Stop();
-
-        FrontLeft().SetPower(0);
-        BackRight().SetPower(0);
-        FrontRight().SetPower(0);
-        BackRight().SetPower(0);
-    }
-
     /**
      * Drive with the whole left side at the same power, and the whole right at another constant power
      *
@@ -304,57 +262,10 @@ public class DriveTrain
      */
     public void Drive(Vector2f leftSidePower, Vector2f rightSidePower)
     {
-        FrontLeft().SetPower(leftSidePower.x);
-        BackLeft().SetPower(leftSidePower.y);
-        FrontRight().SetPower(rightSidePower.x);
-        BackRight().SetPower(rightSidePower.y);
-    }
-
-    /**
-     * Rotate the front of the robot by {@param deg}
-     *
-     * Currently doesn't convert between deg and encoder ticks, but will in the future
-     *
-     * @throws InterruptedException For ftc_app to catch, if something should go <em>very</em> wrong
-     * @param deg The angle to rotate in degrees
-     * @param power The target power to turn at 1.0 is full power forward, -1.0 is full power back(inverts {@param deg})
-     */
-    public void Rotate(float power, float deg, BulletproofOpMode caller) throws InterruptedException
-    {
-        final double TICKS_TO_MOVE = deg * DEG_TO_TICKS;
-        float currentTicks = FrontLeft().GetCurrentTicks();
-        final double TARGET_TICKS = currentTicks + TICKS_TO_MOVE;
-
-        _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
-
-        // TODO(Garrison): Calculate how long it should take to rotate some ticks(or degrees) at some power
-        WatchDog.Watch(_driveTrainHelper, 10000);
-
-        while (MathUtil.FuzzyEquals(currentTicks, TARGET_TICKS, 10)) // Give or take 10 ticks
-        {
-            if (TARGET_TICKS > currentTicks)
-            {
-                Drive(power, -power);
-            }
-            else if (TARGET_TICKS < currentTicks)
-            {
-               Drive(-power, power);
-            }
-            else
-            {
-                break;
-            }
-
-            currentTicks = FrontLeft().GetCurrentTicks();
-            caller.Idle();
-        }
-
-        WatchDog.Stop();
-
-        FrontLeft().SetPower(0);
-        BackRight().SetPower(0);
-        FrontRight().SetPower(0);
-        BackRight().SetPower(0);
+        Motors.FrontLeft.SetPower(leftSidePower.x);
+        Motors.BackLeft.SetPower(leftSidePower.y);
+        Motors.FrontRight.SetPower(rightSidePower.x);
+        Motors.BackRight.SetPower(rightSidePower.y);
     }
 
     /**
@@ -364,10 +275,10 @@ public class DriveTrain
      */
     public void UpdateTelemetry()
     {
-        _teleFrontLeft.setValue("%.2f",  FrontLeft().GetPower());
-        _teleFrontRight.setValue("%.2f", FrontRight().GetPower());
-        _teleBackLeft.setValue("%.2f", BackLeft().GetPower());
-        _teleBackRight.setValue("%.2f", BackRight().GetPower());
+        _teleFrontLeft.setValue("%.2f",  Motors.FrontLeft.GetPower());
+        _teleFrontRight.setValue("%.2f", Motors.FrontRight.GetPower());
+        _teleBackLeft.setValue("%.2f", Motors.BackLeft.GetPower());
+        _teleBackRight.setValue("%.2f", Motors.BackRight.GetPower());
     }
 
     private enum HelperTask

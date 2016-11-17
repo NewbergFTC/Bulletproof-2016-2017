@@ -3,9 +3,8 @@ package us.newberg.bulletproof.opmodes;
 import org.lasarobotics.vision.ftc.resq.Beacon;
 
 import us.newberg.bulletproof.Direction;
-import us.newberg.bulletproof.motors.Flipper;
+import us.newberg.bulletproof.modules.Flipper;
 import us.newberg.bulletproof.lib.Motors;
-import us.newberg.bulletproof.lib.Servos;
 
 /**
  * FTC team 6712 Bulletproof
@@ -72,9 +71,9 @@ public class BlueAutoOpMode extends BulletproofOpMode
     protected void Run() throws InterruptedException
     {
         // Launch the balls
-        Motors.Flipper().StartAutoMove();
+        _flipper.StartAutoMove();
 
-        while (Motors.Flipper().GetState() == Flipper.State.AUTO)
+        while (_flipper.GetState() == Flipper.State.AUTO)
         {
             Update();
         }
@@ -84,9 +83,9 @@ public class BlueAutoOpMode extends BulletproofOpMode
         // Release the door
         _hopperDoor.Deploy();
 
-        Motors.Flipper().StartAutoMove();
+        _flipper.StartAutoMove();
 
-        while (Motors.Flipper().GetState() == Flipper.State.AUTO)
+        while (_flipper.GetState() == Flipper.State.AUTO)
         {
             Update();
         }
