@@ -53,19 +53,19 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
     {
         waitForVisionStart();
 
-        setCamera(Cameras.PRIMARY);
+        setCamera(Cameras.SECONDARY);
         setFrameSize(new Size(900, 900));
 
         enableExtension(Extensions.BEACON);
         enableExtension(Extensions.ROTATION);
         enableExtension(Extensions.CAMERA_CONTROL);
 
-        beacon.setAnalysisMethod(Beacon.AnalysisMethod.FAST);
+        beacon.setAnalysisMethod(Beacon.AnalysisMethod.COMPLEX);
 
         beacon.setColorToleranceRed(0);
-        beacon.setColorToleranceBlue(0);
+        beacon.setColorToleranceBlue(-0.1);
 
-        rotation.setIsUsingSecondaryCamera(false);
+        rotation.setIsUsingSecondaryCamera(true);
         rotation.disableAutoRotate();
         rotation.setActivityOrientationFixed(ScreenOrientation.PORTRAIT);
 

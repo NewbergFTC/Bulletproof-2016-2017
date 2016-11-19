@@ -113,7 +113,7 @@ public class DriveTrain
         boolean comp = true;
 
         _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
-
+        
         Vector2f leftPower = new Vector2f();
         Vector2f rightPower = new Vector2f();
 
@@ -228,7 +228,7 @@ public class DriveTrain
                 complete = true;
                 break;
             }
-
+            
             Drive(leftPower, rightPower);
 
             caller.telemetry.addData("Power", power);
