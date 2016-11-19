@@ -35,6 +35,7 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
     protected void Init()
     {
         Motors.Init(hardwareMap);
+        Servos.Init(hardwareMap);
 
         _driveTrain = new DriveTrain(telemetry);
         _hopperDoor = new HopperDoor(Servos.HopperDoor, telemetry);
@@ -80,7 +81,7 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
         CleanUp();
     }
 
-    protected void Update() throws InterruptedException
+    public void Update() throws InterruptedException
     {
 //        telemetry.addData("Beacon Color", beacon.getAnalysis().getColorString());
 //        telemetry.addData("Beacon Center", beacon.getAnalysis().getLocationString());

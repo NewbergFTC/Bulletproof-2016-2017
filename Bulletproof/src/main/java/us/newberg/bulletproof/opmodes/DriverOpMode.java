@@ -242,12 +242,20 @@ public class DriverOpMode extends BulletproofOpMode
 
             if (buttonPusherLeftToggle)
             {
-                _buttonPusher.ToggleLeft();
+                _buttonPusher.DeployLeft();
+            }
+            else
+            {
+                _buttonPusher.CloseLeft();
             }
 
             if (buttonPusherRightToggle)
             {
-                _buttonPusher.ToggleRight();
+                _buttonPusher.DeployRight();
+            }
+            else
+            {
+                _buttonPusher.CloseRight();
             }
 
             if (buttonFlipper)

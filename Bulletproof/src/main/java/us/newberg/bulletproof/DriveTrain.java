@@ -96,6 +96,11 @@ public class DriveTrain
         return result;
     }
 
+    private int GetCurrentTicks()
+    {
+        return GetCurrentTicks(Direction.NORTH);
+    }
+
     // TODO(Garrison): Testing
     public void Drive(Direction direction, float power, float inches, long maxDuration, BulletproofOpMode caller)
             throws InterruptedException
@@ -238,6 +243,60 @@ public class DriveTrain
         WatchDog.Stop();
         StopAll();
     }
+
+    public void Rotate(int direction, float deg, float power, long maxDelay, BulletproofOpMode caller) throws InterruptedException
+    {
+        float currentTicks = GetCurrentTicks();
+        float targetTicks = currentTicks + (deg * (float) Motors.DEG_TO_TICKS);
+
+        boolean complete = false;
+
+        _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
+        WatchDog.Watch(_driveTrainHelper, maxDelay);
+
+        float leftSidePower;
+        float rightSidePower;
+
+        if (direction == -1)
+        {
+            leftSidePower = -power;
+            rightSidePower = power;
+        }
+        else
+        {
+            leftSidePower = power;
+            rightSidePower = -power;
+        }
+
+        Drive(leftSidePower, rightSidePower);
+
+        while (!complete)
+        {
+            currentTicks = GetCurrentTicks();
+
+            if (direction == -1)
+            {
+                if (currentTicks <= targetTicks)
+                {
+                    complete = true;
+                }
+            }
+            else
+            {
+                if (currentTicks >= targetTicks)
+                {
+                    complete = true;
+                }
+            }
+
+            UpdateTelemetry();
+            caller.Update();
+        }
+
+        StopAll();
+        WatchDog.Stop();
+    }
+
     /**
      * Drive with the whole left side at the same power, and the whole right at another constant power
      *

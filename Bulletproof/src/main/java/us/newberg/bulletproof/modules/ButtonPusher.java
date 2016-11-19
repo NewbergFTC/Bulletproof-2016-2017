@@ -9,10 +9,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class ButtonPusher
 {
-    public static float LEFT_DEPLOY_POS = 0.7f;
-    public static float LEFT_CLOSE_POS = 0.2f;
-    public static float RIGHT_DEPLOY_POS = 0.7f;
-    public static float RIGHT_CLOSE_POS = 0.2f;
+    public static float LEFT_DEPLOY_POS = 1f;
+    public static float LEFT_CLOSE_POS = 0.1f;
+    public static float RIGHT_DEPLOY_POS = 0.95f;
+    public static float RIGHT_CLOSE_POS = 0.1f;
 
     private enum State
     {
