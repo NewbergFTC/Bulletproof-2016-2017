@@ -2,6 +2,7 @@ package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import us.newberg.bulletproof.math.MathUtil;
 import us.newberg.bulletproof.modules.Flipper;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.math.Vector2f;
@@ -33,6 +34,8 @@ public class DriverOpMode extends BulletproofOpMode
             // TODO(Garrison): Deadzones
             Vector2f gamepadOneLeft = new Vector2f(gamepad1.left_stick_x, -gamepad1.left_stick_y);
             Vector2f gamepadOneRight = new Vector2f(gamepad1.right_stick_x, gamepad1.right_stick_y);
+
+            boolean fineControls = gamepad1.right_bumper;
 
             float gamepadOneLeftAngle = (float) Math.abs(gamepadOneLeft.Normalized().AngleWithXAxis());
             int gamepadOneLeftAngleQuad;
@@ -70,6 +73,12 @@ public class DriverOpMode extends BulletproofOpMode
 
             float powerY = Math.abs(gamepadOneLeft.y);
             float powerX = Math.abs(gamepadOneLeft.x);
+
+            if (fineControls)
+            {
+                powerX = MathUtil.Mapf(0.0f, 1.0f, 0.0f, 0.5f, powerX);
+                powerY = MathUtil.Mapf(0.0f, 1.0f, 0.0f, 0.5f, powerY);
+            }
 
             switch (gamepadOneLeftAngleQuad)
             {
@@ -192,6 +201,11 @@ public class DriverOpMode extends BulletproofOpMode
             }
 
             powerX = gamepadOneRight.x;
+
+            if (fineControls)
+            {
+                powerX = MathUtil.Mapf(-1.0f, 1.0f, -0.5f, 0.5f, powerX);
+            }
 
             if (Math.abs(gamepadOneRight.x) >= 0.1f )
             {

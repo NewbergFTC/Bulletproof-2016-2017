@@ -27,9 +27,9 @@ public class MathUtil
         return result;
     }
 
-    public static float FeetToInches(float feet)
+    public static float Mapf(float minIn, float maxIn, float minOut, float maxOut, float value)
     {
-        float result = feet * 12.0f;
+        float result = (value - minIn) * (maxOut - minOut) / (maxIn - minIn) + minOut;
 
         return result;
     }
