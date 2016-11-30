@@ -260,12 +260,12 @@ public class DriveTrain
         if (direction == -1)
         {
             leftSidePower = -power;
-            rightSidePower = power;
+            rightSidePower = -power;
         }
         else
         {
             leftSidePower = power;
-            rightSidePower = -power;
+            rightSidePower = power;
         }
 
         Drive(leftSidePower, rightSidePower);
@@ -276,14 +276,14 @@ public class DriveTrain
 
             if (direction == -1)
             {
-                if (currentTicks <= targetTicks)
+                if (currentTicks >= targetTicks)
                 {
                     complete = true;
                 }
             }
             else
             {
-                if (currentTicks >= targetTicks)
+                if (currentTicks <= targetTicks)
                 {
                     complete = true;
                 }

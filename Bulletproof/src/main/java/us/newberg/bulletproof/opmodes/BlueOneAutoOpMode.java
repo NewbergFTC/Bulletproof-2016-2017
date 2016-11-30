@@ -69,7 +69,7 @@ public class BlueOneAutoOpMode extends BulletproofOpMode
         // TODO(Garrison): Move towards the beacon
         _driveTrain.Drive(Direction.SOUTH_EAST, 1f, 12.0f * 6.2f, 10000, this);
 
-        _driveTrain.Rotate(-1, 180, 0.4f, 3000, this);
+        _driveTrain.Rotate(-1, 30, 0.4f, 3000, this); //pooty tang
 
         sleep(250);
 
