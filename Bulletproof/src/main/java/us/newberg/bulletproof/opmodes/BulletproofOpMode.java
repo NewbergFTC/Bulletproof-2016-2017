@@ -60,7 +60,7 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
         enableExtension(Extensions.ROTATION);
         enableExtension(Extensions.CAMERA_CONTROL);
 
-        beacon.setAnalysisMethod(Beacon.AnalysisMethod.COMPLEX);
+        beacon.setAnalysisMethod(Beacon.AnalysisMethod.FAST);
 
         beacon.setColorToleranceRed(0);
         beacon.setColorToleranceBlue(-0.1);

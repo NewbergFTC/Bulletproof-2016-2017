@@ -20,46 +20,6 @@ public class BlueOneAutoOpMode extends BulletproofOpMode
         super.Init();
     }
 
-    /**
-     *
-     *
-     * @return -1 if timeout; 0 if its not blue; 1 if it is
-     * @throws InterruptedException
-     */
-    private int GetRightSideBlue() throws InterruptedException
-    {
-        int result = 0;
-        long totalTimeSlept = 0;
-
-        while (opModeIsActive())
-        {
-            if (hasNewFrame())
-            {
-                Beacon.BeaconAnalysis beaconAnalysis = beacon.getAnalysis();
-
-                result = beaconAnalysis.isRightBlue() ? 1 : 0;
-
-                break;
-            }
-            else
-            {
-                if (totalTimeSlept > 10000)
-                {
-                    result = -1;
-
-                    break;
-                }
-
-                totalTimeSlept += 10;
-                sleep(10);
-            }
-
-            Update();
-        }
-
-        return result;
-    }
-
     @Override
     protected void Run() throws InterruptedException
     {
@@ -85,9 +45,6 @@ public class BlueOneAutoOpMode extends BulletproofOpMode
 //
 //        sleep(100);
 
-        // TODO(Garrison): Move towards the beacon
-        _driveTrain.Drive(Direction.SOUTH_WEST, 1f, 12.0f * 6.2f, 10000, this);
-
         final long FLIPPER_DELAY = 8000;
         final long COLLECTOR_DELAY = 3500;
 
@@ -97,7 +54,7 @@ public class BlueOneAutoOpMode extends BulletproofOpMode
 
         _flipper.SetPower(0);
 
-        Motors.Collector.SetPower(1.0);
+        Motors.Collector.SetPower(-1.0);
 
         sleep(COLLECTOR_DELAY);
 
@@ -109,28 +66,26 @@ public class BlueOneAutoOpMode extends BulletproofOpMode
 
         _flipper.SetPower(0);
 
-        Update();
+        // TODO(Garrison): Move towards the beacon
+        _driveTrain.Drive(Direction.SOUTH_EAST, 1f, 12.0f * 6.2f, 10000, this);
 
-        int colorStatus = GetRightSideBlue();
+        _driveTrain.Rotate(-1, 180, 0.4f, 3000, this);
 
-        telemetry.addData("color status", colorStatus);
-        telemetry.update();
+        sleep(250);
 
-        if (colorStatus == -1)
+        boolean leftSideBlue = beacon.getAnalysis().isLeftBlue();
+
+        if (leftSideBlue)
         {
-            // TODO(Garrison): Error handling
-            throw new RuntimeException("Fuck this");
-        }
-
-        boolean rightSideBlue = (colorStatus == 1);
-
-        if (rightSideBlue)
-        {
-            _buttonPusher.DeployRight();
+            telemetry.addData("Left, mother fucker", 0);
+            _buttonPusher.DeployLeft();
+            _buttonPusher.CloseRight();
         }
         else
         {
-            _buttonPusher.DeployLeft();
+            telemetry.addData("Right", 0);
+            _buttonPusher.DeployRight();
+            _buttonPusher.CloseLeft();
         }
 
         sleep(750);

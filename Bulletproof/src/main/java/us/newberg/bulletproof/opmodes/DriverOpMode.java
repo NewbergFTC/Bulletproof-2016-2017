@@ -76,8 +76,8 @@ public class DriverOpMode extends BulletproofOpMode
 
             if (fineControls)
             {
-                powerX = MathUtil.Mapf(0.0f, 1.0f, 0.0f, 0.5f, powerX);
-                powerY = MathUtil.Mapf(0.0f, 1.0f, 0.0f, 0.5f, powerY);
+                powerX = MathUtil.Mapf(0.0f, 1.0f, 0.0f, 0.4f, powerX);
+                powerY = MathUtil.Mapf(0.0f, 1.0f, 0.0f, 0.4f, powerY);
             }
 
             switch (gamepadOneLeftAngleQuad)
@@ -204,7 +204,7 @@ public class DriverOpMode extends BulletproofOpMode
 
             if (fineControls)
             {
-                powerX = MathUtil.Mapf(-1.0f, 1.0f, -0.5f, 0.5f, powerX);
+                powerX = MathUtil.Mapf(-1.0f, 1.0f, -0.2f, 0.2f, powerX);
             }
 
             if (Math.abs(gamepadOneRight.x) >= 0.1f )
@@ -286,7 +286,6 @@ public class DriverOpMode extends BulletproofOpMode
                 _flipper.StartAutoMove();
             }
 
-            _flipper.Update();
             _buttonPusher.UpdateTelemetry();
             _hopperDoor.UpdateTelemetry();
             Update();

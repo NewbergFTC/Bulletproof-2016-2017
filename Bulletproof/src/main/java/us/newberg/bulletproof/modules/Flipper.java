@@ -10,7 +10,7 @@ import us.newberg.bulletproof.lib.Motors;
  */
 public class Flipper
 {
-    public static float GEAR_RATIO = 7.2f;
+    public static float GEAR_RATIO = 10.55f;
 
     public enum State
     {
@@ -43,30 +43,27 @@ public class Flipper
 
         _targetTicks = targetTicks;
         _state = State.AUTO;
+
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                while (_flipperMotor.GetCurrentTicks() < _targetTicks)
+                {
+                    SetPower(1.0f);
+                }
+
+                SetPower(0);
+                _state = State.NOTHING;
+            }
+        }).run();
     }
 
     public void SetPower(double power)
     {
         _state = State.NOTHING;
         _flipperMotor.SetPower(power);
-    }
-
-    public void Update()
-    {
-        if (_state == State.AUTO)
-        {
-            int currentTicks = _flipperMotor.GetCurrentTicks();
-
-            if (currentTicks < _targetTicks)
-            {
-                SetPower(1.0f);
-            }
-            else
-            {
-                SetPower(0);
-                _state = State.NOTHING;
-            }
-        }
     }
 
     public void UpdateTelemetry()
