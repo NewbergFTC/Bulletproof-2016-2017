@@ -69,9 +69,14 @@ public class BlueOneAutoOpMode extends BulletproofOpMode
         // TODO(Garrison): Move towards the beacon
         _driveTrain.Drive(Direction.SOUTH_EAST, 1f, 12.0f * 6.2f, 10000, this);
 
-        _driveTrain.Rotate(-1, 30, 0.4f, 3000, this); //pooty tang
+        _driveTrain.Drive(0.4f, 0.4f);
+        sleep(500);
+        _driveTrain.StopAll();
 
-        sleep(250);
+        while (!hasNewFrame())
+        {
+
+        }
 
         boolean leftSideBlue = beacon.getAnalysis().isLeftBlue();
 
