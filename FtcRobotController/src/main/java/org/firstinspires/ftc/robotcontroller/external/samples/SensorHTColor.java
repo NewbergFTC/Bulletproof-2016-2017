@@ -52,8 +52,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
+
 @Autonomous(name = "Sensor: HT color", group = "Sensor")
-@Disabled
 public class SensorHTColor extends LinearOpMode {
 
   ColorSensor colorSensor;  // Hardware Device Object
@@ -68,7 +68,7 @@ public class SensorHTColor extends LinearOpMode {
     // values is a reference to the hsvValues array.
     final float values[] = hsvValues;
 
-    // get a reference to the RelativeLayout so we can change the background
+    // get a reference to the tiRelaveLayout so we can change the background
     // color of the Robot Controller app to match the hue detected by the RGB sensor.
     final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(R.id.RelativeLayout);
 
@@ -79,8 +79,11 @@ public class SensorHTColor extends LinearOpMode {
     // bLedOn represents the state of the LED.
     boolean bLedOn = true;
 
+    //boolean redSide = false;
+    //boolean blueSide = false;
+
     // get a reference to our ColorSensor object.
-    colorSensor = hardwareMap.colorSensor.get("color sensor");
+    colorSensor = hardwareMap.colorSensor.get("ColorSensor");
 
     // turn the LED on in the beginning, just so user will know that the sensor is active.
     colorSensor.enableLed(bLedOn);
@@ -121,6 +124,20 @@ public class SensorHTColor extends LinearOpMode {
       // change the background color to match the color detected by the RGB sensor.
       // pass a reference to the hue, saturation, and value array as an argument
       // to the HSVToColor method.
+      //if (colorSensor.red() > 30){
+       //  redSide = !redSide;  //0 is red
+
+      //}
+      //if (colorSensor.blue() > 20){
+         // blueSide = !blueSide; // 1 is blue
+     // }
+      //if  (redSide = true){    //this is for red side and testing left side
+
+    //  }
+     // if (blueSide = true){
+
+     // }
+
       relativeLayout.post(new Runnable() {
         public void run() {
           relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));

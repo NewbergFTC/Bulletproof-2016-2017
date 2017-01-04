@@ -1,11 +1,12 @@
 package us.newberg.bulletproof;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  * FTC team 6712 Bulletproof
  */
-
+@TeleOp(name = "motor", group = "Motor")
 public class Motor
 {
     private final DcMotor _dcMotor;

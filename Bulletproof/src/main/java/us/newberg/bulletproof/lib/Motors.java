@@ -5,7 +5,7 @@ package us.newberg.bulletproof.lib;
  */
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+import com.qualcomm.robotcore.hardware.Servo;
 import us.newberg.bulletproof.Motor;
 
 public class Motors
@@ -24,16 +24,37 @@ public class Motors
     private static Motor _backLeft;
     private static Motor _backRight;
     private static Motor _collector;
+    private static Motor _flipper;
+    private static Motor _lifter;
 
     public static void Init(HardwareMap hardwareMap)
     {
-        _frontLeft = new Motor(hardwareMap.dcMotor.get("frontLeft"), true);
+        _frontLeft = new Motor(hardwareMap.dcMotor.get("frontLeft"), false);
         _frontRight = new Motor(hardwareMap.dcMotor.get("frontRight"), false);
         _backLeft = new Motor(hardwareMap.dcMotor.get("backLeft"), false);
         _backRight = new Motor(hardwareMap.dcMotor.get("backRight"), false);
         _collector = new Motor(hardwareMap.dcMotor.get("collector"), false);
+        _flipper = new Motor(hardwareMap.dcMotor.get("flipper"), false);
+        _lifter = new Motor(hardwareMap.dcMotor.get("lifter"), false);
+    }
+    public static Motor Lifter()
+    {
+        if (_lifter == null)
+        {
+            throw new AssertionError("Lifter Motor null");
+        }
+        return _lifter;
     }
 
+    public static Motor Flipper()
+    {
+        if (_flipper == null)
+        {
+            throw new AssertionError("Flipper motor null");
+        }
+
+        return _flipper;
+    }
     public static Motor Collector()
     {
         if (_collector == null)

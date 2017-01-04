@@ -1,5 +1,7 @@
 package us.newberg.bulletproof;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import static us.newberg.bulletproof.lib.Motors.*;
@@ -10,7 +12,7 @@ import us.newberg.bulletproof.opmodes.BulletproofOpMode;
 /**
  * FTC team 6712 Bulletproof
  */
-
+@TeleOp(name = "DriveTrain", group = "Driver")
 public class DriveTrain
 {
     private Telemetry.Item _teleFrontLeft;

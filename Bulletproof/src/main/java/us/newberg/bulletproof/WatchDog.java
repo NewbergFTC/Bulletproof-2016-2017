@@ -1,10 +1,13 @@
 package us.newberg.bulletproof;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * FTC team 6712 Bulletproof
  */
+@Autonomous(name = "WatchDog", group = "Sensor")
 public class WatchDog
 {
     private static final AtomicBoolean _shouldStop = new AtomicBoolean(false);
