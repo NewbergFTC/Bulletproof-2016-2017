@@ -1,9 +1,10 @@
-package us.newberg.bulletproof;
+package us.newberg.bulletproof.modules;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import us.newberg.bulletproof.Direction;
+import us.newberg.bulletproof.WatchDog;
 import us.newberg.bulletproof.lib.Motors;
-import us.newberg.bulletproof.math.MathUtil;
 import us.newberg.bulletproof.math.Vector2f;
 import us.newberg.bulletproof.opmodes.BulletproofOpMode;
 

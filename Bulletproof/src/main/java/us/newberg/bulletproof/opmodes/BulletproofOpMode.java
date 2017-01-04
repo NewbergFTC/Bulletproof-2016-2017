@@ -6,8 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import com.qualcomm.robotcore.hardware.CompassSensor;
-
 import org.lasarobotics.vision.android.Cameras;
 import org.lasarobotics.vision.ftc.resq.Beacon;
 import org.lasarobotics.vision.opmode.LinearVisionOpMode;
@@ -15,7 +13,7 @@ import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
 import org.lasarobotics.vision.util.ScreenOrientation;
 import org.opencv.core.Size;
 
-import us.newberg.bulletproof.DriveTrain;
+import us.newberg.bulletproof.modules.DriveTrain;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.lib.Servos;
 import us.newberg.bulletproof.math.Quaternion;
