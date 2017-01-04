@@ -54,11 +54,11 @@ public class BlueOneAutoOpMode extends BulletproofOpMode
 
         _flipper.SetPower(0);
 
-        Motors.Collector.SetPower(-1.0);
+        Motors.Collector.setPower(-1.0);
 
         sleep(COLLECTOR_DELAY);
 
-        Motors.Collector.SetPower(0);
+        Motors.Collector.setPower(0);
 
         _flipper.SetPower(1);
 

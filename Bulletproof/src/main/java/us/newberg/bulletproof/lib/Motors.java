@@ -7,8 +7,6 @@ package us.newberg.bulletproof.lib;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import us.newberg.bulletproof.Motor;
-
 public class Motors
 {
     public static final double WHEEL_CIRCUMFRENCE = Math.PI * 4;               // inches
@@ -19,34 +17,20 @@ public class Motors
     public static final double INCHES_TO_TICKS    = WHEEL_CIRCUMFRENCE / TICKS_PER_ROTATION;  // in / ticks
     public static final double WHEEL_DISTANCE_CORRECTION = 1.414213526373095; // sqrt(2)
 
-    public static DcMotor _FrontLeft;
-    public static DcMotor _FrontRight;
-    public static DcMotor _BackLeft;
-    public static DcMotor _BackRight;
-    public static DcMotor _Collector;
-    public static DcMotor _Flipper;
-
-    public static Motor FrontLeft;
-    public static Motor FrontRight;
-    public static Motor BackLeft;
-    public static Motor BackRight;
-    public static Motor Collector;
-    public static Motor Flipper;
+    public static DcMotor FrontLeft;
+    public static DcMotor FrontRight;
+    public static DcMotor BackLeft;
+    public static DcMotor BackRight;
+    public static DcMotor Collector;
+    public static DcMotor Flipper;
 
     public static void Init(HardwareMap hardwareMap)
     {
-        _FrontLeft = hardwareMap.dcMotor.get("frontLeft");
-        _FrontRight = hardwareMap.dcMotor.get("frontRight");
-        _BackLeft = hardwareMap.dcMotor.get("backLeft");
-        _BackRight = hardwareMap.dcMotor.get("backRight");
-        _Collector = hardwareMap.dcMotor.get("collector");
-        _Flipper = hardwareMap.dcMotor.get("flipper");
-
-        FrontLeft = new Motor(_FrontLeft, true);
-        FrontRight = new Motor(_FrontRight, true);
-        BackLeft = new Motor(_BackLeft, false);
-        BackRight = new Motor(_BackRight, false);
-        Collector = new Motor(_Collector, false);
-        Flipper = new Motor(_Flipper, true);
+        FrontLeft = hardwareMap.dcMotor.get("frontLeft");
+        FrontRight = hardwareMap.dcMotor.get("frontRight");
+        BackLeft = hardwareMap.dcMotor.get("backLeft");
+        BackRight = hardwareMap.dcMotor.get("backRight");
+        Collector = hardwareMap.dcMotor.get("collector");
+        Flipper = hardwareMap.dcMotor.get("flipper");
     }
 }

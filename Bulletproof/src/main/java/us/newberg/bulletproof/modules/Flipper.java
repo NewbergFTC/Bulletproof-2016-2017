@@ -1,8 +1,9 @@
 package us.newberg.bulletproof.modules;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import us.newberg.bulletproof.Motor;
 import us.newberg.bulletproof.lib.Motors;
 
 /**
@@ -22,24 +23,24 @@ public class Flipper
     private float _targetTicks;
     private Flipper.State _state;
 
-    private Motor _flipperMotor;
+    private DcMotor _flipperMotor;
 
     private Telemetry.Item _telState;
 
-    public Flipper(Motor motor, Telemetry telemetry)
+    public Flipper(DcMotor motor, Telemetry telemetry)
     {
         _flipperMotor = motor;
         _telState = telemetry.addData("Flipper State: ", _state);
     }
 
-    public void UpdateMotor(Motor motor)
+    public void UpdateMotor(DcMotor motor)
     {
         _flipperMotor = motor;
     }
 
     public void StartAutoMove()
     {
-        float targetTicks = (float) _flipperMotor.GetCurrentTicks() + ((float)Motors.TICKS_PER_ROTATION * GEAR_RATIO);
+        float targetTicks = (float) _flipperMotor.getCurrentPosition() + ((float)Motors.TICKS_PER_ROTATION * GEAR_RATIO);
 
         _targetTicks = targetTicks;
         _state = State.AUTO;
@@ -49,7 +50,7 @@ public class Flipper
             @Override
             public void run()
             {
-                while (_flipperMotor.GetCurrentTicks() < _targetTicks)
+                while (_flipperMotor.getCurrentPosition() < _targetTicks)
                 {
                     SetPower(1.0f);
                 }
@@ -63,7 +64,7 @@ public class Flipper
     public void SetPower(double power)
     {
         _state = State.NOTHING;
-        _flipperMotor.SetPower(power);
+        _flipperMotor.setPower(power);
     }
 
     public void UpdateTelemetry()

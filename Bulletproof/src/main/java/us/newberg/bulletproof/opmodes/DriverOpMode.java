@@ -238,20 +238,15 @@ public class DriverOpMode extends BulletproofOpMode
 
             if  (buttonCollectorForward)
             {
-                Motors.Collector.SetPower(COLLECTOR_POWER);
+                Motors.Collector.setPower(COLLECTOR_POWER);
             }
             else if (buttonCollectorBack)
             {
-                Motors.Collector.SetPower(-COLLECTOR_POWER);
+                Motors.Collector.setPower(-COLLECTOR_POWER);
             }
             else
             {
-                Motors.Collector.SetPower(0);
-            }
-
-            if (buttonHopperToggle)
-            {
-                _hopperDoor.Toggle();
+                Motors.Collector.setPower(0);
             }
 
             if (buttonPusherLeftToggle)
@@ -286,8 +281,7 @@ public class DriverOpMode extends BulletproofOpMode
                 _flipper.StartAutoMove();
             }
 
-            _buttonPusher.UpdateTelemetry();
-            _hopperDoor.UpdateTelemetry();
+            //_buttonPusher.UpdateTelemetry();
             Update();
         }
     }

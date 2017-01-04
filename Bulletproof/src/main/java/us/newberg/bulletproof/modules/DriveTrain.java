@@ -23,15 +23,15 @@ public class DriveTrain
 
     public DriveTrain(Telemetry telemetry)
     {
-        Motors.FrontLeft.SetPower(0);
-        Motors.FrontRight.SetPower(0);
-        Motors.BackLeft.SetPower(0);
-        Motors.BackRight.SetPower(0);
+        Motors.FrontLeft.setPower(0);
+        Motors.FrontRight.setPower(0);
+        Motors.BackLeft.setPower(0);
+        Motors.BackRight.setPower(0);
 
-        _teleFrontLeft  = telemetry.addData("FL Wheel", "%.2f", Motors.FrontLeft.GetPower());
-        _teleFrontRight = telemetry.addData("FR Wheel", "%.2f", Motors.FrontRight.GetPower());
-        _teleBackLeft   = telemetry.addData("BL Wheel", "%.2f", Motors.BackLeft.GetPower());
-        _teleBackRight  = telemetry.addData("BR Wheel", "%.2f", Motors.BackRight.GetPower());
+        _teleFrontLeft  = telemetry.addData("FL Wheel", "%.2f", Motors.FrontLeft.getPower());
+        _teleFrontRight = telemetry.addData("FR Wheel", "%.2f", Motors.FrontRight.getPower());
+        _teleBackLeft   = telemetry.addData("BL Wheel", "%.2f", Motors.BackLeft.getPower());
+        _teleBackRight  = telemetry.addData("BR Wheel", "%.2f", Motors.BackRight.getPower());
 
         _driveTrainHelper = new DriveTrainHelper(this);
     }
@@ -41,10 +41,10 @@ public class DriveTrain
      */
     public void StopAll()
     {
-        Motors.FrontLeft.SetPower(0);
-        Motors.FrontRight.SetPower(0);
-        Motors.BackLeft.SetPower(0);
-        Motors.BackRight.SetPower(0);
+        Motors.FrontLeft.setPower(0);
+        Motors.FrontRight.setPower(0);
+        Motors.BackLeft.setPower(0);
+        Motors.BackRight.setPower(0);
     }
 
     /**
@@ -54,7 +54,7 @@ public class DriveTrain
      */
     public Vector2f GetLeftSidePower()
     {
-        Vector2f result = new Vector2f((float) Motors.FrontLeft.GetPower(), (float) Motors.BackLeft.GetPower());
+        Vector2f result = new Vector2f((float) Motors.FrontLeft.getPower(), (float) Motors.BackLeft.getPower());
         return result;
     }
 
@@ -65,7 +65,7 @@ public class DriveTrain
      */
     public Vector2f GetRightSidePower()
     {
-        Vector2f result = new Vector2f((float) Motors.FrontRight.GetPower(), (float) Motors.BackRight.GetPower());
+        Vector2f result = new Vector2f((float) Motors.FrontRight.getPower(), (float) Motors.BackRight.getPower());
         return result;
     }
 
@@ -87,11 +87,11 @@ public class DriveTrain
 
         if (direction == Direction.NORTH_WEST || direction == Direction.SOUTH_EAST)
         {
-            result = Motors.FrontRight.GetCurrentTicks();
+            result = Motors.FrontRight.getCurrentPosition();
         }
         else
         {
-            result = Motors.FrontLeft.GetCurrentTicks();
+            result = Motors.FrontLeft.getCurrentPosition();
         }
 
         return result;
@@ -322,10 +322,10 @@ public class DriveTrain
      */
     public void Drive(Vector2f leftSidePower, Vector2f rightSidePower)
     {
-        Motors.FrontLeft.SetPower(leftSidePower.x);
-        Motors.BackLeft.SetPower(leftSidePower.y);
-        Motors.FrontRight.SetPower(rightSidePower.x);
-        Motors.BackRight.SetPower(rightSidePower.y);
+        Motors.FrontLeft.setPower(leftSidePower.x);
+        Motors.BackLeft.setPower(leftSidePower.y);
+        Motors.FrontRight.setPower(rightSidePower.x);
+        Motors.BackRight.setPower(rightSidePower.y);
     }
 
     /**
@@ -335,10 +335,10 @@ public class DriveTrain
      */
     public void UpdateTelemetry()
     {
-        _teleFrontLeft.setValue("%.2f",  Motors.FrontLeft.GetPower());
-        _teleFrontRight.setValue("%.2f", Motors.FrontRight.GetPower());
-        _teleBackLeft.setValue("%.2f", Motors.BackLeft.GetPower());
-        _teleBackRight.setValue("%.2f", Motors.BackRight.GetPower());
+        _teleFrontLeft.setValue("%.2f",  Motors.FrontLeft.getPower());
+        _teleFrontRight.setValue("%.2f", Motors.FrontRight.getPower());
+        _teleBackLeft.setValue("%.2f", Motors.BackLeft.getPower());
+        _teleBackRight.setValue("%.2f", Motors.BackRight.getPower());
     }
 
     private enum HelperTask

@@ -1,11 +1,5 @@
 package us.newberg.bulletproof.opmodes;
 
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-
 import org.lasarobotics.vision.android.Cameras;
 import org.lasarobotics.vision.ftc.resq.Beacon;
 import org.lasarobotics.vision.opmode.LinearVisionOpMode;
@@ -16,15 +10,12 @@ import org.opencv.core.Size;
 import us.newberg.bulletproof.modules.DriveTrain;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.lib.Servos;
-import us.newberg.bulletproof.math.Quaternion;
 import us.newberg.bulletproof.modules.ButtonPusher;
 import us.newberg.bulletproof.modules.Flipper;
-import us.newberg.bulletproof.modules.HopperDoor;
 
 public abstract class BulletproofOpMode extends LinearVisionOpMode // implements SensorEventListener
 {
     protected DriveTrain _driveTrain;
-    protected HopperDoor _hopperDoor;
     protected Flipper _flipper;
     protected ButtonPusher _buttonPusher;
 
@@ -40,7 +31,6 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode // implements
         // NOTE(Garrison): Don't init any ftc objects here.
 
         _driveTrain = null;
-        _hopperDoor = null;
         _flipper = null;
         _buttonPusher = null;
 
@@ -56,7 +46,6 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode // implements
         Servos.Init(hardwareMap);
 
         _driveTrain = new DriveTrain(telemetry);
-        _hopperDoor = new HopperDoor(Servos.HopperDoor, telemetry);
         _flipper = new Flipper(Motors.Flipper, telemetry);
         _buttonPusher = new ButtonPusher(Servos.BeaconLeft, Servos.BeaconRight, telemetry);
 
