@@ -1,6 +1,7 @@
 package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.lasarobotics.vision.ftc.resq.Beacon;
 
@@ -12,7 +13,8 @@ import us.newberg.bulletproof.lib.Motors;
  */
 
 @Autonomous(name = "Red Main", group = "Red")
-public class RedOneAutoOpMode extends BulletproofOpMode
+@Disabled
+public class OldRedOneAutoOpMode extends BulletproofOpMode
 {
     private int GetRightSideBlue() throws InterruptedException
     {

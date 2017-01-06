@@ -1,6 +1,7 @@
 package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.lasarobotics.vision.ftc.resq.Beacon;
 
@@ -12,7 +13,8 @@ import us.newberg.bulletproof.modules.Flipper;
  * FTC team 6712 Bulletproof
  */
 @Autonomous(name = "Blue Main", group = "Blue")
-public class BlueOneAutoOpMode extends BulletproofOpMode
+@Disabled
+public class OldBlueOneAutoOpMode extends BulletproofOpMode
 {
     @Override
     protected void Init()
@@ -89,6 +91,7 @@ public class BlueOneAutoOpMode extends BulletproofOpMode
         else
         {
             telemetry.addData("Right", 0);
+
             _buttonPusher.DeployRight();
             _buttonPusher.CloseLeft();
         }
