@@ -16,9 +16,9 @@ public class BlueShootMoveSideOpMode extends BulletproofOpMode
     {
         _flipper.AutoMoveBlocking(this);
 
-        Motors.Collector.setPower(-1.0f);
+//        Motors.Collector.setPower(-1.0f);
         sleep(3000);
-        Motors.Collector.setPower(0);
+//        Motors.Collector.setPower(0);
 
         _flipper.AutoMoveBlocking(this);
 
