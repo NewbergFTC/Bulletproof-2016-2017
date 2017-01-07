@@ -234,7 +234,6 @@ public class DriverOpMode extends BulletproofOpMode
             boolean buttonPusherRightToggle = gamepad2.right_bumper;
             boolean buttonFlipper = gamepad2.a;
             boolean buttonFlipperAuto = gamepad2.b;
-            boolean buttonHopperToggle = gamepad2.x;
 
             if  (buttonCollectorForward)
             {

@@ -4,14 +4,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import us.newberg.bulletproof.WatchDog;
 import us.newberg.bulletproof.lib.Motors;
+import us.newberg.bulletproof.opmodes.BulletproofOpMode;
 
 /**
  * FTC team 6712 Bulletproof
  */
 public class Flipper
 {
-    public static float GEAR_RATIO = 10.55f;
+    public static float GEAR_RATIO = 10.9f;
 
     public enum State
     {
@@ -22,6 +24,7 @@ public class Flipper
 
     private float _targetTicks;
     private Flipper.State _state;
+    private FlipperHelper _helper;
 
     private DcMotor _flipperMotor;
 
@@ -29,6 +32,7 @@ public class Flipper
 
     public Flipper(DcMotor motor, Telemetry telemetry)
     {
+        _helper = new FlipperHelper(this);
         _flipperMotor = motor;
         _telState = telemetry.addData("Flipper State: ", _state);
     }
@@ -36,6 +40,22 @@ public class Flipper
     public void UpdateMotor(DcMotor motor)
     {
         _flipperMotor = motor;
+    }
+
+    public void AutoMoveBlocking(BulletproofOpMode caller) throws InterruptedException
+    {
+        _helper.SetTask(HelperTask.STOP);
+        WatchDog.Watch(_helper, 10000);
+
+        StartAutoMove();
+
+        while (GetState() == Flipper.State.AUTO)
+        {
+            caller.sleep(1);
+            caller.Update();
+        }
+
+        WatchDog.Stop();
     }
 
     public void StartAutoMove()
@@ -75,5 +95,55 @@ public class Flipper
     public Flipper.State GetState()
     {
         return _state;
+    }
+
+    private enum HelperTask
+    {
+        NONE,
+        COMPLETE,
+        STOP,
+    }
+
+    private class FlipperHelper implements Runnable
+    {
+        private Flipper _flipper;
+        private HelperTask _task;
+
+        private FlipperHelper(Flipper target)
+        {
+            _flipper = target;
+            _task = HelperTask.NONE;
+        }
+
+        private void SetTask(HelperTask task)
+        {
+            _task = task;
+        }
+
+        public HelperTask GetTask()
+        {
+            return _task;
+        }
+
+        private void StopAll()
+        {
+            _flipper.SetPower(0);
+        }
+
+        @Override
+        public void run()
+        {
+            switch (_task)
+            {
+                default:
+                case NONE:
+                    break;
+
+                case STOP:
+                    StopAll();
+                    SetTask(HelperTask.COMPLETE);
+                    break;
+            }
+        }
     }
 }

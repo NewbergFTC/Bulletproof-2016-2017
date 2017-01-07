@@ -290,6 +290,8 @@ public class DriveTrain
                 }
             }
 
+            caller.telemetry.addData("Current: ", currentTicks);
+            caller.telemetry.addData("Target: ", targetTicks);
             UpdateTelemetry();
             caller.Update();
         }
