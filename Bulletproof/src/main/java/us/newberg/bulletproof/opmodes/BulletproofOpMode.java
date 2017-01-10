@@ -19,12 +19,6 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode // implements
     protected Flipper _flipper;
     protected ButtonPusher _buttonPusher;
 
-//    protected SensorManager _sensorManager;
-//    protected Sensor _rotationSensor;
-//
-//    protected float[] _refRotation;
-//    protected float[] _rotation;
-
     public BulletproofOpMode()
     {
         super();
@@ -33,11 +27,6 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode // implements
         _driveTrain = null;
         _flipper = null;
         _buttonPusher = null;
-
-//        _sensorManager = null;
-//        _rotationSensor = null;
-//
-//        _rotation = null;
     }
 
     protected void Init()
@@ -48,32 +37,7 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode // implements
         _driveTrain = new DriveTrain(telemetry);
         _flipper = new Flipper(Motors.Flipper, telemetry);
         _buttonPusher = new ButtonPusher(Servos.BeaconLeft, Servos.BeaconRight, telemetry);
-
-//        _sensorManager = (SensorManager) hardwareMap.appContext.getSystemService(Context.SENSOR_SERVICE);
-//        _rotationSensor = _sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-//
-//        _refRotation.x = 0;
-//        _refRotation.y = 0;
-//        _refRotation.z = 0;
-//        _refRotation.w = 0;
-//
-//        _sensorManager.registerListener(this, _rotationSensor, SensorManager.SENSOR_DELAY_GAME);
     }
-
-//    @Override
-//    public void onSensorChanged(SensorEvent event)
-//    {
-//        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR)
-//        {
-//
-//        }
-//    }
-//
-//    @Override
-//    public void onAccuracyChanged(Sensor sensor, int accuracy)
-//    {
-//
-//    }
 
     protected void CleanUp()
     {

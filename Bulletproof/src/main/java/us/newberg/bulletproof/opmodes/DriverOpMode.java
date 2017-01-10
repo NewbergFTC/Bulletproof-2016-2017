@@ -280,7 +280,6 @@ public class DriverOpMode extends BulletproofOpMode
                 _flipper.StartAutoMove();
             }
 
-            //_buttonPusher.UpdateTelemetry();
             Update();
         }
     }
