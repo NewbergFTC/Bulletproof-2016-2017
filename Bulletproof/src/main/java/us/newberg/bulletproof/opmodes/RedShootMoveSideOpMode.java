@@ -14,13 +14,7 @@ public class RedShootMoveSideOpMode extends BulletproofOpMode
     @Override
     protected void Run() throws InterruptedException
     {
-        _flipper.StartAutoMove();
-
-        while (_flipper.GetState() == Flipper.State.AUTO)
-        {
-            sleep(1);
-            Update();
-        }
+		_flipper.AutoMoveBlocking(this);
 
         _driveTrain.Drive(Direction.NORTH_WEST, 0.5f, 4.0f * 12.0f, 5000, this);
         sleep(500);

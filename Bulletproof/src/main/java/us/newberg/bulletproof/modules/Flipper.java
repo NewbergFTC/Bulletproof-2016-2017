@@ -47,7 +47,7 @@ public class Flipper
         _helper.SetTask(HelperTask.STOP);
         WatchDog.Watch(_helper, 10000);
 
-        StartAutoMove();
+        StartAutoMove(caller);
 
         while (GetState() == Flipper.State.AUTO)
         {
@@ -58,7 +58,7 @@ public class Flipper
         WatchDog.Stop();
     }
 
-    public void StartAutoMove()
+    public void StartAutoMove(BulletproofOpMode caller)
     {
         float targetTicks = (float) _flipperMotor.getCurrentPosition() + ((float)Motors.TICKS_PER_ROTATION * GEAR_RATIO);
 
@@ -78,7 +78,9 @@ public class Flipper
                 SetPower(0);
                 _state = State.NOTHING;
             }
-        }).run();
+        }).start();
+
+        caller.telemetry.addData("AutoMoveReturn", 1);
     }
 
     public void SetPower(double power)

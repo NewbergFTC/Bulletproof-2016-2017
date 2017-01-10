@@ -149,11 +149,11 @@ public class DriverOpMode extends BulletproofOpMode
 
                         _rightDrivePower.x = -powerX;
                         _rightDrivePower.y = powerX;
-                    }
+					}
                     else if (gamepadOneLeftAngle > 30 && gamepadOneLeftAngle < 70)
                     {
                         // Back Left
-                        _leftDrivePower.x = -powerY;
+						_leftDrivePower.x = -powerY;
                         _leftDrivePower.y = 0;
 
                         _rightDrivePower.x = 0;
@@ -277,7 +277,7 @@ public class DriverOpMode extends BulletproofOpMode
 
             if (buttonFlipperAuto)
             {
-                _flipper.StartAutoMove();
+                _flipper.StartAutoMove(this);
             }
 
             Update();
