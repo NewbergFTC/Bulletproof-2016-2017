@@ -30,7 +30,7 @@ public class VisionTestOpMode extends BulletproofOpMode
                     _buttonPusher.CloseLeft();
                 }
 
-                sleep(1000);
+                sleep(500);
             }
 
             Update();

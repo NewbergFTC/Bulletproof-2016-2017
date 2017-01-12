@@ -13,7 +13,7 @@ import us.newberg.bulletproof.lib.Servos;
 import us.newberg.bulletproof.modules.ButtonPusher;
 import us.newberg.bulletproof.modules.Flipper;
 
-public abstract class BulletproofOpMode extends LinearVisionOpMode // implements SensorEventListener
+public abstract class BulletproofOpMode extends LinearVisionOpMode
 {
     protected DriveTrain _driveTrain;
     protected Flipper _flipper;
@@ -41,7 +41,7 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode // implements
 
     protected void CleanUp()
     {
-
+		// TODO(Garrison): Do we really need this?
     }
 
     @Override
