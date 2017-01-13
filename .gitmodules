@@ -1,3 +1,6 @@
 [submodule "ftc-vision"]
 	path = ftc-vision
 	url = https://github.com/lasarobotics/ftcvision
+[submodule "NewbergCommon"]
+	path = NewbergCommon
+	url = https://github.com/NewbergFTC/NewbergCommon.git

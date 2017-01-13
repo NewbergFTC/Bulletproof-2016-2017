@@ -15,4 +15,5 @@ android {
     buildToolsVersion '23.0.3'
 }
 dependencies {
+    compile project(':NewbergCommon')
 }

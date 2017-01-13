@@ -3,9 +3,9 @@ package us.newberg.bulletproof.modules;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import us.newberg.bulletproof.Direction;
-import us.newberg.bulletproof.WatchDog;
 import us.newberg.bulletproof.lib.Motors;
-import us.newberg.bulletproof.math.Vector2f;
+import us.or.k12.newberg.newbergcommon.math.Vector2f;
+import us.or.k12.newberg.newbergcommon.WatchDog;
 import us.newberg.bulletproof.opmodes.BulletproofOpMode;
 
 /**
@@ -21,6 +21,8 @@ public class DriveTrain
 
     private DriveTrainHelper _driveTrainHelper;
 
+    private WatchDog _watchDog;
+
     public DriveTrain(Telemetry telemetry)
     {
         Motors.FrontLeft.setPower(0);
@@ -34,6 +36,7 @@ public class DriveTrain
         _teleBackRight  = telemetry.addData("BR Wheel", "%.2f", Motors.BackRight.getPower());
 
         _driveTrainHelper = new DriveTrainHelper(this);
+        _watchDog = new WatchDog();
     }
 
     /**
@@ -206,7 +209,7 @@ public class DriveTrain
         int currentTicks = GetCurrentTicks(direction);
         double targetTicks = (double) currentTicks + (CalculateTicksToMove(inches, comp) * reverse);
 
-        WatchDog.Watch(_driveTrainHelper, maxDuration);
+        _watchDog.Watch(_driveTrainHelper, maxDuration);
         while (!complete)
         {
             currentTicks = GetCurrentTicks(direction);
@@ -241,7 +244,7 @@ public class DriveTrain
             caller.waitOneFullHardwareCycle();
         }
 
-        WatchDog.Stop();
+        _watchDog.Stop();
         StopAll();
     }
 
@@ -253,7 +256,7 @@ public class DriveTrain
         boolean complete = false;
 
         _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
-        WatchDog.Watch(_driveTrainHelper, maxDelay);
+        _watchDog.Watch(_driveTrainHelper, maxDelay);
 
         float leftSidePower;
         float rightSidePower;
@@ -297,7 +300,7 @@ public class DriveTrain
         }
 
         StopAll();
-        WatchDog.Stop();
+        _watchDog.Stop();
     }
 
     /**

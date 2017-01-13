@@ -2,10 +2,11 @@ package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import us.newberg.bulletproof.math.MathUtil;
+
 import us.newberg.bulletproof.modules.Flipper;
 import us.newberg.bulletproof.lib.Motors;
-import us.newberg.bulletproof.math.Vector2f;
+import us.or.k12.newberg.newbergcommon.math.Vector2f;
+import us.or.k12.newberg.newbergcommon.math.MathUtil;
 
 /**
  * FTC team 6712 Bulletproof

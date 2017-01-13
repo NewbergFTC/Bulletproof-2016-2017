@@ -4,9 +4,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import us.newberg.bulletproof.WatchDog;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.opmodes.BulletproofOpMode;
+import us.or.k12.newberg.newbergcommon.WatchDog;
+
 
 /**
  * FTC team 6712 Bulletproof
@@ -30,11 +31,14 @@ public class Flipper
 
     private Telemetry.Item _telState;
 
+    private WatchDog _watchDog;
+
     public Flipper(DcMotor motor, Telemetry telemetry)
     {
         _helper = new FlipperHelper(this);
         _flipperMotor = motor;
         _telState = telemetry.addData("Flipper State: ", _state);
+        _watchDog = new WatchDog();
     }
 
     public void UpdateMotor(DcMotor motor)
@@ -45,7 +49,7 @@ public class Flipper
     public void AutoMoveBlocking(BulletproofOpMode caller) throws InterruptedException
     {
         _helper.SetTask(HelperTask.STOP);
-        WatchDog.Watch(_helper, 10000);
+        _watchDog.Watch(_helper, 10000);
 
         StartAutoMove();
 
@@ -55,7 +59,7 @@ public class Flipper
             caller.Update();
         }
 
-        WatchDog.Stop();
+        _watchDog.Stop();
     }
 
     public void StartAutoMove()

@@ -3,6 +3,7 @@ include ':Bulletproof'
 include ':opencv-java'
 include ':ftc-visionlib'
 include ':ftc-cameratest'
+include ':NewbergCommon'
 
 project(':opencv-java').projectDir = new File('ftc-vision/opencv-java')
 project(':ftc-visionlib').projectDir = new File('ftc-vision/ftc-visionlib')
