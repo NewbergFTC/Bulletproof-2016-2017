@@ -11,7 +11,6 @@ import us.newberg.bulletproof.opmodes.BulletproofOpMode;
 /**
  * FTC team 6712 Bulletproof
  */
-
 public class DriveTrain
 {
     private Telemetry.Item _teleFrontLeft;
@@ -105,7 +104,6 @@ public class DriveTrain
         return GetCurrentTicks(Direction.NORTH);
     }
 
-    // TODO(Garrison): Testing
     public void Drive(Direction direction, float power, float inches, long maxDuration, BulletproofOpMode caller)
             throws InterruptedException
     {

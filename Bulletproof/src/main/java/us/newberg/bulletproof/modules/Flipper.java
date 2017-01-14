@@ -71,15 +71,16 @@ public class Flipper
 
         new Thread(new Runnable()
         {
-            @Override
+         	@Override
             public void run()
             {
                 while (_flipperMotor.getCurrentPosition() < _targetTicks)
                 {
                     SetPower(1.0f);
+
+        			_state = State.AUTO;
                 }
 
-                SetPower(0);
                 _state = State.NOTHING;
             }
         }).start();
@@ -87,7 +88,6 @@ public class Flipper
 
     public void SetPower(double power)
     {
-        _state = State.NOTHING;
         _flipperMotor.setPower(power);
     }
 

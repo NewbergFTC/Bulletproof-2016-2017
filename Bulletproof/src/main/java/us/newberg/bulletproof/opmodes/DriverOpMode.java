@@ -11,7 +11,6 @@ import us.or.k12.newberg.newbergcommon.math.MathUtil;
 /**
  * FTC team 6712 Bulletproof
  */
-
 @TeleOp(name = "DriverOpMode", group = "Driver")
 public class DriverOpMode extends BulletproofOpMode
 {
