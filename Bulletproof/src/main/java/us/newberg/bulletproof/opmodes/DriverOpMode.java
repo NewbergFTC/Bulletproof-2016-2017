@@ -235,15 +235,18 @@ public class DriverOpMode extends BulletproofOpMode
 
             if  (buttonCollectorForward)
             {
-                Motors.Collector.setPower(COLLECTOR_POWER);
+            //    Motors.Collector.setPower(COLLECTOR_POWER);
+                _collector.StartPull();
             }
             else if (buttonCollectorBack)
             {
-                Motors.Collector.setPower(-COLLECTOR_POWER);
+            //    Motors.Collector.setPower(-COLLECTOR_POWER);
+                _collector.StartPush();
             }
             else
             {
-                Motors.Collector.setPower(0);
+            //    Motors.Collector.setPower(0);
+                _collector.Stop();
             }
 
             if (buttonPusherLeftToggle)
