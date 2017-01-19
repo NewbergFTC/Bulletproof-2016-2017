@@ -12,12 +12,14 @@ import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.lib.Servos;
 import us.newberg.bulletproof.modules.ButtonPusher;
 import us.newberg.bulletproof.modules.Flipper;
+import us.newberg.bulletproof.modules.Collector;
 
 public abstract class BulletproofOpMode extends LinearVisionOpMode
 {
     protected DriveTrain _driveTrain;
     protected Flipper _flipper;
     protected ButtonPusher _buttonPusher;
+    protected Collector _collector;
 
     public BulletproofOpMode()
     {
@@ -27,6 +29,7 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
         _driveTrain = null;
         _flipper = null;
         _buttonPusher = null;
+        _collector = null;
     }
 
     protected void Init()
@@ -37,6 +40,7 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
         _driveTrain = new DriveTrain(telemetry);
         _flipper = new Flipper(Motors.Flipper, telemetry);
         _buttonPusher = new ButtonPusher(Servos.BeaconLeft, Servos.BeaconRight, telemetry);
+        _collector = new Collector(Motors.Collector);
     }
 
     protected void CleanUp()

@@ -218,7 +218,6 @@ public class DriverOpMode extends BulletproofOpMode
 
             _driveTrain.Drive(_leftDrivePower, _rightDrivePower);
             telemetry.addData("Left angle and quad", "%f, %d", gamepadOneLeftAngle, gamepadOneLeftAngleQuad);
-            _driveTrain.UpdateTelemetry();
 
             //
             // Gamepad 2
@@ -279,6 +278,7 @@ public class DriverOpMode extends BulletproofOpMode
                 _flipper.StartAutoMove();
             }
 
+            _driveTrain.UpdateTelemetry();
             Update();
         }
     }
