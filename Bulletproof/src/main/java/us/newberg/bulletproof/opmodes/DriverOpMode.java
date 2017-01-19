@@ -2,7 +2,6 @@ package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-
 import us.newberg.bulletproof.modules.Flipper;
 import us.newberg.bulletproof.lib.Motors;
 import us.or.k12.newberg.newbergcommon.math.Vector2f;
@@ -232,20 +231,19 @@ public class DriverOpMode extends BulletproofOpMode
             boolean buttonPusherRightToggle = gamepad2.right_bumper;
             boolean buttonFlipper = gamepad2.a;
             boolean buttonFlipperAuto = gamepad2.b;
+            boolean buttonLifterUp = gamepad2.x;
+            boolean buttonLifterDown = gamepad2.y;
 
             if  (buttonCollectorForward)
             {
-            //    Motors.Collector.setPower(COLLECTOR_POWER);
                 _collector.StartPull();
             }
             else if (buttonCollectorBack)
             {
-            //    Motors.Collector.setPower(-COLLECTOR_POWER);
                 _collector.StartPush();
             }
             else
             {
-            //    Motors.Collector.setPower(0);
                 _collector.Stop();
             }
 
@@ -279,6 +277,19 @@ public class DriverOpMode extends BulletproofOpMode
             if (buttonFlipperAuto)
             {
                 _flipper.StartAutoMove();
+            }
+
+            if (buttonLifterUp)
+            {
+                Motors.Lifter.setPower(1);
+            }
+            else if (buttonLifterDown)
+            {
+                Motors.Lifter.setPower(-1);
+            }
+            else
+            {
+                Motors.Lifter.setPower(0);
             }
 
             _driveTrain.UpdateTelemetry();
