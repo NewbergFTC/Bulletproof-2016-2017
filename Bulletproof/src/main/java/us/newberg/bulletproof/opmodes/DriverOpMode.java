@@ -225,8 +225,8 @@ public class DriverOpMode extends BulletproofOpMode
             final float FLIPPER_POWER = 1.0f;
             final float COLLECTOR_POWER = 1.0f;
 
-            boolean buttonCollectorForward = (gamepad2.right_trigger > 0);
-            boolean buttonCollectorBack = (gamepad2.left_trigger > 0);
+            boolean buttonCollectorPush = (gamepad2.right_trigger > 0);
+            boolean buttonCollectorPull = (gamepad2.left_trigger > 0);
             boolean buttonPusherLeftToggle = gamepad2.left_bumper;
             boolean buttonPusherRightToggle = gamepad2.right_bumper;
             boolean buttonFlipper = gamepad2.a;
@@ -234,11 +234,11 @@ public class DriverOpMode extends BulletproofOpMode
             boolean buttonLifterUp = gamepad2.x;
             boolean buttonLifterDown = gamepad2.y;
 
-            if  (buttonCollectorForward)
+            if  (buttonCollectorPull)
             {
                 _collector.StartPull();
             }
-            else if (buttonCollectorBack)
+            else if (buttonCollectorPush)
             {
                 _collector.StartPush();
             }
@@ -278,7 +278,7 @@ public class DriverOpMode extends BulletproofOpMode
             {
                 _flipper.StartAutoMove();
             }
-
+/*
             if (buttonLifterUp)
             {
                 Motors.Lifter.setPower(1);
@@ -291,7 +291,7 @@ public class DriverOpMode extends BulletproofOpMode
             {
                 Motors.Lifter.setPower(0);
             }
-
+*/
             _driveTrain.UpdateTelemetry();
             Update();
         }
