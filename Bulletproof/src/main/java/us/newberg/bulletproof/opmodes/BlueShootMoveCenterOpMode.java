@@ -23,8 +23,8 @@ public class BlueShootMoveCenterOpMode extends BulletproofOpMode
 
         _flipper.AutoMoveBlocking(this);
 
-        _driveTrain.Drive(Direction.NORTH_EAST, 0.75f, 3.15f * 12.0f, 5000, this);
+        _driveTrain.Drive(Direction.NORTH_EAST, 0.4f, 3.15f * 12.0f, 5000, this);
         sleep(500);
-        _driveTrain.Drive(Direction.SOUTH_EAST, 0.75f, 3.3f * 12.0f, 10000, this);
+        _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 3.3f * 12.0f, 10000, this);
     }
 }

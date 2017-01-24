@@ -16,19 +16,19 @@ public class BlueShootMoveSideOpMode extends BulletproofOpMode
     {
         _flipper.AutoMoveBlocking(this);
 
-//        Motors.Collector.setPower(-1.0f);
+        Motors.Collector.setPower(-1.0f);
         sleep(3000);
-//        Motors.Collector.setPower(0);
+        Motors.Collector.setPower(0);
 
         _flipper.AutoMoveBlocking(this);
 
         _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 3.2f * 12.0f, 5000, this);
         sleep(500);
-        _driveTrain.Drive(-0.5f, -0.5f);
+        _driveTrain.Drive(0.5f, 0.5f);
         sleep(700);
         _driveTrain.StopAll();
 
         sleep(500);
-        _driveTrain.Drive(Direction.NORTH, 1, 4.0f * 12.0f, 10000, this);
+        _driveTrain.Drive(Direction.EAST, 1, 3.0f * 12.0f, 3000, this);
     }
 }

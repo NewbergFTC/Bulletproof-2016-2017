@@ -1,11 +1,13 @@
 package us.newberg.bulletproof.opmodes;
 
 import org.lasarobotics.vision.android.Cameras;
-import org.lasarobotics.vision.ftc.resq.Beacon;
 import org.lasarobotics.vision.opmode.LinearVisionOpMode;
 import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
 import org.lasarobotics.vision.util.ScreenOrientation;
 import org.opencv.core.Size;
+
+import com.qualcomm.hardware.hitechnic.HiTechnicNxtUltrasonicSensor;
+import com.qualcomm.hardware.hitechnic.HiTechnicNxtLightSensor;
 
 import us.newberg.bulletproof.modules.DriveTrain;
 import us.newberg.bulletproof.lib.Motors;
@@ -13,6 +15,7 @@ import us.newberg.bulletproof.lib.Servos;
 import us.newberg.bulletproof.modules.ButtonPusher;
 import us.newberg.bulletproof.modules.Flipper;
 import us.newberg.bulletproof.modules.Collector;
+import us.newberg.bulletproof.modules.Beacon;
 
 public abstract class BulletproofOpMode extends LinearVisionOpMode
 {
@@ -20,6 +23,10 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
     protected Flipper _flipper;
     protected ButtonPusher _buttonPusher;
     protected Collector _collector;
+    protected Beacon _beacon;
+
+    protected HiTechnicNxtUltrasonicSensor _sonar;
+    protected HiTechnicNxtLightSensor      _lineFollower;
 
     public BulletproofOpMode()
     {
@@ -30,6 +37,7 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
         _flipper = null;
         _buttonPusher = null;
         _collector = null;
+        _beacon = null;
     }
 
     protected void Init()
@@ -41,6 +49,10 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
         _flipper = new Flipper(Motors.Flipper, telemetry);
         _buttonPusher = new ButtonPusher(Servos.BeaconLeft, Servos.BeaconRight, telemetry);
         _collector = new Collector(Motors.Collector);
+        _beacon = new Beacon(telemetry);
+
+        _sonar = (HiTechnicNxtUltrasonicSensor) hardwareMap.ultrasonicSensor.get("Sonar");
+        _lineFollower = (HiTechnicNxtLightSensor) hardwareMap.lightSensor.get("light");
     }
 
     protected void CleanUp()
@@ -60,7 +72,7 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
         enableExtension(Extensions.ROTATION);
         enableExtension(Extensions.CAMERA_CONTROL);
 
-        beacon.setAnalysisMethod(Beacon.AnalysisMethod.FAST);
+//        beacon.setAnalysisMethod(Beacon.AnalysisMethod.FAST);
 
         beacon.setColorToleranceRed(0);
         beacon.setColorToleranceBlue(-0.1);
@@ -83,13 +95,10 @@ public abstract class BulletproofOpMode extends LinearVisionOpMode
 
     public void Update() throws InterruptedException
     {
-//        telemetry.addData("Beacon Color", beacon.getAnalysis().getColorString());
-//        telemetry.addData("Beacon Center", beacon.getAnalysis().getLocationString());
-//        telemetry.addData("Beacon Confidence", beacon.getAnalysis().getConfidenceString());
-//        telemetry.addData("Beacon Buttons", beacon.getAnalysis().getButtonString());
-//        telemetry.addData("Screen Rotation", rotation.getScreenOrientationActual());
-//        telemetry.addData("Frame Rate", fps.getFPSString() + " FPS");
-//        telemetry.addData("Frame Size", "Width: " + width + " Height: " + height);
+        if (hasNewFrame())
+        {
+            _beacon.Update(beacon.getAnalysis());
+        }
 
         telemetry.update();
         waitOneFullHardwareCycle();

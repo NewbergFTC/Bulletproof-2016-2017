@@ -81,6 +81,7 @@ public class Flipper
         			_state = State.AUTO;
                 }
 
+                SetPower(0.0f);
                 _state = State.NOTHING;
             }
         }).start();
