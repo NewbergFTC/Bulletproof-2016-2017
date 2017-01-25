@@ -23,7 +23,6 @@ public class Motors
     public static DcMotor BackRight;
     public static DcMotor Collector;
     public static DcMotor Flipper;
-   // public static DcMotor Lifter;
 
     public static void Init(HardwareMap hardwareMap)
     {
@@ -33,6 +32,10 @@ public class Motors
         BackRight = hardwareMap.dcMotor.get("backRight");
         Collector = hardwareMap.dcMotor.get("collector");
         Flipper = hardwareMap.dcMotor.get("flipper");
-       // Lifter = hardwareMap.dcMotor.get("lifter");
+
+        FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }

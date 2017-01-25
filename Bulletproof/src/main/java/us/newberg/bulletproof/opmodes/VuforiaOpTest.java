@@ -1,64 +1,64 @@
 package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.vuforia.HINT;
-import com.vuforia.Vuforia;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
+import us.newberg.bulletproof.Direction;
+import us.or.k12.newberg.newbergcommon.math.VuforiaUtil;
 
 @Autonomous(name = "VuforiaTest", group = "Test")
-public class VuforiaOpTest extends LinearOpMode
+public class VuforiaOpTest extends BulletproofOpMode
 {
     @Override
-    public void runOpMode() throws InterruptedException
+    public void Run() throws InterruptedException
     {
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        // Shoot
+        //
 
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-        parameters.vuforiaLicenseKey = "AYblTAL/////AAAAGc2wFs8chEe1hqa/sjeckOVI8qu/kWhE0ESBxoph/FRyCgFyL2eg1hARujGog3FFfcV8eUyYvmkyOs/7XIOPidYGVA1ytKIoL/43imlszxrbtZQZVAZYIEm+KRpHDQB72ZoveW3DLq2NWQrBrdn+IFuvW/0EURd5JiV8530Qad/FQ9byPeMRSiG/xKK46vCShxBBrLzS4BZc+cqlCXIN+t1+HDUiav/srIebZLC7yJOVTTXl2EDxmtR4pYmhakxl4+e/aaVrf55+s0ZV8jy+cJGxLi9TvQsIc3iNzTbB3R7L9s/9bJ1XklfemXgSeAaOP+RDUI2uEQQiqLmjIUjYK9AgBSa0jA/UCJII+hVZ8nQX";
+        // Drive towards the beacon
+        _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 2.5f * 12.0f, 5000, this);
+        MonitoredSleep(200);
 
-        VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-        Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 4);
+        // Start rotating towards the beacon until we can see it
+        _driveTrain.Drive(-0.5f, -0.5f);
 
-        VuforiaTrackables beacons = vuforia.loadTrackablesFromAsset("FTC_2016-17");
-        beacons.get(0).setName("Wheels");
-        beacons.get(1).setName("Tools");
-        beacons.get(2).setName("Lego");
-        beacons.get(3).setName("Gears");
-
-        waitForStart();
-
-        beacons.activate();
-
-        while (opModeIsActive())
+        while (opModeIsActive() && _wheelsListener.getRawPose() == null)
         {
-            for (VuforiaTrackable beacon : beacons)
+            idle();
+        }
+
+        _driveTrain.StopAll();
+
+        // TODO(Garrison): Analyze beacon
+
+        VectorF angles = VuforiaUtil.AnglesFromTarget(_wheelsListener);
+        VectorF translation = VuforiaUtil.NavOffWall(_wheelsListener.getPose().getTranslation(),
+                Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
+
+        if (translation.get(0) > 0)
+        {
+            // This should rotate right
+            _driveTrain.Drive(-0.5f, -0.5f);
+        }
+        else
+        {
+            _driveTrain.Drive(0.5f, 0.5f);
+        }
+
+        do
+        {
+            if (_wheelsListener.getPose() != null)
             {
-                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) beacon.getListener()).getPose();
-
-                if (pose != null)
-                {
-                    VectorF translation = pose.getTranslation();
-                    double degreesToTurn = Math.toDegrees(Math.atan2(translation.get(1), translation.get(2)));
-
-                    telemetry.addData(beacon.getName() + "-Translation", translation);
-                    telemetry.addData(beacon.getName() + "-Degrees", degreesToTurn);
-                }
-                else
-                {
-                    // Does not see the beacon
-                    // TODO(Garrison): Error handling
-                }
+                translation = VuforiaUtil.NavOffWall(_wheelsListener.getPose().getTranslation(),
+                        Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
             }
 
-            telemetry.update();
-        }
+            idle();
+        } while (opModeIsActive() && Math.abs(translation.get(0)) > 30);
+
+        // We are now properly facing the beacons
+
+        _driveTrain.StopAll();
     }
 }

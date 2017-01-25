@@ -278,20 +278,7 @@ public class DriverOpMode extends BulletproofOpMode
             {
                 _flipper.StartAutoMove();
             }
-/*
-            if (buttonLifterUp)
-            {
-                Motors.Lifter.setPower(1);
-            }
-            else if (buttonLifterDown)
-            {
-                Motors.Lifter.setPower(-1);
-            }
-            else
-            {
-                Motors.Lifter.setPower(0);
-            }
-*/
+
             _driveTrain.UpdateTelemetry();
             Update();
         }

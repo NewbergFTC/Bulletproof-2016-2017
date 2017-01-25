@@ -1,5 +1,7 @@
 package us.newberg.bulletproof.modules;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import us.newberg.bulletproof.Direction;
@@ -24,10 +26,12 @@ public class DriveTrain
 
     public DriveTrain(Telemetry telemetry)
     {
-        Motors.FrontLeft.setPower(0);
-        Motors.FrontRight.setPower(0);
-        Motors.BackLeft.setPower(0);
-        Motors.BackRight.setPower(0);
+        Motors.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Motors.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Motors.BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Motors.BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        StopAll();
 
         _teleFrontLeft  = telemetry.addData("FL Wheel", "%.2f", Motors.FrontLeft.getPower());
         _teleFrontRight = telemetry.addData("FR Wheel", "%.2f", Motors.FrontRight.getPower());
@@ -99,10 +103,10 @@ public class DriveTrain
         return result;
     }
 
-    private int GetCurrentTicks()
-    {
-        return GetCurrentTicks(Direction.NORTH);
-    }
+//    private int GetCurrentTicks()
+//    {
+//        return GetCurrentTicks(Direction.NORTH);
+//    }
 
     public void Drive(Direction direction, float power, float inches, long maxDuration, BulletproofOpMode caller)
             throws InterruptedException
@@ -208,7 +212,7 @@ public class DriveTrain
         double targetTicks = (double) currentTicks + (CalculateTicksToMove(inches, comp) * reverse);
 
         _watchDog.Watch(_driveTrainHelper, maxDuration);
-        while (!complete)
+        while (!complete && caller.opModeIsActive())
         {
             currentTicks = GetCurrentTicks(direction);
 
@@ -236,69 +240,15 @@ public class DriveTrain
             caller.telemetry.addData("Power", power);
             caller.telemetry.addData("Current Ticks", currentTicks);
             caller.telemetry.addData("Target Ticks", targetTicks);
+
+            UpdateTelemetry();
             caller.telemetry.update();
 
-            // TODO(Garrison): Maybe handle sleeping ourselves, so we can check the ticks more often
-            caller.waitOneFullHardwareCycle();
+            caller.idle();
         }
 
         _watchDog.Stop();
         StopAll();
-    }
-
-    public void Rotate(int direction, float deg, float power, long maxDelay, BulletproofOpMode caller) throws InterruptedException
-    {
-        float currentTicks = GetCurrentTicks();
-        float targetTicks = currentTicks + (deg * (float) Motors.DEG_TO_TICKS);
-
-        boolean complete = false;
-
-        _driveTrainHelper.SetTask(HelperTask.STOP_ALL);
-        _watchDog.Watch(_driveTrainHelper, maxDelay);
-
-        float leftSidePower;
-        float rightSidePower;
-
-        if (direction == -1)
-        {
-            leftSidePower = -power;
-            rightSidePower = -power;
-        }
-        else
-        {
-            leftSidePower = power;
-            rightSidePower = power;
-        }
-
-        Drive(leftSidePower, rightSidePower);
-
-        while (!complete)
-        {
-            currentTicks = GetCurrentTicks();
-
-            if (direction == -1)
-            {
-                if (currentTicks >= targetTicks)
-                {
-                    complete = true;
-                }
-            }
-            else
-            {
-                if (currentTicks <= targetTicks)
-                {
-                    complete = true;
-                }
-            }
-
-            caller.telemetry.addData("Current: ", currentTicks);
-            caller.telemetry.addData("Target: ", targetTicks);
-            UpdateTelemetry();
-            caller.Update();
-        }
-
-        StopAll();
-        _watchDog.Stop();
     }
 
     /**
@@ -350,8 +300,6 @@ public class DriveTrain
         COMPLETE,
         STOP_ALL,
     }
-
-    private static final int HELPER_TASK_COUNT = HelperTask.values().length;
 
     private class DriveTrainHelper implements Runnable
     {
