@@ -1,12 +1,16 @@
-.PHONY: build upload start
+.PHONY: build install start
 
-all: upload start
+all: build install start
 
 build:
-	./gradlew :Bulletproof:build
+	@printf "\e[34mBuilding...\n"
+	@./gradlew :Bulletproof:build
 
-upload:
-	./gradlew :Bulletproof:InstallDebug
+install:
+	@printf "\e[34mInstalling...\n"
+	@adb push ./Bulletproof/build/outputs/apk/Bulletproof-debug.apk /data/local/tmp/com.qualcomm.ftcrobotcontroller
+	@adb shell pm install -r "/data/local/tmp/com.qualcomm.ftcrobotcontroller"
 
 start:
-	adb shell am start -n com.qualcomm.ftcrobotcontroller/org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity
+	@printf "\e[34mStarting...\n"
+	@adb shell am start -n "com.qualcomm.ftcrobotcontroller/org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER

@@ -18,13 +18,13 @@ public class VuforiaOpTest extends BulletproofOpMode
         // Shoot
         //
 
-        //_driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 2.5f * 12.0f, 5000, this);
-        //MonitoredSleep(200);
+        _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 2.5f * 12.0f, 5000, this);
+        MonitoredSleep(200);
 
         // Start rotating towards the beacon until we can see it
-        //_driveTrain.Drive(-0.05f, -0.05f);
+        _driveTrain.Drive(-0.02f, -0.02f);
 
-        while (opModeIsActive())
+        while (opModeIsActive() && !_wheelsListener.isVisible())
         {  
             telemetry.addData("Wheels", _wheelsListener.isVisible());
             telemetry.update();
@@ -33,23 +33,6 @@ public class VuforiaOpTest extends BulletproofOpMode
         }
 
         _driveTrain.StopAll();
-        
-        /*
-        // Drive towards the beacon
-        _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 2.5f * 12.0f, 5000, this);
-        MonitoredSleep(200);
-
-        // Start rotating towards the beacon until we can see it
-        _driveTrain.Drive(-0.1f, -0.1f);
-
-        while (opModeIsActive() && _wheelsListener.getRawPose() == null)
-        {
-            idle();
-        }
-
-        _driveTrain.StopAll();
-
-        // TODO(Garrison): Analyze beacon
 
         VectorF angles = VuforiaUtil.AnglesFromTarget(_wheelsListener);
         VectorF translation = VuforiaUtil.NavOffWall(_wheelsListener.getPose().getTranslation(),
@@ -75,9 +58,8 @@ public class VuforiaOpTest extends BulletproofOpMode
 
             idle();
         } while (opModeIsActive() && Math.abs(translation.get(0)) > 30);
-
         // We are now properly facing the beacons
 
-        _driveTrain.StopAll();*/
+        _driveTrain.StopAll();
     }
 }
