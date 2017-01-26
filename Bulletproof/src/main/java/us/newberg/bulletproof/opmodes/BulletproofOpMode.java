@@ -1,10 +1,14 @@
 package us.newberg.bulletproof.opmodes;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 
 import com.qualcomm.hardware.hitechnic.HiTechnicNxtUltrasonicSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -17,6 +21,8 @@ import us.newberg.bulletproof.lib.Servos;
 import us.newberg.bulletproof.modules.ButtonPusher;
 import us.newberg.bulletproof.modules.Flipper;
 import us.newberg.bulletproof.modules.Collector;
+
+import com.qualcomm.ftcrobotcontroller.R;
 
 public abstract class BulletproofOpMode extends LinearOpMode
 {
@@ -34,6 +40,8 @@ public abstract class BulletproofOpMode extends LinearOpMode
     protected VuforiaTrackableDefaultListener _toolsListener;
     protected VuforiaTrackableDefaultListener _legoListener;
     protected VuforiaTrackableDefaultListener _gearsListener;
+
+    protected List<VuforiaTrackable> _allTrackables;
 
     public BulletproofOpMode()
     {
@@ -58,10 +66,11 @@ public abstract class BulletproofOpMode extends LinearOpMode
 
         _sonar = (HiTechnicNxtUltrasonicSensor) hardwareMap.ultrasonicSensor.get("Sonar");
 
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
 
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
         parameters.vuforiaLicenseKey = "AYblTAL/////AAAAGc2wFs8chEe1hqa/sjeckOVI8qu/kWhE0ESBxoph/FRyCgFyL2eg1hARujGog3FFfcV8eUyYvmkyOs/7XIOPidYGVA1ytKIoL/43imlszxrbtZQZVAZYIEm+KRpHDQB72ZoveW3DLq2NWQrBrdn+IFuvW/0EURd5JiV8530Qad/FQ9byPeMRSiG/xKK46vCShxBBrLzS4BZc+cqlCXIN+t1+HDUiav/srIebZLC7yJOVTTXl2EDxmtR4pYmhakxl4+e/aaVrf55+s0ZV8jy+cJGxLi9TvQsIc3iNzTbB3R7L9s/9bJ1XklfemXgSeAaOP+RDUI2uEQQiqLmjIUjYK9AgBSa0jA/UCJII+hVZ8nQX";
+        parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.AXES;
 
         _vuforia = ClassFactory.createVuforiaLocalizer(parameters);
         Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 4);
@@ -76,6 +85,9 @@ public abstract class BulletproofOpMode extends LinearOpMode
         _toolsListener  = (VuforiaTrackableDefaultListener) _beacons.get(1).getListener();
         _legoListener   = (VuforiaTrackableDefaultListener) _beacons.get(2).getListener();
         _gearsListener  = (VuforiaTrackableDefaultListener) _beacons.get(3).getListener();
+
+        _allTrackables = new ArrayList<VuforiaTrackable>();
+        _allTrackables.addAll(_beacons);
     }
 
     protected void CleanUp()

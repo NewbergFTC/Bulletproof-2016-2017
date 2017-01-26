@@ -3,6 +3,8 @@ package us.newberg.bulletproof.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 
 import us.newberg.bulletproof.Direction;
 import us.or.k12.newberg.newbergcommon.math.VuforiaUtil;
@@ -16,12 +18,29 @@ public class VuforiaOpTest extends BulletproofOpMode
         // Shoot
         //
 
+        //_driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 2.5f * 12.0f, 5000, this);
+        //MonitoredSleep(200);
+
+        // Start rotating towards the beacon until we can see it
+        //_driveTrain.Drive(-0.05f, -0.05f);
+
+        while (opModeIsActive())
+        {  
+            telemetry.addData("Wheels", _wheelsListener.isVisible());
+            telemetry.update();
+
+            idle();
+        }
+
+        _driveTrain.StopAll();
+        
+        /*
         // Drive towards the beacon
         _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 2.5f * 12.0f, 5000, this);
         MonitoredSleep(200);
 
         // Start rotating towards the beacon until we can see it
-        _driveTrain.Drive(-0.5f, -0.5f);
+        _driveTrain.Drive(-0.1f, -0.1f);
 
         while (opModeIsActive() && _wheelsListener.getRawPose() == null)
         {
@@ -39,11 +58,11 @@ public class VuforiaOpTest extends BulletproofOpMode
         if (translation.get(0) > 0)
         {
             // This should rotate right
-            _driveTrain.Drive(-0.5f, -0.5f);
+            _driveTrain.Drive(-0.1f, -0.1f);
         }
         else
         {
-            _driveTrain.Drive(0.5f, 0.5f);
+            _driveTrain.Drive(0.1f, 0.1f);
         }
 
         do
@@ -59,6 +78,6 @@ public class VuforiaOpTest extends BulletproofOpMode
 
         // We are now properly facing the beacons
 
-        _driveTrain.StopAll();
+        _driveTrain.StopAll();*/
     }
 }
