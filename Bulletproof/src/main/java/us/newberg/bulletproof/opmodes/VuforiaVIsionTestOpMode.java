@@ -36,30 +36,27 @@ public class VuforiaVIsionTestOpMode extends BulletproofOpMode
 
             if (_vuforia.GetImage() != null)
             {
-                Bitmap bm = Bitmap.createBitmap(_vuforia.GetImage().getBufferWidth(), _vuforia.GetImage().getBufferHeight(),
-                            Bitmap.Config.RGB_565);
-                bm.copyPixelsFromBuffer(_vuforia.GetImage().getPixels());
+//.               Bitmap bm = Bitmap.createBitmap(_vuforia.GetImage().getBufferWidth(), _vuforia.GetImage().getBufferHeight(),
+ //                           Bitmap.Config.RGB_565);
+  //              bm.copyPixelsFromBuffer(_vuforia.GetImage().getPixels());
             }
 
-            for (VuforiaTrackable trackable : _beacons)
+            OpenGLMatrix pose =  _wheelsListener.getRawPose();
+
+            if (pose != null)
             {
-                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) trackable.getListener()).getRawPose();
+                Matrix34F rawPose = new Matrix34F();
+                float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
 
-                if (pose != null)
-                {
-                    Matrix34F rawPose = new Matrix34F();
-                    float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
+                rawPose.setData(poseData);
 
-                    rawPose.setData(poseData);
+                // Find the beacon center in the image
+                Vec2F topLeft = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(-127, 92, 0));
+                Vec2F topRight = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(127, 92, 0));
+                Vec2F bottomLeft = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(127, -92, 0));
+                Vec2F bottomRight = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(-127, -92, 0));
 
-                    // Find the beacon center in the image
-                    Vec2F topLeft = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(-127, 92, 0));
-                    Vec2F topRight = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(127, 92, 0));
-                    Vec2F bottomLeft = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(127, -92, 0));
-                    Vec2F bottomRight = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(-127, -92, 0));
-
-                    // topLeft.getData()[0] - x pos in the image of the upper left point
-                }
+                // topLeft.getData()[0] - x pos in the image of the upper left point
             }
 
             idle();
