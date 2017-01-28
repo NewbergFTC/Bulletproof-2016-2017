@@ -46,20 +46,48 @@ public class VuforiaOpTest extends BulletproofOpMode
         Vector2f leftPower = new Vector2f();
         Vector2f rightPower = new Vector2f();
 
-        final float horizontalPower = 0.05f;
-        final float forwardPower = 0.1f;
+        final float horizontalPower = 0.06f;
+        final float forwardPower = 0.13f;
+/*
+ *
+                else if (angles.get(0) < -3.1)
+                {
+                    telemetry.addData("North", true);
+                    leftPower.x = forwardPower;
+                    leftPower.y = forwardPower; 
 
-        boolean preivousFrameVisible = false;
+                    rightPower.x = -forwardPower;
+                    rightPower.y = -forwardPower; 
+                }
+                else if (angles.get(0) > -2.9)
+                {
 
+                    telemetry.addData("South", true);
+                    leftPower.x = -forwardPower;
+                    leftPower.y = -forwardPower; 
+
+                    rightPower.x = forwardPower;
+                    rightPower.y = forwardPower; 
+                }
+ */
         while (opModeIsActive())
         {
-            telemetry.addData("X", translation.get(0));
+           telemetry.addData("X", angles.get(0));
+           // telemetry.addData("Y", angles.get(1));
             telemetry.addData("Z", translation.get(2));
             telemetry.update();
 
             if (_wheelsListener.isVisible())
             {
-                if (translation.get(0) > -500)
+                if (translation.get(0) < -550)
+                {
+                    leftPower.x = horizontalPower;
+                    leftPower.y = horizontalPower; 
+
+                    rightPower.x = horizontalPower;
+                    rightPower.y = horizontalPower; 
+                }
+                else if (translation.get(0) > -450)
                 {
                     leftPower.x = -horizontalPower;
                     leftPower.y = -horizontalPower; 
@@ -67,46 +95,56 @@ public class VuforiaOpTest extends BulletproofOpMode
                     rightPower.x = -horizontalPower;
                     rightPower.y = -horizontalPower; 
                 }
+/*                else if (translation.get(2) > -500)
+                {
+
+                   if (angles.get(0) < -3.1)
+                    {
+                        telemetry.addData("North", true);
+                        leftPower.x = forwardPower;
+                        leftPower.y = forwardPower; 
+
+                        rightPower.x = -forwardPower;
+                        rightPower.y = -forwardPower; 
+                    }
+                    else if (angles.get(0) > -2.9)
+                    {
+
+                        telemetry.addData("South", true);
+                        leftPower.x = -forwardPower;
+                        leftPower.y = -forwardPower; 
+
+                        rightPower.x = forwardPower;
+                        rightPower.y = forwardPower; 
+                    }
+                    
+                }*/
                 else
                 {
-                    leftPower.x = horizontalPower;
-                    leftPower.y = horizontalPower; 
+                    leftPower.x = -forwardPower;
+                    leftPower.y = forwardPower; 
 
-                    rightPower.x =  horizontalPower;
-                    rightPower.y = horizontalPower; 
+                    rightPower.x = -forwardPower;
+                    rightPower.y = forwardPower; 
                 }
-
-                if (translation.get(2) < -200)
-                {
-                    leftPower.x = (leftPower.x + -forwardPower) / 2;
-                    leftPower.y = (leftPower.y + forwardPower) / 2;
-
-                    rightPower.x = (rightPower.x + -forwardPower) / 2;
-                    rightPower.y = (rightPower.y + forwardPower) / 2;
-                }
-
-                preivousFrameVisible = true;
             }
             else
             {
-                if (preivousFrameVisible)
-                {
-                    leftPower.x *= -1;
-                    leftPower.y *= -1;
+                leftPower.x = 0;
+                leftPower.y = 0; 
 
-                    rightPower.x *= -1;
-                    rightPower.y *= -1;
-                }
-
-                preivousFrameVisible = false;
+                rightPower.x = 0;
+                rightPower.y = 0; 
             }
 
-            _driveTrain.Drive(leftPower, rightPower);
+           _driveTrain.Drive(leftPower, rightPower);
 
             if (_wheelsListener.getPose() != null)
             {
                 translation = VuforiaUtil.NavOffWall(_wheelsListener.getPose().getTranslation(),
                         Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
+
+                angles = VuforiaUtil.AnglesFromTarget(_wheelsListener);
             }
 
             idle();
