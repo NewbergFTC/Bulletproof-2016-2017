@@ -48,28 +48,9 @@ public class VuforiaOpTest extends BulletproofOpMode
 
         final float horizontalPower = 0.06f;
         final float forwardPower = 0.13f;
-/*
- *
-                else if (angles.get(0) < -3.1)
-                {
-                    telemetry.addData("North", true);
-                    leftPower.x = forwardPower;
-                    leftPower.y = forwardPower; 
 
-                    rightPower.x = -forwardPower;
-                    rightPower.y = -forwardPower; 
-                }
-                else if (angles.get(0) > -2.9)
-                {
+        float[] poseData = _wheelsListener.getRawPose().getData();
 
-                    telemetry.addData("South", true);
-                    leftPower.x = -forwardPower;
-                    leftPower.y = -forwardPower; 
-
-                    rightPower.x = forwardPower;
-                    rightPower.y = forwardPower; 
-                }
- */
         while (opModeIsActive())
         {
            telemetry.addData("X", angles.get(0));
@@ -79,7 +60,7 @@ public class VuforiaOpTest extends BulletproofOpMode
 
             if (_wheelsListener.isVisible())
             {
-                if (translation.get(0) < -550)
+                if (translation.get(0) < -575)
                 {
                     leftPower.x = horizontalPower;
                     leftPower.y = horizontalPower; 
@@ -87,7 +68,7 @@ public class VuforiaOpTest extends BulletproofOpMode
                     rightPower.x = horizontalPower;
                     rightPower.y = horizontalPower; 
                 }
-                else if (translation.get(0) > -450)
+                else if (translation.get(0) > -425)
                 {
                     leftPower.x = -horizontalPower;
                     leftPower.y = -horizontalPower; 
@@ -95,30 +76,28 @@ public class VuforiaOpTest extends BulletproofOpMode
                     rightPower.x = -horizontalPower;
                     rightPower.y = -horizontalPower; 
                 }
-/*                else if (translation.get(2) > -500)
+                else if (poseData[1] < 0.91f)
                 {
-
-                   if (angles.get(0) < -3.1)
+                    if (poseData[2] > 0)
                     {
-                        telemetry.addData("North", true);
-                        leftPower.x = forwardPower;
-                        leftPower.y = forwardPower; 
+                        // Right
+                        leftPower.x = horizontalPower;
+                        leftPower.y = horizontalPower;
 
-                        rightPower.x = -forwardPower;
-                        rightPower.y = -forwardPower; 
+                        rightPower.x = horizontalPower;
+                        rightPower.y = horizontalPower;
+                        
                     }
-                    else if (angles.get(0) > -2.9)
+                    else
                     {
+                        // Left
+                        leftPower.x = -horizontalPower;
+                        leftPower.y = -horizontalPower;
 
-                        telemetry.addData("South", true);
-                        leftPower.x = -forwardPower;
-                        leftPower.y = -forwardPower; 
-
-                        rightPower.x = forwardPower;
-                        rightPower.y = forwardPower; 
+                        rightPower.x = -horizontalPower;
+                        rightPower.y = -horizontalPower;
                     }
-                    
-                }*/
+                }
                 else
                 {
                     leftPower.x = -forwardPower;
@@ -145,6 +124,8 @@ public class VuforiaOpTest extends BulletproofOpMode
                         Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
 
                 angles = VuforiaUtil.AnglesFromTarget(_wheelsListener);
+
+                poseData = _wheelsListener.getRawPose().getData();
             }
 
             idle();

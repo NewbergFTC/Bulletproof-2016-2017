@@ -5,6 +5,11 @@ import java.util.ArrayList;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
@@ -42,6 +47,10 @@ public abstract class BulletproofOpMode extends LinearOpMode
     protected VuforiaTrackableDefaultListener _legoListener;
     protected VuforiaTrackableDefaultListener _gearsListener;
 
+    final float MM_PER_INCH = 25.4f;
+    final float MM_BOT_WIDTH = 17.0f * MM_PER_INCH;
+    final float MM_FTC_FIELD_WIDTH = (12.0f * 12.0f - 2.0f) * MM_PER_INCH; 
+    
     public BulletproofOpMode()
     {
         super();

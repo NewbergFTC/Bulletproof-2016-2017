@@ -17,6 +17,10 @@ import java.util.Arrays;
 @TeleOp(name = "Vuforia Vision Test", group = "Test")
 public class VuforiaVIsionTestOpMode extends BulletproofOpMode
 {
+    final float MM_PER_INCH = 25.4f;
+    final float MM_BOT_WIDTH = 17.0f * MM_PER_INCH;
+    final float MM_FTC_FIELD_WIDTH = (12.0f * 12.0f - 2.0f) * MM_PER_INCH; 
+
     @Override
     protected void Init()
     {
@@ -32,7 +36,6 @@ public class VuforiaVIsionTestOpMode extends BulletproofOpMode
             imageVisible = _wheelsListener.getRawPose() != null;
 
             telemetry.addData("Wheels Visible", imageVisible);
-            telemetry.update();
 
             if (_vuforia.GetImage() != null)
             {
@@ -45,18 +48,11 @@ public class VuforiaVIsionTestOpMode extends BulletproofOpMode
 
             if (pose != null)
             {
-                Matrix34F rawPose = new Matrix34F();
-                float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
+                float[]  poseData = _wheelsListener.getRawPose().getData();
+                telemetry.addData("X?", poseData[1]);
+                telemetry.addData("X2?", poseData[2]);
 
-                rawPose.setData(poseData);
-
-                // Find the beacon center in the image
-                Vec2F topLeft = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(-127, 92, 0));
-                Vec2F topRight = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(127, 92, 0));
-                Vec2F bottomLeft = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(127, -92, 0));
-                Vec2F bottomRight = Tool.projectPoint(_vuforia.getCameraCalibration(), rawPose, new Vec3F(-127, -92, 0));
-
-                // topLeft.getData()[0] - x pos in the image of the upper left point
+                telemetry.update();
             }
 
             idle();
