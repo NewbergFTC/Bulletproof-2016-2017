@@ -134,5 +134,8 @@ public class VuforiaOpTest extends BulletproofOpMode
             telemetry.update();
             idle();
         }
+
+        // Analyze the beacon
+        
     }
 }
