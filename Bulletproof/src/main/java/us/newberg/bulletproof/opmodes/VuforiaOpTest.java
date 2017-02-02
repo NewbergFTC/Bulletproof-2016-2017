@@ -1,17 +1,18 @@
 package us.newberg.bulletproof.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import us.newberg.bulletproof.Direction;
 import us.or.k12.newberg.newbergcommon.math.VuforiaUtil;
 import us.or.k12.newberg.newbergcommon.math.MathUtil;
 import us.or.k12.newberg.newbergcommon.math.Vector2f;
 
-@Autonomous(name = "VuforiaTest", group = "Test")
+@TeleOp(name = "VuforiaTest", group = "Test")
 public class VuforiaOpTest extends BulletproofOpMode
 {
     @Override
@@ -46,22 +47,30 @@ public class VuforiaOpTest extends BulletproofOpMode
         Vector2f leftPower = new Vector2f();
         Vector2f rightPower = new Vector2f();
 
-        final float horizontalPower = 0.06f;
+        final float horizontalPower = 0.08f;
         final float forwardPower = 0.13f;
 
-        float[] poseData = _wheelsListener.getRawPose().getData();
+        float[] poseData = poseData = _wheelsListener.getRawPose().getData();
+
+        Telemetry.Item place = telemetry.addData("Place", "Starting");
 
         while (opModeIsActive())
         {
-           telemetry.addData("X", angles.get(0));
-           // telemetry.addData("Y", angles.get(1));
-            telemetry.addData("Z", translation.get(2));
-            telemetry.update();
+            if (_wheelsListener.getPose() != null)
+            {
+                translation = VuforiaUtil.NavOffWall(_wheelsListener.getPose().getTranslation(),
+                        Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
+
+                angles = VuforiaUtil.AnglesFromTarget(_wheelsListener);
+
+                poseData = _wheelsListener.getRawPose().getData();
+            }
 
             if (_wheelsListener.isVisible())
             {
                 if (translation.get(0) < -575)
                 {
+                    place.setValue("Right");
                     leftPower.x = horizontalPower;
                     leftPower.y = horizontalPower; 
 
@@ -70,6 +79,7 @@ public class VuforiaOpTest extends BulletproofOpMode
                 }
                 else if (translation.get(0) > -425)
                 {
+                    place.setValue("Left");
                     leftPower.x = -horizontalPower;
                     leftPower.y = -horizontalPower; 
 
@@ -81,25 +91,28 @@ public class VuforiaOpTest extends BulletproofOpMode
                     if (poseData[2] > 0)
                     {
                         // Right
+                        place.setValue("Moving Right");
                         leftPower.x = horizontalPower;
                         leftPower.y = horizontalPower;
 
-                        rightPower.x = horizontalPower;
-                        rightPower.y = horizontalPower;
+                        rightPower.x = -horizontalPower;
+                        rightPower.y = -horizontalPower;
                         
                     }
                     else
                     {
                         // Left
+                        place.setValue("Moving Left");
                         leftPower.x = -horizontalPower;
                         leftPower.y = -horizontalPower;
 
-                        rightPower.x = -horizontalPower;
-                        rightPower.y = -horizontalPower;
+                        rightPower.x = horizontalPower;
+                        rightPower.y = horizontalPower;
                     }
                 }
                 else
                 {
+                    place.setValue("Straight");
                     leftPower.x = -forwardPower;
                     leftPower.y = forwardPower; 
 
@@ -118,23 +131,8 @@ public class VuforiaOpTest extends BulletproofOpMode
 
            _driveTrain.Drive(leftPower, rightPower);
 
-            if (_wheelsListener.getPose() != null)
-            {
-                translation = VuforiaUtil.NavOffWall(_wheelsListener.getPose().getTranslation(),
-                        Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
-
-                angles = VuforiaUtil.AnglesFromTarget(_wheelsListener);
-
-                poseData = _wheelsListener.getRawPose().getData();
-            }
-
+            telemetry.update();
             idle();
         }
-
-        telemetry.addData("Facing", true);
-        telemetry.update();
-        // We are now properly facing the beacons
-
-        _driveTrain.StopAll();
     }
 }

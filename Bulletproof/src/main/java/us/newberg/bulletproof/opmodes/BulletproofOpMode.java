@@ -27,6 +27,7 @@ import us.newberg.bulletproof.modules.ButtonPusher;
 import us.newberg.bulletproof.modules.Flipper;
 import us.newberg.bulletproof.modules.Collector;
 import us.or.k12.newberg.newbergcommon.vuforia.NewbergVuforiaLocal;
+import us.or.k12.newberg.newbergcommon.math.MathUtil;
 
 import com.qualcomm.ftcrobotcontroller.R;
 
@@ -47,9 +48,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
     protected VuforiaTrackableDefaultListener _legoListener;
     protected VuforiaTrackableDefaultListener _gearsListener;
 
-    final float MM_PER_INCH = 25.4f;
-    final float MM_BOT_WIDTH = 17.0f * MM_PER_INCH;
-    final float MM_FTC_FIELD_WIDTH = (12.0f * 12.0f - 2.0f) * MM_PER_INCH; 
+    public static final float MM_BOT_WIDTH = 17.0f * MathUtil.MM_PER_INCH;
     
     public BulletproofOpMode()
     {
