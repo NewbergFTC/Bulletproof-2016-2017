@@ -1,11 +1,23 @@
 package us.newberg.bulletproof.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.widget.ImageView;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.vuforia.CameraCalibration;
+import com.vuforia.Image;
+import com.vuforia.Matrix34F;
+import com.vuforia.Tool;
+import com.vuforia.Vec3F;
+
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import java.util.Arrays;
 
 import us.newberg.bulletproof.Direction;
 import us.or.k12.newberg.newbergcommon.math.VuforiaUtil;
@@ -15,6 +27,8 @@ import us.or.k12.newberg.newbergcommon.math.Vector2f;
 @TeleOp(name = "VuforiaTest", group = "Test")
 public class VuforiaOpTest extends BulletproofOpMode
 {
+
+
     @Override
     public void Run() throws InterruptedException
     {
@@ -50,7 +64,7 @@ public class VuforiaOpTest extends BulletproofOpMode
         final float horizontalPower = 0.08f;
         final float forwardPower = 0.13f;
 
-        float[] poseData = poseData = _wheelsListener.getRawPose().getData();
+        float[] poseData  = _wheelsListener.getRawPose().getData();
 
         Telemetry.Item place = telemetry.addData("Place", "Starting");
 
@@ -136,6 +150,7 @@ public class VuforiaOpTest extends BulletproofOpMode
         }
 
         // Analyze the beacon
-        
+
+
     }
 }
