@@ -16,4 +16,5 @@ android {
 }
 dependencies {
     compile project(':NewbergCommon')
+    compile project(':opencv-java')
 }

@@ -2,3 +2,4 @@ include ':FtcRobotController'
 include ':Bulletproof'
 include ':NewbergCommon'
 
+include ':opencv-java'
