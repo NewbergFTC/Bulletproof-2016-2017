@@ -26,6 +26,7 @@ import us.newberg.bulletproof.lib.Servos;
 import us.newberg.bulletproof.modules.ButtonPusher;
 import us.newberg.bulletproof.modules.Flipper;
 import us.newberg.bulletproof.modules.Collector;
+import us.newberg.bulletproof.modules.Lift;
 import us.or.k12.newberg.newbergcommon.vuforia.NewbergVuforiaLocal;
 import us.or.k12.newberg.newbergcommon.math.MathUtil;
 
@@ -37,6 +38,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
     protected Flipper _flipper;
     protected ButtonPusher _buttonPusher;
     protected Collector _collector;
+    protected Lift _lifter;
 
     protected HiTechnicNxtUltrasonicSensor _sonar;
 
@@ -59,6 +61,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
         _flipper = null;
         _buttonPusher = null;
         _collector = null;
+        _lifter = null;
     }
 
     protected void InitVuforia()
@@ -94,6 +97,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
         _flipper = new Flipper(Motors.Flipper, telemetry);
         _buttonPusher = new ButtonPusher(Servos.BeaconLeft, Servos.BeaconRight, telemetry);
         _collector = new Collector(Motors.Collector);
+        //_lifter = new Lift(Motors.Lifter, telemetry);
 
         _sonar = (HiTechnicNxtUltrasonicSensor) hardwareMap.ultrasonicSensor.get("Sonar");
 

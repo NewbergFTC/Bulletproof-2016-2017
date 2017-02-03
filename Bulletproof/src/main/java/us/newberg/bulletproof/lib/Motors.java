@@ -23,6 +23,7 @@ public class Motors
     public static DcMotor BackRight;
     public static DcMotor Collector;
     public static DcMotor Flipper;
+    public static DcMotor Lifter;
 
     public static void Init(HardwareMap hardwareMap)
     {
