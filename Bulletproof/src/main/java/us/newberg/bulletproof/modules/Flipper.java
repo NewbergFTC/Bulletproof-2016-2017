@@ -14,7 +14,7 @@ import us.or.k12.newberg.newbergcommon.WatchDog;
  */
 public class Flipper
 {
-    public static float GEAR_RATIO = 10.9f;
+    public static float GEAR_RATIO = 10f;
 
     public enum State
     {

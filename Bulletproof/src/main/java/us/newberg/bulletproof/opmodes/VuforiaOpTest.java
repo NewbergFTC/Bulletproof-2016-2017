@@ -1,27 +1,13 @@
 package us.newberg.bulletproof.opmodes;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.widget.ImageView;
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.vuforia.CameraCalibration;
-import com.vuforia.Image;
-import com.vuforia.Matrix34F;
-import com.vuforia.Tool;
-import com.vuforia.Vec3F;
 
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import java.util.Arrays;
-
 import us.newberg.bulletproof.Direction;
-import us.or.k12.newberg.newbergcommon.math.VuforiaUtil;
-import us.or.k12.newberg.newbergcommon.math.MathUtil;
+import us.or.k12.newberg.newbergcommon.BeaconUtil;
+import us.or.k12.newberg.newbergcommon.vuforia.VuforiaUtil;
 import us.or.k12.newberg.newbergcommon.math.Vector2f;
 
 @TeleOp(name = "VuforiaTest", group = "Test")
@@ -34,22 +20,32 @@ public class VuforiaOpTest extends BulletproofOpMode
     {
         // Shoot
         //
+        _flipper.AutoMoveBlocking(this);
+        _collector.PullForCountBlocking(this, 3000);
+        _flipper.AutoMoveBlocking(this);
 
-       // _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 2.5f * 12.0f, 5000, this);
-//        MonitoredSleep(200);
+        _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 2.5f * 12.0f, 5000, this);
+        MonitoredSleep(200);
 
-        // Start rotating towards the beacon until we can see it
-        //_driveTrain.Drive(-0.01f, -0.01f);
+        // Rotate towards the beacon
+        _driveTrain.Drive(-0.01f, -0.01f);
 
         while (opModeIsActive() && !_wheelsListener.isVisible())
-        {  
-            telemetry.addData("Wheels", _wheelsListener.isVisible());
-            telemetry.update();
-
+        {
             idle();
         }
 
-       // _driveTrain.StopAll();
+        _driveTrain.StopAll();
+
+        // Analyze the beacon
+        BeaconUtil.BeaconStatus beaconStatus =
+                BeaconUtil.GetBeaconStatus(_vuforia.GetImage(), _wheelsListener, _vuforia.getCameraCalibration());
+
+        if (beaconStatus == BeaconUtil.BeaconStatus.BEACON_RED_BLUE)
+        {
+            // We are blue, so we want to press the right side
+            _buttonPusher.DeployRight();
+        }
 
         VectorF angles = VuforiaUtil.AnglesFromTarget(_wheelsListener);
         VectorF translation = VuforiaUtil.NavOffWall(_wheelsListener.getPose().getTranslation(),
@@ -143,14 +139,10 @@ public class VuforiaOpTest extends BulletproofOpMode
                 rightPower.y = 0; 
             }
 
-           _driveTrain.Drive(leftPower, rightPower);
+            _driveTrain.Drive(leftPower, rightPower);
 
             telemetry.update();
             idle();
         }
-
-        // Analyze the beacon
-
-
     }
 }

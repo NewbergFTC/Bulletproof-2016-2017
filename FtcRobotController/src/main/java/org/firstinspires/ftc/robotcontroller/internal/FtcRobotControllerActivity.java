@@ -92,12 +92,18 @@ import com.qualcomm.robotcore.wifi.WifiDirectAssistant;
 
 import org.firstinspires.ftc.robotcore.internal.AppUtil;
 import org.firstinspires.inspection.RcInspectionActivity;
+import org.opencv.core.Mat;
 
 import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class FtcRobotControllerActivity extends Activity {
+
+    static
+    {
+        System.loadLibrary("opencv_java3");
+    }
 
   public static final String TAG = "RCActivity";
 

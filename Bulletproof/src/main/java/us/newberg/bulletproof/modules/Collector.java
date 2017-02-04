@@ -28,9 +28,25 @@ public class Collector
         Stop();
     }
 
-    public void PullForCount(BulletproofOpMode caller, long millis) throws InterruptedException
+    public void PullForCount(BulletproofOpMode caller, final long millis) throws InterruptedException
     {
-        // TODO(Garrison):  Copy Flipper's non blocking crap
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                StartPull();
+                try
+                {
+                    Thread.sleep(millis);
+                } catch (InterruptedException e)
+                {
+                    // TODO(Garrison): Error handling
+                    e.printStackTrace();
+                }
+                Stop();
+            }
+        }).start();
     }
 
     public void StartPull()

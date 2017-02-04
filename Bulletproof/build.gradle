@@ -12,7 +12,11 @@
 apply from: '../build.common.gradle'
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.3'
+    buildToolsVersion '25.0.1'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
 }
 dependencies {
     compile project(':NewbergCommon')
