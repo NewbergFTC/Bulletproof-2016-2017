@@ -33,16 +33,16 @@ public class Moments {
     public double nu03;
 
     public Moments(
-        double m00,
-        double m10,
-        double m01,
-        double m20,
-        double m11,
-        double m02,
-        double m30,
-        double m21,
-        double m12,
-        double m03)
+            double m00,
+            double m10,
+            double m01,
+            double m20,
+            double m11,
+            double m02,
+            double m30,
+            double m21,
+            double m12,
+            double m03)
     {
         this.m00 = m00;
         this.m10 = m10;
@@ -67,16 +67,16 @@ public class Moments {
 
     public void set(double[] vals) {
         if (vals != null) {
-            m00 = vals.length > 0 ? vals[0] : 0;
-            m10 = vals.length > 1 ? vals[1] : 0;
-            m01 = vals.length > 2 ? vals[2] : 0;
-            m20 = vals.length > 3 ? vals[3] : 0;
-            m11 = vals.length > 4 ? vals[4] : 0;
-            m02 = vals.length > 5 ? vals[5] : 0;
-            m30 = vals.length > 6 ? vals[6] : 0;
-            m21 = vals.length > 7 ? vals[7] : 0;
-            m12 = vals.length > 8 ? vals[8] : 0;
-            m03 = vals.length > 9 ? vals[9] : 0;
+            m00 = vals.length > 0 ? (int) vals[0] : 0;
+            m10 = vals.length > 1 ? (int) vals[1] : 0;
+            m01 = vals.length > 2 ? (int) vals[2] : 0;
+            m20 = vals.length > 3 ? (int) vals[3] : 0;
+            m11 = vals.length > 4 ? (int) vals[4] : 0;
+            m02 = vals.length > 5 ? (int) vals[5] : 0;
+            m30 = vals.length > 6 ? (int) vals[6] : 0;
+            m21 = vals.length > 7 ? (int) vals[7] : 0;
+            m12 = vals.length > 8 ? (int) vals[8] : 0;
+            m03 = vals.length > 9 ? (int) vals[9] : 0;
             this.completeState();
         } else {
             m00 = 0;
@@ -109,39 +109,39 @@ public class Moments {
     @Override
     public String toString() {
         return "Moments [ " +
-            "\n" +
-            "m00=" + m00 + ", " +
-            "\n" +
-            "m10=" + m10 + ", " +
-            "m01=" + m01 + ", " +
-            "\n" +
-            "m20=" + m20 + ", " +
-            "m11=" + m11 + ", " +
-            "m02=" + m02 + ", " +
-            "\n" +
-            "m30=" + m30 + ", " +
-            "m21=" + m21 + ", " +
-            "m12=" + m12 + ", " +
-            "m03=" + m03 + ", " +
-            "\n" +
-            "mu20=" + mu20 + ", " +
-            "mu11=" + mu11 + ", " +
-            "mu02=" + mu02 + ", " +
-            "\n" +
-            "mu30=" + mu30 + ", " +
-            "mu21=" + mu21 + ", " +
-            "mu12=" + mu12 + ", " +
-            "mu03=" + mu03 + ", " +
-            "\n" +
-            "nu20=" + nu20 + ", " +
-            "nu11=" + nu11 + ", " +
-            "nu02=" + nu02 + ", " +
-            "\n" +
-            "nu30=" + nu30 + ", " +
-            "nu21=" + nu21 + ", " +
-            "nu12=" + nu12 + ", " +
-            "nu03=" + nu03 + ", " +
-            "\n]";
+                "\n" +
+                "m00=" + m00 + ", " +
+                "\n" +
+                "m10=" + m10 + ", " +
+                "m01=" + m01 + ", " +
+                "\n" +
+                "m20=" + m20 + ", " +
+                "m11=" + m11 + ", " +
+                "m02=" + m02 + ", " +
+                "\n" +
+                "m30=" + m30 + ", " +
+                "m21=" + m21 + ", " +
+                "m12=" + m12 + ", " +
+                "m03=" + m03 + ", " +
+                "\n" +
+                "mu20=" + mu20 + ", " +
+                "mu11=" + mu11 + ", " +
+                "mu02=" + mu02 + ", " +
+                "\n" +
+                "mu30=" + mu30 + ", " +
+                "mu21=" + mu21 + ", " +
+                "mu12=" + mu12 + ", " +
+                "mu03=" + mu03 + ", " +
+                "\n" +
+                "nu20=" + nu20 + ", " +
+                "nu11=" + nu11 + ", " +
+                "nu02=" + nu02 + ", " +
+                "\n" +
+                "nu30=" + nu30 + ", " +
+                "nu21=" + nu21 + ", " +
+                "nu12=" + nu12 + ", " +
+                "nu03=" + nu03 + ", " +
+                "\n]";
     }
 
     protected void completeState()

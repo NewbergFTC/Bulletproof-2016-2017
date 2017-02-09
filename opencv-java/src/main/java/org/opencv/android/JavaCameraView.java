@@ -12,7 +12,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 
-import org.opencv.BuildConfig;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -284,8 +283,7 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
 
     @Override
     public void onPreviewFrame(byte[] frame, Camera arg1) {
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "Preview Frame received. Frame size: " + frame.length);
+        Log.d(TAG, "Preview Frame received. Frame size: " + frame.length);
         synchronized (this) {
             mFrameChain[mChainIdx].put(0, 0, frame);
             mCameraFrameReady = true;
@@ -330,7 +328,6 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
         @Override
         public void run() {
             do {
-                boolean hasFrame = false;
                 synchronized (JavaCameraView.this) {
                     try {
                         while (!mCameraFrameReady && !mStopThread) {
@@ -340,14 +337,11 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
                         e.printStackTrace();
                     }
                     if (mCameraFrameReady)
-                    {
                         mChainIdx = 1 - mChainIdx;
-                        mCameraFrameReady = false;
-                        hasFrame = true;
-                    }
                 }
 
-                if (!mStopThread && hasFrame) {
+                if (!mStopThread && mCameraFrameReady) {
+                    mCameraFrameReady = false;
                     if (!mFrameChain[1 - mChainIdx].empty())
                         deliverAndDrawFrame(mCameraFrame[1 - mChainIdx]);
                 }

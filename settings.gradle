@@ -3,3 +3,4 @@ include ':Bulletproof'
 include ':NewbergCommon'
 
 include ':opencv-java'
+include ':opencv-java'
