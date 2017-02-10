@@ -3,13 +3,9 @@ package us.newberg.bulletproof.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import us.newberg.bulletproof.Direction;
-import us.or.k12.newberg.newbergcommon.math.VuforiaUtil;
-import us.or.k12.newberg.newbergcommon.math.MathUtil;
+import us.or.k12.newberg.newbergcommon.vuforia.VuforiaUtil;
 import us.or.k12.newberg.newbergcommon.math.Vector2f;
 
 @TeleOp(name = "VuforiaTest", group = "Test")
