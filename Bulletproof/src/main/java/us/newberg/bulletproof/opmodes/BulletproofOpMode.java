@@ -34,6 +34,11 @@ import com.qualcomm.ftcrobotcontroller.R;
 
 public abstract class BulletproofOpMode extends LinearOpMode
 {
+    static
+    {
+        System.loadLibrary("opencv_java3");
+    }
+
     protected DriveTrain _driveTrain;
     protected Flipper _flipper;
     protected ButtonPusher _buttonPusher;
