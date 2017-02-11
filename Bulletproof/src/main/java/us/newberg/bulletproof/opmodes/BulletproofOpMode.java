@@ -1,21 +1,11 @@
 package us.newberg.bulletproof.opmodes;
 
-import java.util.List;
-import java.util.ArrayList;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 
-import com.qualcomm.hardware.hitechnic.HiTechnicNxtUltrasonicSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.vuforia.HINT;
 import com.vuforia.Vuforia;
@@ -26,9 +16,12 @@ import us.newberg.bulletproof.lib.Servos;
 import us.newberg.bulletproof.modules.ButtonPusher;
 import us.newberg.bulletproof.modules.Flipper;
 import us.newberg.bulletproof.modules.Collector;
-import us.newberg.bulletproof.modules.Lift;
+import us.newberg.bulletproof.modules.Hopper;
+import us.or.k12.newberg.newbergcommon.BeaconUtil;
+import us.or.k12.newberg.newbergcommon.math.Vector2f;
 import us.or.k12.newberg.newbergcommon.vuforia.NewbergVuforiaLocal;
 import us.or.k12.newberg.newbergcommon.math.MathUtil;
+import us.or.k12.newberg.newbergcommon.vuforia.VuforiaUtil;
 
 import com.qualcomm.ftcrobotcontroller.R;
 
@@ -43,9 +36,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
     protected Flipper _flipper;
     protected ButtonPusher _buttonPusher;
     protected Collector _collector;
-    protected Lift _lifter;
-
-    protected HiTechnicNxtUltrasonicSensor _sonar;
+    protected Hopper _hopper;
 
     protected NewbergVuforiaLocal _vuforia;
     protected VuforiaTrackables   _beacons;
@@ -66,7 +57,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
         _flipper = null;
         _buttonPusher = null;
         _collector = null;
-        _lifter = null;
+        _hopper = null;
     }
 
     protected void InitVuforia()
@@ -102,9 +93,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
         _flipper = new Flipper(Motors.Flipper, telemetry);
         _buttonPusher = new ButtonPusher(Servos.BeaconLeft, Servos.BeaconRight, telemetry);
         _collector = new Collector(Motors.Collector);
-        //_lifter = new Lift(Motors.Lifter, telemetry);
-
-        _sonar = (HiTechnicNxtUltrasonicSensor) hardwareMap.ultrasonicSensor.get("Sonar");
+        _hopper = new Hopper(Servos.HopperDoor);
 
         InitVuforia();
     }
@@ -112,6 +101,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
     protected void CleanUp()
     {
 		// TODO(Garrison): Do we really need this?
+        // Doesn't seem so
     }
 
     @Override
@@ -128,34 +118,139 @@ public abstract class BulletproofOpMode extends LinearOpMode
         CleanUp();
     }
 
+    protected BeaconUtil.BeaconStatus AnalyzeBeacon(VuforiaTrackableDefaultListener listener)
+    {
+        return BeaconUtil.GetBeaconStatus(_vuforia.GetImage(), listener,
+                _vuforia.getCameraCalibration());
+    }
+
+    protected BeaconUtil.BeaconStatus AnalyzeAndDeployBlue(VuforiaTrackableDefaultListener listener)
+    {
+        BeaconUtil.BeaconStatus beaconStatus = AnalyzeBeacon(_wheelsListener);
+
+        switch (beaconStatus)
+        {
+            case BEACON_BLUE_RED:
+                _buttonPusher.DeployLeft();
+
+                break;
+
+            case BEACON_RED_BLUE:
+                _buttonPusher.DeployRight();
+
+                break;
+
+            default:
+                telemetry.addData("I dont know", "lol");
+                break;
+        }
+
+        return beaconStatus;
+    }
+
+    protected void GetToBeacon(VuforiaTrackableDefaultListener listener)
+    {
+        VectorF angles = VuforiaUtil.AnglesFromTarget(listener);
+        VectorF translation = VuforiaUtil.NavOffWall(listener.getPose().getTranslation(),
+                Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
+
+        telemetry.addData("Found!", true);
+        telemetry.update();
+
+        Vector2f leftPower = new Vector2f();
+        Vector2f rightPower = new Vector2f();
+
+        final float horizontalPower = 0.08f;
+        final float forwardPower = 0.13f;
+
+        float[] poseData = poseData = listener.getRawPose().getData();
+
+        while (opModeIsActive())
+        {
+            if (listener.getPose() != null)
+            {
+                try
+                {
+                    translation = VuforiaUtil.NavOffWall(listener.getPose().getTranslation(),
+                            Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
+
+                    angles = VuforiaUtil.AnglesFromTarget(listener);
+
+                    poseData = listener.getRawPose().getData();
+                }
+                catch (Exception e)
+                {
+                    telemetry.addData("HOLY FUCK", "WE'RE DEAD");
+                }
+            }
+
+            if (listener.isVisible())
+            {
+                if (translation.get(0) < -550)
+                {
+                    leftPower.x = horizontalPower;
+                    leftPower.y = horizontalPower;
+
+                    rightPower.x = horizontalPower;
+                    rightPower.y = horizontalPower;
+                }
+                else if (translation.get(0) > -450)
+                {
+                    leftPower.x = -horizontalPower;
+                    leftPower.y = -horizontalPower;
+
+                    rightPower.x = -horizontalPower;
+                    rightPower.y = -horizontalPower;
+                }
+                else if (poseData[1] < 0.925f)
+                {
+                    if (poseData[2] > 0)
+                    {
+                        // Right
+                        leftPower.x = horizontalPower;
+                        leftPower.y = horizontalPower;
+
+                        rightPower.x = -horizontalPower;
+                        rightPower.y = -horizontalPower;
+
+                    }
+                    else
+                    {
+                        // Left
+                        leftPower.x = -horizontalPower;
+                        leftPower.y = -horizontalPower;
+
+                        rightPower.x = horizontalPower;
+                        rightPower.y = horizontalPower;
+                    }
+                }
+                else
+                {
+                    leftPower.x = -forwardPower;
+                    leftPower.y = forwardPower;
+
+                    rightPower.x = -forwardPower;
+                    rightPower.y = forwardPower;
+                }
+            }
+            else
+            {
+                break;
+            }
+
+            _driveTrain.Drive(leftPower, rightPower);
+
+            telemetry.addData("Dis", translation.get(2));
+            telemetry.update();
+            idle();
+        }
+    }
+
+
     public void Update() throws InterruptedException
     {
         telemetry.update();
         idle();
-    }
-
-    // TODO(Garrison): Test this
-    public void MonitoredSleep(long millis)
-    {
-        if (millis < 100)
-        {
-            sleep(100);
-            return;
-        }
-
-        final double SECONDS_TO_SLEEP = millis / 1000.0;
-        double time = getRuntime();
-        final double TARGET_TIME = time + SECONDS_TO_SLEEP;
-
-        final long SLEEP_INTERVAL = (millis % 2) == 0 ? 4 : 5;
-
-        while (time < TARGET_TIME)
-        {
-            sleep(SLEEP_INTERVAL);
-            idle();
-
-            time = getRuntime();
-        }
     }
 
     abstract protected void Run() throws InterruptedException;

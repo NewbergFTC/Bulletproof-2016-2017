@@ -4,7 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 
+import us.newberg.bulletproof.Direction;
+import us.newberg.bulletproof.lib.Servos;
+import us.or.k12.newberg.newbergcommon.BeaconUtil;
 import us.or.k12.newberg.newbergcommon.vuforia.VuforiaUtil;
 import us.or.k12.newberg.newbergcommon.math.Vector2f;
 
@@ -14,124 +18,32 @@ public class VuforiaOpTest extends BulletproofOpMode
     @Override
     public void Run() throws InterruptedException
     {
-        // Shoot
-        //
-
-       // _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 2.5f * 12.0f, 5000, this);
-//        MonitoredSleep(200);
-
-        // Start rotating towards the beacon until we can see it
-        //_driveTrain.Drive(-0.01f, -0.01f);
-
         while (opModeIsActive() && !_wheelsListener.isVisible())
-        {  
-            telemetry.addData("Wheels", _wheelsListener.isVisible());
-            telemetry.update();
-
-            idle();
-        }
-
-       // _driveTrain.StopAll();
-
-        VectorF angles = VuforiaUtil.AnglesFromTarget(_wheelsListener);
-        VectorF translation = VuforiaUtil.NavOffWall(_wheelsListener.getPose().getTranslation(),
-                Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
-
-        telemetry.addData("Found!", true);
-        telemetry.update();
-
-        Vector2f leftPower = new Vector2f();
-        Vector2f rightPower = new Vector2f();
-
-        final float horizontalPower = 0.08f;
-        final float forwardPower = 0.13f;
-
-        float[] poseData = poseData = _wheelsListener.getRawPose().getData();
-
-        Telemetry.Item place = telemetry.addData("Place", "Starting");
-
-        while (opModeIsActive())
         {
-            if (_wheelsListener.getPose() != null)
-            {
-                translation = VuforiaUtil.NavOffWall(_wheelsListener.getPose().getTranslation(),
-                        Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
-
-                angles = VuforiaUtil.AnglesFromTarget(_wheelsListener);
-
-                poseData = _wheelsListener.getRawPose().getData();
-            }
-
-            if (_wheelsListener.isVisible())
-            {
-                if (translation.get(0) < -575)
-                {
-                    place.setValue("Right");
-                    leftPower.x = horizontalPower;
-                    leftPower.y = horizontalPower; 
-
-                    rightPower.x = horizontalPower;
-                    rightPower.y = horizontalPower; 
-                }
-                else if (translation.get(0) > -425)
-                {
-                    place.setValue("Left");
-                    leftPower.x = -horizontalPower;
-                    leftPower.y = -horizontalPower; 
-
-                    rightPower.x = -horizontalPower;
-                    rightPower.y = -horizontalPower; 
-                }
-                else if (poseData[1] < 0.91f)
-                {
-                    if (poseData[2] > 0)
-                    {
-                        // Right
-                        place.setValue("Moving Right");
-                        leftPower.x = horizontalPower;
-                        leftPower.y = horizontalPower;
-
-                        rightPower.x = -horizontalPower;
-                        rightPower.y = -horizontalPower;
-                        
-                    }
-                    else
-                    {
-                        // Left
-                        place.setValue("Moving Left");
-                        leftPower.x = -horizontalPower;
-                        leftPower.y = -horizontalPower;
-
-                        rightPower.x = horizontalPower;
-                        rightPower.y = horizontalPower;
-                    }
-                }
-                else
-                {
-                    place.setValue("Straight");
-                    leftPower.x = -forwardPower;
-                    leftPower.y = forwardPower; 
-
-                    rightPower.x = -forwardPower;
-                    rightPower.y = forwardPower; 
-                }
-            }
-            else
-            {
-                leftPower.x = 0;
-                leftPower.y = 0; 
-
-                rightPower.x = 0;
-                rightPower.y = 0; 
-            }
-
-           _driveTrain.Drive(leftPower, rightPower);
-
-            telemetry.update();
             idle();
         }
 
-        // Analyze the beacon
-        
+        AnalyzeAndDeployBlue(_wheelsListener);
+        GetToBeacon(_wheelsListener);
+
+        _driveTrain.Drive(Direction.WEST, 0.5f, 2, 750, this);
+        _driveTrain.Drive(Direction.EAST, 0.2f, 3f, 1000, this);
+
+        while (AnalyzeBeacon(_wheelsListener) != BeaconUtil.BeaconStatus.BEACON_ALL_BLUE)
+        {
+            GetToBeacon(_wheelsListener);
+            _driveTrain.Drive(Direction.WEST, 0.5f, 2, 2000, this);
+            sleep(500);
+        }
+
+        _driveTrain.StopAll();
+
+        _driveTrain.Drive(Direction.EAST, 0.5f, 3f, 2000, this);
+
+        _driveTrain.Drive(Direction.SOUTH, 0.3f, 8f, 3000, this);
+
+        _driveTrain.Drive(new Vector2f(-.2f, .2f), new Vector2f(.2f, -.2f));
+        sleep(500);
+        _driveTrain.StopAll();
     }
 }

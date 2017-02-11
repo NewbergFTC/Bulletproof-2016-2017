@@ -14,11 +14,7 @@ public class ShootOnlyOpMode extends BulletproofOpMode
     protected void Run() throws InterruptedException
     {
         _flipper.AutoMoveBlocking(this);
-
-        Motors.Collector.setPower(-1);
-        sleep(3000);
-        Motors.Collector.setPower(0);
-
+        _hopper.QuickDrop();
         _flipper.AutoMoveBlocking(this);
     }
 }

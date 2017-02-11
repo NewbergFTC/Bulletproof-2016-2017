@@ -3,7 +3,6 @@ package us.newberg.bulletproof.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import us.newberg.bulletproof.modules.Flipper;
-import us.newberg.bulletproof.lib.Motors;
 import us.or.k12.newberg.newbergcommon.math.Vector2f;
 import us.or.k12.newberg.newbergcommon.math.MathUtil;
 
@@ -207,7 +206,6 @@ public class DriverOpMode extends BulletproofOpMode
 
             if (Math.abs(gamepadOneRight.x) >= 0.1f )
             {
-                // Right
                 _leftDrivePower.x = powerX;
                 _leftDrivePower.y = powerX;
 
@@ -231,8 +229,22 @@ public class DriverOpMode extends BulletproofOpMode
             boolean buttonPusherRightToggle = gamepad2.right_bumper;
             boolean buttonFlipper = gamepad2.a;
             boolean buttonFlipperAuto = gamepad2.b;
-            boolean buttonLifterUp = gamepad2.x;
-            boolean buttonLifterDown = gamepad2.y;
+            boolean buttonHopperDoorQuick = gamepad2.x;
+            boolean buttonHopperDoorUp = gamepad2.dpad_up;
+            boolean buttonHopperDoorDown = gamepad2.dpad_down;
+
+            if (buttonHopperDoorQuick)
+            {
+                _hopper.QuickDrop();
+            }
+            else if (buttonHopperDoorDown)
+            {
+                _hopper.LowerDoor();
+            }
+            else if (buttonHopperDoorUp)
+            {
+                _hopper.RaiseDoor();
+            }
 
             if  (buttonCollectorPull)
             {

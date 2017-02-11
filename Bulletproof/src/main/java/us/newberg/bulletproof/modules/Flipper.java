@@ -14,7 +14,7 @@ import us.or.k12.newberg.newbergcommon.WatchDog;
  */
 public class Flipper
 {
-    public static float GEAR_RATIO = 10.9f;
+    public static float GEAR_RATIO = 10.12f;
 
     public enum State
     {
@@ -76,7 +76,7 @@ public class Flipper
             {
                 while (_flipperMotor.getCurrentPosition() < _targetTicks)
                 {
-                    SetPower(1.0f);
+                                   SetPower(1.0f);
 
         			_state = State.AUTO;
                 }
