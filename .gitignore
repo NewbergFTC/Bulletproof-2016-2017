@@ -8,3 +8,4 @@ build/
 FtcRobotController/build/
 
 .DS_Store
+logs/

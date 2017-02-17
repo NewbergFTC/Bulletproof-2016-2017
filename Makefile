@@ -1,4 +1,4 @@
-.PHONY: build install start
+.PHONY: build install start pullLogs
 
 all: build install start
 
@@ -15,3 +15,6 @@ start:
 	@printf '\e[34mStarting...\n'
 	@adb shell am start -n "com.qualcomm.ftcrobotcontroller/org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER
 	@sl
+
+pullLogs:
+	@adb pull /sdcard/bullet ./logs

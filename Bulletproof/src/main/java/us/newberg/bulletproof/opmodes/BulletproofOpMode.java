@@ -50,6 +50,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
     
     public BulletproofOpMode()
     {
+
         super();
         // NOTE(Garrison): Don't init any ftc objects here.
 
