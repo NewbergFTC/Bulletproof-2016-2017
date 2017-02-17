@@ -140,6 +140,18 @@ public abstract class BulletproofOpMode extends LinearOpMode
 
                 break;
 
+            case BEACON_ALL_BLUE:
+                _buttonPusher.DeployRight();
+                _buttonPusher.DeployLeft();
+
+                break;
+
+            case BEACON_NO_BLUE:
+                _buttonPusher.DeployLeft();
+                _buttonPusher.DeployRight();
+
+                break;
+
             default:
                 telemetry.addData("I dont know", "lol");
                 break;
@@ -202,7 +214,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
                     rightPower.x = -horizontalPower;
                     rightPower.y = -horizontalPower;
                 }
-                else if (poseData[1] < 0.925f)
+                else if (poseData[1] < 0.94f)
                 {
                     if (poseData[2] > 0)
                     {
