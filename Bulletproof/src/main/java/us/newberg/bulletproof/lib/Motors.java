@@ -4,6 +4,7 @@ package us.newberg.bulletproof.lib;
  * FTC team 6712 Bulletproof
  */
 
+import com.elvishew.xlog.XLog;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -37,5 +38,7 @@ public class Motors
         FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        XLog.tag("Motors").d("Motors initialized");
     }
 }

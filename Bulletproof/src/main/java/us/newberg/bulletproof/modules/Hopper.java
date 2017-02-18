@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Hopper
 {
+    public static final String TAG = "Hopper";
+
     public static final float DOOR_DOWN_POS = 1.0f;
     public static final float DOOR_UP_POS = 0.64f;
 

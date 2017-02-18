@@ -1,8 +1,7 @@
 package us.newberg.bulletproof.modules;
 
+import com.elvishew.xlog.XLog;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.opmodes.BulletproofOpMode;
@@ -14,6 +13,8 @@ import us.or.k12.newberg.newbergcommon.WatchDog;
  */
 public class Flipper
 {
+    public static final String TAG = "Flipper";
+
     public static final float GEAR_RATIO = 20.0f / 3.0f; // 6 2/3
     public static final float HALF_GEAR_RATIO = GEAR_RATIO / 2; // One flick
 
@@ -24,33 +25,24 @@ public class Flipper
         AUTO
     }
 
-    // TODO(Garrison): Remove this
-    private float _targetTicks;
-
     private Flipper.State _state;
     private FlipperHelper _helper;
 
     private DcMotor _flipperMotor;
 
-    private Telemetry.Item _telState;
-
     private WatchDog _watchDog;
 
-    public Flipper(DcMotor motor, Telemetry telemetry)
+    public Flipper(DcMotor motor)
     {
         _helper = new FlipperHelper(this);
         _flipperMotor = motor;
-        _telState = telemetry.addData("Flipper State: ", _state);
         _watchDog = new WatchDog();
-    }
-
-    public void UpdateMotor(DcMotor motor)
-    {
-        _flipperMotor = motor;
     }
 
     public void AutoMoveBlocking(BulletproofOpMode caller) throws InterruptedException
     {
+        XLog.tag(TAG).d("Auto-move Blocking Start");
+
         _helper.SetTask(HelperTask.STOP);
         _watchDog.Watch(_helper, 10000);
 
@@ -63,13 +55,16 @@ public class Flipper
         }
 
         _watchDog.Stop();
+
+        XLog.tag(TAG).d("Auto-move Blocking Stop");
     }
 
     public void StartAutoMove()
     {
-        float targetTicks = (float) _flipperMotor.getCurrentPosition() + ((float)Motors.TICKS_PER_ROTATION * HALF_GEAR_RATIO * 1.4f);
+        XLog.tag(TAG).d("Auto-move Start");
 
-        _targetTicks = targetTicks;
+        final float targetTicks = (float) _flipperMotor.getCurrentPosition() + ((float)Motors.TICKS_PER_ROTATION * HALF_GEAR_RATIO * 1.4f);
+
         _state = State.AUTO;
 
         new Thread(new Runnable()
@@ -77,7 +72,7 @@ public class Flipper
          	@Override
             public void run()
             {
-                while (_flipperMotor.getCurrentPosition() < _targetTicks)
+                while (_flipperMotor.getCurrentPosition() < targetTicks)
                 {
                                    SetPower(1.0f);
 
@@ -86,18 +81,17 @@ public class Flipper
 
                 SetPower(0.0f);
                 _state = State.NOTHING;
+
+                XLog.tag(TAG).d("Auto-move Stop");
             }
         }).start();
     }
 
     public void SetPower(double power)
     {
-        _flipperMotor.setPower(power);
-    }
+        XLog.tag(TAG).d("Set power to " + String.valueOf(power));
 
-    public void UpdateTelemetry()
-    {
-        _telState.setValue(_state);
+        _flipperMotor.setPower(power);
     }
 
     public Flipper.State GetState()

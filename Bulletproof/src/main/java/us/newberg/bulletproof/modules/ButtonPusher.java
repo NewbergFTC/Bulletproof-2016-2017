@@ -1,5 +1,6 @@
 package us.newberg.bulletproof.modules;
 
+import com.elvishew.xlog.XLog;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -9,6 +10,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class ButtonPusher
 {
+    public static final String TAG = "ButtonPusher";
+
     public static float LEFT_DEPLOY_POS = 1f;
     public static float LEFT_CLOSE_POS = 0f;
     public static float RIGHT_DEPLOY_POS = 1f;
@@ -25,13 +28,8 @@ public class ButtonPusher
 
     private State _stateLeft;
     private State _stateRight;
-    
-    private Telemetry.Item _teleLeftPos;
-    private Telemetry.Item _teleLeftState;
-    private Telemetry.Item _teleRightPos;
-    private Telemetry.Item _teleRightState;
 
-    public ButtonPusher(Servo left, Servo right, Telemetry telemetry)
+    public ButtonPusher(Servo left, Servo right)
     {
         _servoLeft = left;
         _servoRight = right;
@@ -41,36 +39,40 @@ public class ButtonPusher
 
         _stateLeft = State.CLOSED;
         _stateRight = State.CLOSED;
-        
-        _teleLeftPos = telemetry.addData("Pusher Left:", _servoLeft.getPosition());
-        _teleLeftState = telemetry.addData("Pusher Left:", _stateLeft);
 
-        _teleRightPos = telemetry.addData("Pusher Right:", _servoRight.getPosition());
-        _teleRightState = telemetry.addData("Pusher Right:", _stateRight);
+        XLog.tag(TAG).d("Initialized");
     }
 
     public void DeployLeft()
     {
         _servoLeft.setPosition(LEFT_DEPLOY_POS);
         _stateLeft = State.DEPLOYED;
+
+        XLog.tag(TAG).d("Deploy Left");
     }
 
     public void DeployRight()
     {
         _servoRight.setPosition(RIGHT_DEPLOY_POS);
         _stateRight = State.DEPLOYED;
+
+        XLog.tag(TAG).d("Deploy Right");
     }
 
     public void CloseLeft()
     {
         _servoLeft.setPosition(LEFT_CLOSE_POS);
         _stateLeft = State.CLOSED;
+
+        XLog.tag(TAG).d("Close Left");
     }
 
     public void CloseRight()
     {
         _servoRight.setPosition(RIGHT_CLOSE_POS);
         _stateRight = State.CLOSED;
+
+        XLog.tag(TAG).d("Close Right");
     }
 
     public void ToggleLeft()
@@ -95,14 +97,5 @@ public class ButtonPusher
         {
             CloseRight();
         }
-    }
-
-    public void UpdateTelemetry()
-    {
-        _teleLeftPos.setValue(_servoLeft.getPosition());
-        _teleLeftState.setValue(_stateLeft);
-
-        _teleRightPos.setValue(_servoRight.getPosition());
-        _teleRightState.setValue(_stateRight);
     }
 }

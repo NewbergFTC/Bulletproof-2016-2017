@@ -1,5 +1,6 @@
 package us.newberg.bulletproof.lib;
 
+import com.elvishew.xlog.XLog;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -19,5 +20,7 @@ public class Servos
         BeaconRight = hardwareMap.servo.get("rightServo");
         HopperDoor = hardwareMap.servo.get("hopperServo");
         SensorArm = hardwareMap.servo.get("sensorArm");
+
+        XLog.tag("Servos").d("Servos initialized");
     }
 }
