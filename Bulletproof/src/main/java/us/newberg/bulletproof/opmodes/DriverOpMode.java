@@ -22,6 +22,9 @@ public class DriverOpMode extends BulletproofOpMode
 
         _leftDrivePower = new Vector2f();
         _rightDrivePower = new Vector2f();
+
+        _lightSensor.DisableLED();
+        _lightSensor.Close();
     }
 
     @Override

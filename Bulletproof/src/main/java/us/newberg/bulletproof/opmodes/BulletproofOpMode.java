@@ -1,15 +1,16 @@
 package us.newberg.bulletproof.opmodes;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import com.elvishew.xlog.XLog;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.vuforia.HINT;
 import com.vuforia.Vuforia;
 
+import us.newberg.bulletproof.lib.Sensors;
 import us.newberg.bulletproof.modules.DriveTrain;
 import us.newberg.bulletproof.lib.Motors;
 import us.newberg.bulletproof.lib.Servos;
@@ -17,6 +18,7 @@ import us.newberg.bulletproof.modules.ButtonPusher;
 import us.newberg.bulletproof.modules.Flipper;
 import us.newberg.bulletproof.modules.Collector;
 import us.newberg.bulletproof.modules.Hopper;
+import us.newberg.bulletproof.modules.LightSensor;
 import us.or.k12.newberg.newbergcommon.BeaconUtil;
 import us.or.k12.newberg.newbergcommon.math.Vector2f;
 import us.or.k12.newberg.newbergcommon.vuforia.NewbergVuforiaLocal;
@@ -37,6 +39,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
     protected ButtonPusher _buttonPusher;
     protected Collector _collector;
     protected Hopper _hopper;
+    protected LightSensor _lightSensor;
 
     protected NewbergVuforiaLocal _vuforia;
     protected VuforiaTrackables   _beacons;
@@ -46,11 +49,12 @@ public abstract class BulletproofOpMode extends LinearOpMode
     protected VuforiaTrackableDefaultListener _legoListener;
     protected VuforiaTrackableDefaultListener _gearsListener;
 
+    protected boolean _enableLogging = true;
+
     public static final float MM_BOT_WIDTH = 17.0f * MathUtil.MM_PER_INCH;
     
     public BulletproofOpMode()
     {
-
         super();
         // NOTE(Garrison): Don't init any ftc objects here.
 
@@ -59,10 +63,13 @@ public abstract class BulletproofOpMode extends LinearOpMode
         _buttonPusher = null;
         _collector = null;
         _hopper = null;
+        _lightSensor = null;
     }
 
     protected void InitVuforia()
     {
+        XLog.d("Vuforia Calibrate Start");
+
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
 
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
@@ -83,32 +90,56 @@ public abstract class BulletproofOpMode extends LinearOpMode
         _toolsListener  = (VuforiaTrackableDefaultListener) _beacons.get(1).getListener();
         _legoListener   = (VuforiaTrackableDefaultListener) _beacons.get(2).getListener();
         _gearsListener  = (VuforiaTrackableDefaultListener) _beacons.get(3).getListener();
+
+        if (_enableLogging)
+        {
+            XLog.tag("BulletproofOpMode").d("Vuforia Calibrate Complete");
+        }
     }
 
     protected void Init()
     {
+        if (_enableLogging)
+        {
+            XLog.tag("BulletproofOpMode").d("Calibrate Start");
+        }
+
         Motors.Init(hardwareMap);
         Servos.Init(hardwareMap);
+        Sensors.Init(hardwareMap);
 
         _driveTrain = new DriveTrain(telemetry);
         _flipper = new Flipper(Motors.Flipper, telemetry);
         _buttonPusher = new ButtonPusher(Servos.BeaconLeft, Servos.BeaconRight, telemetry);
         _collector = new Collector(Motors.Collector);
         _hopper = new Hopper(Servos.HopperDoor);
+        _lightSensor = new LightSensor(Sensors.LightSensor, Servos.SensorArm, true);
 
         InitVuforia();
+
+        _lightSensor.Calibrate();
+
+        if (_enableLogging)
+        {
+            XLog.tag("BulletproofOpMode").d("Calibrate Complete");
+        }
     }
 
     protected void CleanUp()
     {
 		// TODO(Garrison): Do we really need this?
-        // Doesn't seem so
+        // Maybe flush some logs or something
     }
 
     @Override
     public void runOpMode() throws InterruptedException
     {
         Init();
+
+        if (_enableLogging)
+        {
+            XLog.tag("BulletproofOpMode").d("Waiting for start...");
+        }
 
         waitForStart();
 
@@ -257,6 +288,8 @@ public abstract class BulletproofOpMode extends LinearOpMode
             telemetry.update();
             idle();
         }
+
+        _driveTrain.StopAll();
     }
 
 

@@ -14,7 +14,8 @@ import us.or.k12.newberg.newbergcommon.WatchDog;
  */
 public class Flipper
 {
-    public static float GEAR_RATIO = 10.12f;
+    public static final float GEAR_RATIO = 20.0f / 3.0f; // 6 2/3
+    public static final float HALF_GEAR_RATIO = GEAR_RATIO / 2; // One flick
 
     public enum State
     {
@@ -23,7 +24,9 @@ public class Flipper
         AUTO
     }
 
+    // TODO(Garrison): Remove this
     private float _targetTicks;
+
     private Flipper.State _state;
     private FlipperHelper _helper;
 
@@ -64,7 +67,7 @@ public class Flipper
 
     public void StartAutoMove()
     {
-        float targetTicks = (float) _flipperMotor.getCurrentPosition() + ((float)Motors.TICKS_PER_ROTATION * GEAR_RATIO);
+        float targetTicks = (float) _flipperMotor.getCurrentPosition() + ((float)Motors.TICKS_PER_ROTATION * HALF_GEAR_RATIO * 1.15f);
 
         _targetTicks = targetTicks;
         _state = State.AUTO;
