@@ -20,7 +20,12 @@ public class LightSensorOpMode extends BulletproofOpMode
         _lightSensor.Deploy();
         _lightSensor.EnableLED();
 
-        _driveTrain.Drive(Direction.SOUTH, 0.5f, 12f, 2000, this);
+        _driveTrain.Drive(Direction.SOUTH, 0.5f, 11f, 2000, this);
+
+        idle();
+        sleep(500);
+        idle();
+
         _driveTrain.Drive(new Vector2f(-0.5f, 0), new Vector2f(0, 0.5f));
 
         while (!_lightSensor.FoundLine())
@@ -54,8 +59,24 @@ public class LightSensorOpMode extends BulletproofOpMode
 
         AnalyzeAndDeployBlue(_wheelsListener);
         GetToBeacon(_wheelsListener);
+
         _driveTrain.Drive(Direction.WEST, 0.3f, 5, 500, this);
         _driveTrain.Drive(Direction.EAST, 0.3f, 5, 500, this);
+
+        _buttonPusher.CloseLeft();
+        _buttonPusher.CloseRight();
+
+//        _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 36, 4000, this);
+//        _driveTrain.Drive(new Vector2f(-0.5f, 0), new Vector2f(0, 0.5f));
+//
+//        while (!_lightSensor.FoundLine())
+//        {
+//            telemetry.addData("Light", _lightSensor.GetLight());
+//            telemetry.addData("Found?", _lightSensor.FoundLine());
+//
+//            telemetry.update();
+//            idle();
+//        }
 
         _driveTrain.StopAll();
     }

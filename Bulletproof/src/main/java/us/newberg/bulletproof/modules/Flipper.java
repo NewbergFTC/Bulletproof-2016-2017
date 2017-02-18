@@ -67,7 +67,7 @@ public class Flipper
 
     public void StartAutoMove()
     {
-        float targetTicks = (float) _flipperMotor.getCurrentPosition() + ((float)Motors.TICKS_PER_ROTATION * HALF_GEAR_RATIO * 1.15f);
+        float targetTicks = (float) _flipperMotor.getCurrentPosition() + ((float)Motors.TICKS_PER_ROTATION * HALF_GEAR_RATIO * 1.4f);
 
         _targetTicks = targetTicks;
         _state = State.AUTO;
