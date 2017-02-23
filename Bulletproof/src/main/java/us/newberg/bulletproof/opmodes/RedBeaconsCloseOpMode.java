@@ -1,32 +1,23 @@
 package us.newberg.bulletproof.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import us.newberg.bulletproof.Direction;
 import us.or.k12.newberg.newbergcommon.math.Vector2f;
 
-@TeleOp(name = "Light Sensor Test", group = "Test")
-public class LightSensorOpMode extends BulletproofOpMode
+public class RedBeaconsCloseOpMode extends BulletproofOpMode
 {
-    @Override
-    protected void Init()
-    {
-        super.Init();
-    }
-
     @Override
     protected void Run() throws InterruptedException
     {
         _lightSensor.Deploy();
         _lightSensor.EnableLED();
 
-        _driveTrain.Drive(Direction.SOUTH, 0.5f, 11f, 2000, this);
+        _driveTrain.Drive(Direction.NORTH, 0.5f, 11f, 2000, this);
 
         idle();
         sleep(500);
         idle();
 
-        _driveTrain.Drive(new Vector2f(-0.5f, 0), new Vector2f(0, 0.5f));
+        _driveTrain.Drive(new Vector2f(0, 0.5f), new Vector2f(-0.5f, 0));
 
         while (!_lightSensor.FoundLine())
         {
@@ -46,9 +37,9 @@ public class LightSensorOpMode extends BulletproofOpMode
         _flipper.AutoMoveBlocking(this);
 
         _driveTrain.Drive(Direction.EAST, 0.3f, 5, 750, this);
-        _driveTrain.Drive(Direction.SOUTH_WEST, 0.3f, 4.5f, 750, this);
+        _driveTrain.Drive(Direction.NORTH_EAST, 0.3f, 4.5f, 750, this);
 
-        while (!_wheelsListener.isVisible())
+        while (!_gearsListener.isVisible())
         {
             telemetry.addData("ME NO SEE", "FUCKIN FUCK");
             telemetry.update();
@@ -62,8 +53,8 @@ public class LightSensorOpMode extends BulletproofOpMode
 
         _driveTrain.StopAll();
 
-        AnalyzeAndDeployBlue(_wheelsListener);
-        GetToBeacon(_wheelsListener);
+        AnalyzeAndDeployBlue(_gearsListener);
+        GetToBeacon(_gearsListener);
 
         _driveTrain.Drive(Direction.WEST, 0.3f, 7, 750, this);
         _driveTrain.Drive(Direction.EAST, 0.3f, 5, 750, this);
@@ -74,8 +65,8 @@ public class LightSensorOpMode extends BulletproofOpMode
         _lightSensor.Deploy();
         _lightSensor.EnableLED();
 
-        _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 36, 4000, this);
-        _driveTrain.Drive(new Vector2f(-0.5f, 0), new Vector2f(0, 0.5f));
+        _driveTrain.Drive(Direction.NORTH_EAST, 0.5f, 36, 4000, this);
+        _driveTrain.Drive(new Vector2f(0, 0.5f), new Vector2f(-0.5f, 0));
 
         while (!_lightSensor.FoundLine())
         {
@@ -88,7 +79,7 @@ public class LightSensorOpMode extends BulletproofOpMode
 
         _driveTrain.Drive(Direction.EAST, 0.3f, 2, 750, this);
 
-        while (!_legoListener.isVisible())
+        while (!_toolsListener.isVisible())
         {
             telemetry.addData("ME NO SEE", "FUCKIN FUCKER FUCK");
             telemetry.update();
@@ -102,9 +93,9 @@ public class LightSensorOpMode extends BulletproofOpMode
 
         sleep(500);
 
-        StraightenToBeacon(_legoListener);
-        AnalyzeAndDeployBlue(_legoListener);
-        GetToBeacon(_legoListener);
+        StraightenToBeacon(_toolsListener);
+        AnalyzeAndDeployBlue(_toolsListener);
+        GetToBeacon(_toolsListener);
 
         _driveTrain.Drive(Direction.WEST, 0.3f, 7, 750, this);
         _driveTrain.Drive(Direction.EAST, 0.3f, 2, 750, this);
@@ -121,7 +112,7 @@ public class LightSensorOpMode extends BulletproofOpMode
             }
         }).start();
 
-        _driveTrain.Drive(Direction.NORTH_EAST, 0.5f, 60, 2500, this);
+        _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 60, 2500, this);
 
         _driveTrain.StopAll();
     }

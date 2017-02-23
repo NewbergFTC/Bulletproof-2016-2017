@@ -351,7 +351,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
 
             if (listener.isVisible())
             {
-                if (translation.get(0) < -550)
+                if (translation.get(0) < -540)
                 {
                     leftPower.x = horizontalPower;
                     leftPower.y = horizontalPower;
@@ -359,7 +359,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
                     rightPower.x = horizontalPower;
                     rightPower.y = horizontalPower;
                 }
-                else if (translation.get(0) > -450)
+                else if (translation.get(0) > -460)
                 {
                     leftPower.x = -horizontalPower;
                     leftPower.y = -horizontalPower;
@@ -367,7 +367,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
                     rightPower.x = -horizontalPower;
                     rightPower.y = -horizontalPower;
                 }
-                else if (poseData[1] < 0.93f)
+                else if (poseData[1] < 0.935f)
                 {
                     if (poseData[2] > 0)
                     {
