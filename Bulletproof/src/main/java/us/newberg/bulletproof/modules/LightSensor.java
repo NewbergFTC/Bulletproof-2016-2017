@@ -31,7 +31,7 @@ public class LightSensor
 
         try
         {
-            Thread.sleep(250);
+            Thread.sleep(2000);
         } catch (InterruptedException e)
         {
             e.printStackTrace();
@@ -40,6 +40,7 @@ public class LightSensor
         _initalValue = GetLight();
 
         Close();
+        DisableLED();
 
         XLog.tag(TAG).d("Calibrate complete with light value " + String.valueOf(_initalValue));
     }
@@ -48,14 +49,14 @@ public class LightSensor
     {
         XLog.tag(TAG).d("Deploy Sensor");
 
-//        _servo.setPosition(DEPLOY_POS);
+        _servo.setPosition(DEPLOY_POS);
     }
 
     public void Close()
     {
         XLog.tag(TAG).d("Close Sensor");
 
-//        _servo.setPosition(CLOSE_POS);
+        _servo.setPosition(CLOSE_POS);
     }
 
     public void EnableLED()

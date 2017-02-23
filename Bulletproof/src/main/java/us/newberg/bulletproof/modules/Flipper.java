@@ -44,7 +44,7 @@ public class Flipper
         XLog.tag(TAG).d("Auto-move Blocking Start");
 
         _helper.SetTask(HelperTask.STOP);
-        _watchDog.Watch(_helper, 10000);
+        _watchDog.Watch(_helper, 15000);
 
         StartAutoMove();
 
@@ -63,7 +63,7 @@ public class Flipper
     {
         XLog.tag(TAG).d("Auto-move Start");
 
-        final float targetTicks = (float) _flipperMotor.getCurrentPosition() + ((float)Motors.TICKS_PER_ROTATION * HALF_GEAR_RATIO * 1.4f);
+        final float targetTicks = (float) _flipperMotor.getCurrentPosition() + ((float)Motors.TICKS_PER_ROTATION * HALF_GEAR_RATIO * 1.6f);
 
         _state = State.AUTO;
 

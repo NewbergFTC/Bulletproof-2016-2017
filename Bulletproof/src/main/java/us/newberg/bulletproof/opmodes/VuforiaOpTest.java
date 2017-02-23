@@ -18,32 +18,15 @@ public class VuforiaOpTest extends BulletproofOpMode
     @Override
     public void Run() throws InterruptedException
     {
-        while (opModeIsActive() && !_wheelsListener.isVisible())
+        while (opModeIsActive() && !_legoListener.isVisible())
         {
             idle();
         }
 
-        AnalyzeAndDeployBlue(_wheelsListener);
-        GetToBeacon(_wheelsListener);
+        AnalyzeAndDeployBlue(_legoListener);
+        GetToBeacon(_legoListener);
 
-        _driveTrain.Drive(Direction.WEST, 0.5f, 2, 750, this);
-        _driveTrain.Drive(Direction.EAST, 0.2f, 3f, 1000, this);
-
-        while (AnalyzeBeacon(_wheelsListener) != BeaconUtil.BeaconStatus.BEACON_ALL_BLUE)
-        {
-            GetToBeacon(_wheelsListener);
-            _driveTrain.Drive(Direction.WEST, 0.5f, 2, 2000, this);
-            sleep(500);
-        }
-
-        _driveTrain.StopAll();
-
-        _driveTrain.Drive(Direction.EAST, 0.5f, 3f, 2000, this);
-
-        _driveTrain.Drive(Direction.SOUTH, 0.3f, 8f, 3000, this);
-
-        _driveTrain.Drive(new Vector2f(-.2f, .2f), new Vector2f(.2f, -.2f));
-        sleep(500);
-        _driveTrain.StopAll();
+        _driveTrain.Drive(Direction.WEST, 0.5f, 5, 750, this);
+        _driveTrain.Drive(Direction.EAST, 0.2f, 3, 1000, this);
     }
 }

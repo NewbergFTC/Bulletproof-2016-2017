@@ -109,11 +109,11 @@ public abstract class BulletproofOpMode extends LinearOpMode
         Sensors.Init(hardwareMap);
 
         _driveTrain = new DriveTrain(telemetry);
-        _flipper = new Flipper(Motors.Flipper, telemetry);
-        _buttonPusher = new ButtonPusher(Servos.BeaconLeft, Servos.BeaconRight, telemetry);
+        _flipper = new Flipper(Motors.Flipper);
+        _buttonPusher = new ButtonPusher(Servos.BeaconLeft, Servos.BeaconRight);
         _collector = new Collector(Motors.Collector);
         _hopper = new Hopper(Servos.HopperDoor);
-        _lightSensor = new LightSensor(Sensors.LightSensor, Servos.SensorArm, true);
+        _lightSensor = new LightSensor(Sensors.LightSensor, Servos.SensorArm);
 
         InitVuforia();
 
@@ -121,7 +121,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
 
         if (_enableLogging)
         {
-            XLog.tag("BulletproofOpMode").d("Calibrate Complete");
+            XLog.tag("BulletproofOpMode").d("Calibration Complete");
         }
     }
 
@@ -158,7 +158,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
 
     protected BeaconUtil.BeaconStatus AnalyzeAndDeployBlue(VuforiaTrackableDefaultListener listener)
     {
-        BeaconUtil.BeaconStatus beaconStatus = AnalyzeBeacon(_wheelsListener);
+        BeaconUtil.BeaconStatus beaconStatus = AnalyzeBeacon(listener);
 
         switch (beaconStatus)
         {
@@ -173,8 +173,8 @@ public abstract class BulletproofOpMode extends LinearOpMode
                 break;
 
             case BEACON_ALL_BLUE:
-                _buttonPusher.DeployRight();
-                _buttonPusher.DeployLeft();
+                _buttonPusher.CloseRight();
+                _buttonPusher.CloseLeft();
 
                 break;
 
@@ -185,21 +185,52 @@ public abstract class BulletproofOpMode extends LinearOpMode
                 break;
 
             default:
-                telemetry.addData("I dont know", "lol");
                 break;
         }
 
         return beaconStatus;
     }
 
-    protected void GetToBeacon(VuforiaTrackableDefaultListener listener)
+    protected BeaconUtil.BeaconStatus AnalyzeAndDeployRed(VuforiaTrackableDefaultListener listener)
+    {
+        BeaconUtil.BeaconStatus beaconStatus = AnalyzeBeacon(listener);
+
+        switch (beaconStatus)
+        {
+            case BEACON_BLUE_RED:
+                _buttonPusher.DeployRight();
+
+                break;
+
+            case BEACON_RED_BLUE:
+                _buttonPusher.DeployLeft();
+
+                break;
+
+            case BEACON_ALL_BLUE:
+                _buttonPusher.DeployRight();
+                _buttonPusher.DeployLeft();
+
+                break;
+
+            case BEACON_NO_BLUE:
+                _buttonPusher.CloseLeft();
+                _buttonPusher.CloseRight();
+
+                break;
+
+            default:
+                break;
+        }
+
+        return beaconStatus;
+    }
+
+    protected void StraightenToBeacon(VuforiaTrackableDefaultListener listener)
     {
         VectorF angles = VuforiaUtil.AnglesFromTarget(listener);
         VectorF translation = VuforiaUtil.NavOffWall(listener.getPose().getTranslation(),
                 Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
-
-        telemetry.addData("Found!", true);
-        telemetry.update();
 
         Vector2f leftPower = new Vector2f();
         Vector2f rightPower = new Vector2f();
@@ -246,7 +277,7 @@ public abstract class BulletproofOpMode extends LinearOpMode
                     rightPower.x = -horizontalPower;
                     rightPower.y = -horizontalPower;
                 }
-                else if (poseData[1] < 0.94f)
+                else if (poseData[1] < 0.93f)
                 {
                     if (poseData[2] > 0)
                     {
@@ -256,7 +287,96 @@ public abstract class BulletproofOpMode extends LinearOpMode
 
                         rightPower.x = -horizontalPower;
                         rightPower.y = -horizontalPower;
+                    }
+                    else
+                    {
+                        // Left
+                        leftPower.x = -horizontalPower;
+                        leftPower.y = -horizontalPower;
 
+                        rightPower.x = horizontalPower;
+                        rightPower.y = horizontalPower;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+
+            _driveTrain.Drive(leftPower, rightPower);
+
+            idle();
+        }
+
+        _driveTrain.StopAll();
+    }
+
+    protected void GetToBeacon(VuforiaTrackableDefaultListener listener)
+    {
+        VectorF angles = VuforiaUtil.AnglesFromTarget(listener);
+        VectorF translation = VuforiaUtil.NavOffWall(listener.getPose().getTranslation(),
+                Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
+
+        Vector2f leftPower = new Vector2f();
+        Vector2f rightPower = new Vector2f();
+
+        final float horizontalPower = 0.08f;
+        final float forwardPower = 0.13f;
+
+        float[] poseData = poseData = listener.getRawPose().getData();
+
+        while (opModeIsActive())
+        {
+            if (listener.getPose() != null)
+            {
+                try
+                {
+                    translation = VuforiaUtil.NavOffWall(listener.getPose().getTranslation(),
+                            Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
+
+                    angles = VuforiaUtil.AnglesFromTarget(listener);
+
+                    poseData = listener.getRawPose().getData();
+                }
+                catch (Exception e)
+                {
+                    telemetry.addData("HOLY FUCK", "WE'RE DEAD");
+                }
+            }
+
+            if (listener.isVisible())
+            {
+                if (translation.get(0) < -550)
+                {
+                    leftPower.x = horizontalPower;
+                    leftPower.y = horizontalPower;
+
+                    rightPower.x = horizontalPower;
+                    rightPower.y = horizontalPower;
+                }
+                else if (translation.get(0) > -450)
+                {
+                    leftPower.x = -horizontalPower;
+                    leftPower.y = -horizontalPower;
+
+                    rightPower.x = -horizontalPower;
+                    rightPower.y = -horizontalPower;
+                }
+                else if (poseData[1] < 0.93f)
+                {
+                    if (poseData[2] > 0)
+                    {
+                        // Right
+                        leftPower.x = horizontalPower;
+                        leftPower.y = horizontalPower;
+
+                        rightPower.x = -horizontalPower;
+                        rightPower.y = -horizontalPower;
                     }
                     else
                     {
@@ -284,8 +404,6 @@ public abstract class BulletproofOpMode extends LinearOpMode
 
             _driveTrain.Drive(leftPower, rightPower);
 
-            telemetry.addData("Dis", translation.get(2));
-            telemetry.update();
             idle();
         }
 

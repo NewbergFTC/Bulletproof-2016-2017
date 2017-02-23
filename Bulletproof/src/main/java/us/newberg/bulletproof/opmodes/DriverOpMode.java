@@ -223,18 +223,18 @@ public class DriverOpMode extends BulletproofOpMode
             // Gamepad 2
             //
 
-            final float FLIPPER_POWER = 1.0f;
+            final float FLIPPER_POWER   = 1.0f;
             final float COLLECTOR_POWER = 1.0f;
 
-            boolean buttonCollectorPush = (gamepad2.right_trigger > 0);
-            boolean buttonCollectorPull = (gamepad2.left_trigger > 0);
-            boolean buttonPusherLeftToggle = gamepad2.left_bumper;
-            boolean buttonPusherRightToggle = gamepad2.right_bumper;
-            boolean buttonFlipper = gamepad2.a;
-            boolean buttonFlipperAuto = gamepad2.b;
-            boolean buttonHopperDoorQuick = gamepad2.x;
-            boolean buttonHopperDoorUp = gamepad2.dpad_up;
-            boolean buttonHopperDoorDown = gamepad2.dpad_down;
+            final boolean buttonCollectorPush     = (gamepad2.right_trigger > 0);
+            final boolean buttonCollectorPull     = (gamepad2.left_trigger > 0);
+            final boolean buttonPusherLeftToggle  = gamepad2.left_bumper;
+            final boolean buttonPusherRightToggle = gamepad2.right_bumper;
+            final boolean buttonFlipper           = gamepad2.a;
+            final boolean buttonFlipperAuto       = gamepad2.b;
+            final boolean buttonHopperDoorQuick   = gamepad2.x;
+            final boolean buttonHopperDoorUp      = gamepad2.dpad_up;
+            final boolean buttonHopperDoorDown    = gamepad2.dpad_down;
 
             if (buttonHopperDoorQuick)
             {
