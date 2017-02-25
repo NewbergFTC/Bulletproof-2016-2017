@@ -17,7 +17,7 @@ public class RedBeaconsCloseOpMode extends BulletproofOpMode
         sleep(500);
         idle();
 
-        _driveTrain.Drive(new Vector2f(0, 0.5f), new Vector2f(-0.5f, 0));
+        _driveTrain.Drive(new Vector2f(0, 0.75f), new Vector2f(-0.75f, 0));
 
         while (!_lightSensor.FoundLine())
         {
@@ -37,10 +37,13 @@ public class RedBeaconsCloseOpMode extends BulletproofOpMode
         _flipper.AutoMoveBlocking(this);
 
         _driveTrain.Drive(Direction.EAST, 0.3f, 5, 750, this);
-        _driveTrain.Drive(Direction.NORTH_EAST, 0.3f, 4.5f, 750, this);
+        _driveTrain.Drive(Direction.NORTH_WEST, 0.5f, 4.5f, 750, this);
 
-        while (!_gearsListener.isVisible())
+        while (!_wheelsListener.isVisible())
         {
+            telemetry.addData("ME NO SEE", "FUCKIN FUCK");
+            telemetry.update();
+
             _driveTrain.Drive(new Vector2f(0.5f, 0.5f), new Vector2f(0.5f, 0.5f));
             sleep(750);
             _driveTrain.StopAll();
@@ -50,8 +53,8 @@ public class RedBeaconsCloseOpMode extends BulletproofOpMode
 
         _driveTrain.StopAll();
 
-        AnalyzeAndDeployBlue(_gearsListener);
-        GetToBeacon(_gearsListener);
+        AnalyzeAndDeployBlue(_wheelsListener);
+        GetToBeacon(_wheelsListener);
 
         _driveTrain.Drive(Direction.WEST, 0.3f, 7, 750, this);
         _driveTrain.Drive(Direction.EAST, 0.3f, 5, 750, this);
@@ -63,7 +66,7 @@ public class RedBeaconsCloseOpMode extends BulletproofOpMode
         _lightSensor.EnableLED();
 
         _driveTrain.Drive(Direction.NORTH_EAST, 0.5f, 36, 4000, this);
-        _driveTrain.Drive(new Vector2f(0, 0.5f), new Vector2f(-0.5f, 0));
+        _driveTrain.Drive(new Vector2f(0, 0.75f), new Vector2f(-0.75f, 0));
 
         while (!_lightSensor.FoundLine())
         {
@@ -76,8 +79,11 @@ public class RedBeaconsCloseOpMode extends BulletproofOpMode
 
         _driveTrain.Drive(Direction.EAST, 0.3f, 2, 750, this);
 
-        while (!_toolsListener.isVisible())
+        while (!_legoListener.isVisible())
         {
+            telemetry.addData("ME NO SEE", "FUCKIN FUCKER FUCK");
+            telemetry.update();
+
             _driveTrain.Drive(Direction.EAST, 0.3f, 3, 500, this);
 
             sleep(500);
@@ -87,9 +93,9 @@ public class RedBeaconsCloseOpMode extends BulletproofOpMode
 
         sleep(500);
 
-        StraightenToBeacon(_toolsListener);
-        AnalyzeAndDeployBlue(_toolsListener);
-        GetToBeacon(_toolsListener);
+        StraightenToBeacon(_legoListener);
+        AnalyzeAndDeployBlue(_legoListener);
+        GetToBeacon(_legoListener);
 
         _driveTrain.Drive(Direction.WEST, 0.3f, 7, 750, this);
         _driveTrain.Drive(Direction.EAST, 0.3f, 2, 750, this);
@@ -106,7 +112,7 @@ public class RedBeaconsCloseOpMode extends BulletproofOpMode
             }
         }).start();
 
-        _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 60, 2500, this);
+        _driveTrain.Drive(Direction.SOUTH_EAST, 0.5f, 70, 4000, this);
 
         _driveTrain.StopAll();
     }

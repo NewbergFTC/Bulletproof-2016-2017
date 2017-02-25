@@ -9,12 +9,6 @@ import us.or.k12.newberg.newbergcommon.math.Vector2f;
 public class LightSensorOpMode extends BulletproofOpMode
 {
     @Override
-    protected void Init()
-    {
-        super.Init();
-    }
-
-    @Override
     protected void Run() throws InterruptedException
     {
         _lightSensor.Deploy();
@@ -121,7 +115,7 @@ public class LightSensorOpMode extends BulletproofOpMode
             }
         }).start();
 
-        _driveTrain.Drive(Direction.NORTH_EAST, 0.5f, 60, 2500, this);
+        _driveTrain.Drive(Direction.NORTH_EAST, 0.5f, 70, 4000, this);
 
         _driveTrain.StopAll();
     }

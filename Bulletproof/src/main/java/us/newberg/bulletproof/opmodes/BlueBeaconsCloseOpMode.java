@@ -44,6 +44,9 @@ public class BlueBeaconsCloseOpMode extends BulletproofOpMode
 
         while (!_wheelsListener.isVisible())
         {
+            telemetry.addData("ME NO SEE", "FUCKIN FUCK");
+            telemetry.update();
+
             _driveTrain.Drive(new Vector2f(0.5f, 0.5f), new Vector2f(0.5f, 0.5f));
             sleep(750);
             _driveTrain.StopAll();
@@ -81,6 +84,9 @@ public class BlueBeaconsCloseOpMode extends BulletproofOpMode
 
         while (!_legoListener.isVisible())
         {
+            telemetry.addData("ME NO SEE", "FUCKIN FUCKER FUCK");
+            telemetry.update();
+
             _driveTrain.Drive(Direction.EAST, 0.3f, 3, 500, this);
 
             sleep(500);
@@ -109,7 +115,7 @@ public class BlueBeaconsCloseOpMode extends BulletproofOpMode
             }
         }).start();
 
-        _driveTrain.Drive(Direction.NORTH_EAST, 0.5f, 60, 2500, this);
+        _driveTrain.Drive(Direction.NORTH_EAST, 0.5f, 70, 4000, this);
 
         _driveTrain.StopAll();
     }
