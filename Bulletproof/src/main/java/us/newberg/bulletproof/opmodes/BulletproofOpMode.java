@@ -49,6 +49,8 @@ public abstract class BulletproofOpMode extends LinearOpMode
     protected VuforiaTrackableDefaultListener _legoListener;
     protected VuforiaTrackableDefaultListener _gearsListener;
 
+    protected VuforiaTrackableDefaultListener[] _listeners;
+
     protected boolean _enableLogging = true;
 
     public static final float MM_BOT_WIDTH = 17.0f * MathUtil.MM_PER_INCH;
@@ -90,6 +92,12 @@ public abstract class BulletproofOpMode extends LinearOpMode
         _toolsListener  = (VuforiaTrackableDefaultListener) _beacons.get(1).getListener();
         _legoListener   = (VuforiaTrackableDefaultListener) _beacons.get(2).getListener();
         _gearsListener  = (VuforiaTrackableDefaultListener) _beacons.get(3).getListener();
+
+        _listeners = new VuforiaTrackableDefaultListener[4];
+        _listeners[0] = _wheelsListener;
+        _listeners[1] = _toolsListener;
+        _listeners[2] = _legoListener;
+        _listeners[3] = _gearsListener;
 
         if (_enableLogging)
         {

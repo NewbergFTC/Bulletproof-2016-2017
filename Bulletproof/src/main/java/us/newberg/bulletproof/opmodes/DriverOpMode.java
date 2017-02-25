@@ -2,9 +2,15 @@ package us.newberg.bulletproof.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+
+import us.newberg.bulletproof.Direction;
 import us.newberg.bulletproof.modules.Flipper;
 import us.or.k12.newberg.newbergcommon.math.Vector2f;
 import us.or.k12.newberg.newbergcommon.math.MathUtil;
+import us.or.k12.newberg.newbergcommon.vuforia.VuforiaUtil;
 
 /**
  * FTC team 6712 Bulletproof
@@ -37,6 +43,7 @@ public class DriverOpMode extends BulletproofOpMode
             Vector2f gamepadOneRight = new Vector2f(gamepad1.right_stick_x, gamepad1.right_stick_y);
 
             boolean fineControls = gamepad1.right_bumper;
+            boolean autoPress = gamepad1.a;
 
             float gamepadOneLeftAngle = (float) Math.abs(gamepadOneLeft.Normalized().AngleWithXAxis());
             int gamepadOneLeftAngleQuad;
@@ -214,6 +221,111 @@ public class DriverOpMode extends BulletproofOpMode
 
                 _rightDrivePower.x = powerX;
                 _rightDrivePower.y = powerX;
+            }
+
+            if (autoPress)
+            {
+                for (VuforiaTrackableDefaultListener listener : _listeners)
+                {
+                    if (listener.isVisible())
+                    {
+                        _buttonPusher.DeployLeft();
+                        _buttonPusher.DeployRight();
+
+                        VectorF angles = VuforiaUtil.AnglesFromTarget(listener);
+                        VectorF translation = VuforiaUtil.NavOffWall(listener.getPose().getTranslation(),
+                                Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
+
+                        Vector2f leftPower = new Vector2f();
+                        Vector2f rightPower = new Vector2f();
+
+                        final float horizontalPower = 0.08f;
+                        final float forwardPower = 0.13f;
+
+                        float[] poseData = poseData = listener.getRawPose().getData();
+
+                        while (opModeIsActive() && !gamepad1.b)
+                        {
+                            if (listener.getPose() != null)
+                            {
+                                try
+                                {
+                                    translation = VuforiaUtil.NavOffWall(listener.getPose().getTranslation(),
+                                            Math.toDegrees(angles.get(0)) - 90, new VectorF(500, 0, 0));
+
+                                    angles = VuforiaUtil.AnglesFromTarget(listener);
+
+                                    poseData = listener.getRawPose().getData();
+                                }
+                                catch (Exception e)
+                                {
+                                    telemetry.addData("HOLY FUCK", "WE'RE DEAD");
+                                }
+                            }
+
+                            if (listener.isVisible())
+                            {
+                                if (translation.get(0) < -540)
+                                {
+                                    leftPower.x = horizontalPower;
+                                    leftPower.y = horizontalPower;
+
+                                    rightPower.x = horizontalPower;
+                                    rightPower.y = horizontalPower;
+                                }
+                                else if (translation.get(0) > -460)
+                                {
+                                    leftPower.x = -horizontalPower;
+                                    leftPower.y = -horizontalPower;
+
+                                    rightPower.x = -horizontalPower;
+                                    rightPower.y = -horizontalPower;
+                                }
+                                else if (poseData[1] < 0.935f)
+                                {
+                                    if (poseData[2] > 0)
+                                    {
+                                        // Right
+                                        leftPower.x = horizontalPower;
+                                        leftPower.y = horizontalPower;
+
+                                        rightPower.x = -horizontalPower;
+                                        rightPower.y = -horizontalPower;
+                                    }
+                                    else
+                                    {
+                                        // Left
+                                        leftPower.x = -horizontalPower;
+                                        leftPower.y = -horizontalPower;
+
+                                        rightPower.x = horizontalPower;
+                                        rightPower.y = horizontalPower;
+                                    }
+                                }
+                                else
+                                {
+                                    leftPower.x = -forwardPower;
+                                    leftPower.y = forwardPower;
+
+                                    rightPower.x = -forwardPower;
+                                    rightPower.y = forwardPower;
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
+
+                            _driveTrain.Drive(leftPower, rightPower);
+
+                            idle();
+                        }
+
+                        _driveTrain.StopAll();
+
+                        _driveTrain.Drive(Direction.WEST, 0.5f, 5, 750, this);
+                    }
+                }
             }
 
             _driveTrain.Drive(_leftDrivePower, _rightDrivePower);
